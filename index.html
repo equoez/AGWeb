@@ -14,14 +14,16 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
-body {
-    margin: 0;
-    font-family: "Georgia", serif;
-    font-size: 16px;
-    line-height: 1.75;
-    background: url("AGbg.png") no-repeat center center fixed;
+/* NEW: fixed background layer */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: url("AGbg.png") no-repeat center center;
     background-size: cover;
-    color: white;
+
+    z-index: -1;
 }
 
 /* Layout */
