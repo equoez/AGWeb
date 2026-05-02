@@ -16,6 +16,7 @@ body {
     margin: 0;
     font-family: "Georgia", serif;
     font-size: 16px;
+    line-height: 1.75;
     background: url("AGbg.png") no-repeat center center fixed;
     background-size: cover;
     color: white;
@@ -26,7 +27,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px 10px;
+    padding: 20px 12px;
 }
 
 /* Logo */
@@ -58,8 +59,8 @@ body {
     cursor: pointer;
     background: rgba(255, 255, 255, 0.9);
     font-size: 14px;
-    transition: 0.2s;
     font-family: "Georgia", serif;
+    transition: 0.2s;
     white-space: nowrap;
 }
 
@@ -69,12 +70,13 @@ body {
 
 /* Content panel */
 .content-box {
-    background: rgba(0, 0, 0, 0.6);
-    padding: 22px;
+    background: rgba(0, 0, 0, 0.62);
+    padding: 26px;
     border-radius: 15px;
     backdrop-filter: blur(6px);
+
     width: 100%;
-    max-width: 600px;
+    max-width: 620px;
     box-sizing: border-box;
 }
 
@@ -87,48 +89,68 @@ body {
     display: block;
 }
 
-/* Typography */
+/* Typography system */
 h2 {
     margin-top: 0;
+    margin-bottom: 14px;
     color: #ffd27a;
-    font-size: 1.6em;
+    font-size: 1.7em;
 }
 
 h3 {
-    margin-bottom: 8px;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    color: #ffe2a6;
 }
 
 p {
-    line-height: 1.6;
-    margin: 10px 0;
+    margin: 0 0 14px 0;
+    line-height: 1.75;
 }
 
 ul {
-    line-height: 1.6;
-    padding-left: 20px;
+    margin: 0;
+    padding-left: 22px;
+    line-height: 1.75;
 }
 
-/* Codex items */
+li {
+    margin-bottom: 8px;
+}
+
+/* Codex styling (now unified) */
+.section {
+    margin-top: 10px;
+}
+
 .codex-item {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 12px;
+
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.codex-item:last-child {
+    border-bottom: none;
 }
 
 .codex-icon {
     width: 20px;
     height: 20px;
-    margin-top: 4px;
+    margin-top: 3px;
     opacity: 0.95;
     flex-shrink: 0;
 }
 
-.section {
-    margin-bottom: 22px;
+.codex-item div {
+    line-height: 1.75;
 }
 
-/* Mobile tweaks */
+/* Mobile adjustments */
 @media (max-width: 480px) {
 
     .logo {
@@ -140,12 +162,12 @@ ul {
         padding: 7px 10px;
     }
 
-    h2 {
-        font-size: 1.4em;
-    }
-
     .content-box {
         padding: 18px;
+    }
+
+    h2 {
+        font-size: 1.5em;
     }
 }
 </style>
@@ -171,8 +193,8 @@ ul {
         <div id="home" class="page active">
             <h2>Order of the Argent Gryphon</h2>
             <p>
-                Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice. 
-                From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith, 
+                Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice.
+                From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith,
                 strength, wisdom and the old oaths of their predecessors.
             </p>
         </div>
@@ -182,8 +204,8 @@ ul {
             <h2>Argent Codex</h2>
 
             <p>
-                Argent Gryphons adheres to a codex, a set of regulations for daily life, behaviour, and values, 
-                which emphasize chivalry, piety, and a strict moral code.
+                The Argent Gryphons adhere to a codex, a sacred set of regulations for life, conduct, and duty,
+                forged in discipline and honour.
             </p>
 
             <div class="section">
@@ -240,7 +262,7 @@ ul {
 
                 <p>
                     We agree with the articles written below. May this alliance be blessed by Banor!<br>
-                    <em>Nezel Stonehaze, 9. Mar 2026.</em>
+                    <em>Nezel Stonehaze, 9 March 2026.</em>
                 </p>
 
                 <p>
@@ -259,10 +281,8 @@ ul {
             <h2>Decree of Founding</h2>
 
             <p>
-                Let it be known throughout the world that the Council of the Red Rose ordains the formation of:
+                Let it be known throughout the world that the Council of the Red Rose ordains the formation of the Order of the Argent Gryphon.
             </p>
-
-            <p><strong>The Order of the Argent Gryphon.</strong></p>
 
             <p>
                 Founded in honour and vigilance, the Order stands as a beacon against the encroaching forces of evil.
@@ -286,7 +306,6 @@ ul {
         </div>
 
     </div>
-
 </div>
 
 <script>
