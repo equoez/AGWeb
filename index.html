@@ -7,7 +7,7 @@
 <title>Argent Gryphon</title>
 <link rel="icon" type="image/png" href="AGlogo.png">
 <link rel="icon" type="image/png" sizes="32x32" href="AG2_Shield_32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="AG2_Shield_16x16.png">    
+<link rel="icon" type="image/png" sizes="16x16" href="AG2_Shield_16x16.png">
 
 <style>
 html, body {
@@ -16,19 +16,32 @@ html, body {
     -webkit-text-size-adjust: 100%;
 }
 
-/* FIXED BACKGROUND (stable version) */
+/* FIXED BACKGROUND LAYER */
+.bg {
+    position: fixed;
+    inset: 0;
+
+    background-image: url("AGbg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+
+    /* LOCKED SIZE (no cover scaling) */
+    background-size: auto 100vh;
+
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Body */
 body {
+    margin: 0;
     color: #f5f5f5;
-
-    background: url("AGbg.png") no-repeat center center fixed;
-    background-size: cover;
-
     overflow-x: hidden;
 }
 
-/* Layout wrapper */
+/* Layout */
 .container {
-    min-height: 100vh; /* prevents background re-scaling issues */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -100,11 +113,9 @@ body {
     width: 100%;
     max-width: 620px;
     box-sizing: border-box;
-
-    color: #f5f5f5;
 }
 
-/* Force text readability */
+/* Force readable text */
 body, p, li, div, span, strong, em, h1, h2, h3 {
     color: #f5f5f5;
 }
@@ -178,7 +189,6 @@ li {
 
 /* Mobile */
 @media (max-width: 480px) {
-
     .logo {
         width: 140px;
     }
@@ -200,6 +210,9 @@ li {
 </head>
 
 <body>
+
+<!-- FIXED BACKGROUND -->
+<div class="bg"></div>
 
 <div class="container">
 
@@ -225,32 +238,7 @@ li {
 
         <div id="codex" class="page">
             <h2>Argent Codex</h2>
-
-            <p>
-                The Argent Gryphons adhere to a codex forged in discipline and honour.
-            </p>
-
-            <div class="section">
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Exhort Righteousness.</strong><br>Let thy steel and magic serve justice.</div>
-                </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Shield the Innocent.</strong><br>Stand between the helpless and harm.</div>
-                </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Serve with Humility.</strong><br>Let pride be cast down.</div>
-                </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Seek Wisdom.</strong><br>Knowledge is the flame against corruption.</div>
-                </div>
-            </div>
+            <p>The Argent Gryphons follow a sacred codex of discipline and honour.</p>
         </div>
 
         <div id="diplomacy" class="page">
@@ -266,12 +254,12 @@ li {
         <div id="ranks" class="page">
             <h2>Ranks</h2>
             <ul>
-                <li><strong>Lord Warden</strong></li>
-                <li><strong>Warden</strong></li>
-                <li><strong>Oathsworn</strong></li>
-                <li><strong>Enlightened</strong></li>
-                <li><strong>Shieldbearer</strong></li>
-                <li><strong>Initiate</strong></li>
+                <li>Lord Warden</li>
+                <li>Warden</li>
+                <li>Oathsworn</li>
+                <li>Enlightened</li>
+                <li>Shieldbearer</li>
+                <li>Initiate</li>
             </ul>
         </div>
 
