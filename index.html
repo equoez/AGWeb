@@ -14,16 +14,11 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
-/* NEW: fixed background layer */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
+body {
+    margin: 0;
 
-    background: url("AGbg.png") no-repeat center center;
+    background: url("AGbg.png") no-repeat center center fixed;
     background-size: cover;
-
-    z-index: -1;
 }
 
 /* Layout */
