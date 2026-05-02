@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Argent Gryphon</title>
 <link rel="icon" type="image/png" href="AGlogo.png">    
 
 <style>
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     margin: 0;
     font-family: "Georgia", serif;
+    font-size: 16px;
     background: url("AGbg.png") no-repeat center center fixed;
     background-size: cover;
     color: white;
@@ -19,36 +26,41 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    padding: 20px 10px;
 }
 
 /* Logo */
 .logo {
-    width: 200px;
-    margin-bottom: 10px;
+    width: 180px;
+    max-width: 70%;
+    margin-bottom: 15px;
 }
 
 /* Navbar */
 .navbar {
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
     background: rgba(0, 0, 0, 0.65);
-    padding: 12px 25px;
+    padding: 10px 15px;
     border-radius: 14px;
     backdrop-filter: blur(6px);
     margin-bottom: 20px;
+    max-width: 95%;
 }
 
 /* Buttons */
 .nav-button {
-    padding: 10px 18px;
+    padding: 8px 14px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     background: rgba(255, 255, 255, 0.9);
-    font-size: 15px;
+    font-size: 14px;
     transition: 0.2s;
     font-family: "Georgia", serif;
+    white-space: nowrap;
 }
 
 .nav-button:hover {
@@ -58,11 +70,12 @@ body {
 /* Content panel */
 .content-box {
     background: rgba(0, 0, 0, 0.6);
-    padding: 30px;
+    padding: 22px;
     border-radius: 15px;
     backdrop-filter: blur(6px);
-    width: 600px;
-    max-width: 90%;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
 }
 
 /* Pages */
@@ -78,33 +91,62 @@ body {
 h2 {
     margin-top: 0;
     color: #ffd27a;
+    font-size: 1.6em;
+}
+
+h3 {
+    margin-bottom: 8px;
 }
 
 p {
     line-height: 1.6;
+    margin: 10px 0;
 }
 
 ul {
     line-height: 1.6;
+    padding-left: 20px;
 }
 
 /* Codex items */
 .codex-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
 .codex-icon {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     margin-top: 4px;
     opacity: 0.95;
+    flex-shrink: 0;
 }
 
 .section {
-    margin-bottom: 25px;
+    margin-bottom: 22px;
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+
+    .logo {
+        width: 140px;
+    }
+
+    .nav-button {
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    .content-box {
+        padding: 18px;
+    }
 }
 </style>
 </head>
@@ -141,66 +183,44 @@ ul {
 
             <p>
                 Argent Gryphons adheres to a codex, a set of regulations for daily life, behaviour, and values, 
-                which emphasize chivalry, piety, and a strict moral code. This codex, written by Roderic Rivershaw, 
-                outlines the ideal behaviour for a gryphon, including aspects of monastic life and military conduct.
+                which emphasize chivalry, piety, and a strict moral code.
             </p>
 
             <div class="section">
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Exhort Righteousness.</strong><br>
-                        Let thy steel and magic serve justice.
-                    </div>
+                    <div><strong>Exhort Righteousness.</strong><br>Let thy steel and magic serve justice.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Shield the Innocent.</strong><br>
-                        Stand between the helpless and harm, though it cost thee all.
-                    </div>
+                    <div><strong>Shield the Innocent.</strong><br>Stand between the helpless and harm, though it cost thee all.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Serve with Humility.</strong><br>
-                        Let pride be cast down, and duty be thy crown.
-                    </div>
+                    <div><strong>Serve with Humility.</strong><br>Let pride be cast down, and duty be thy crown.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Seek Wisdom.</strong><br>
-                        Knowledge is the flame by which corruption is purged.
-                    </div>
+                    <div><strong>Seek Wisdom.</strong><br>Knowledge is the flame by which corruption is purged.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Show Mercy, without Weakness.</strong><br>
-                        Strike not in wrath, nor stay thy hand when retribution calls.
-                    </div>
+                    <div><strong>Show Mercy, without Weakness.</strong><br>Strike not in wrath, nor stay thy hand when retribution calls.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Keep the Vigil.</strong><br>
-                        Wherever the Gryphon flies, let no infamy go unchallenged.
-                    </div>
+                    <div><strong>Keep the Vigil.</strong><br>Wherever the Gryphon flies, let no infamy go unchallenged.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div>
-                        <strong>Die with Honour.</strong><br>
-                        If thy end must come, let it be noble and unafraid.
-                    </div>
+                    <div><strong>Die with Honour.</strong><br>If thy end must come, let it be noble and unafraid.</div>
                 </div>
 
             </div>
@@ -211,7 +231,7 @@ ul {
             <h2>Diplomacy</h2>
 
             <p>
-                Argent Gryphon has formalized diplomatic ties with two other guilds at this time.
+                Argent Gryphon has formalized diplomatic ties with allied guilds.
             </p>
 
             <div class="section">
@@ -224,12 +244,12 @@ ul {
                 </p>
 
                 <p>
-                    <strong>Article I:</strong> Purpose — Establishes alliance.<br>
-                    <strong>Article II:</strong> Alliance in Arms — Mutual defense against evil.<br>
-                    <strong>Article III:</strong> Mutual Aid — Assistance when needed.<br>
-                    <strong>Article IV:</strong> Exchange of Knowledge — Shared intelligence.<br>
-                    <strong>Article V:</strong> Hospitality — Open guildhalls.<br>
-                    <strong>Article VI:</strong> Fellowship — Regular meetings.
+                    <strong>Article I:</strong> Establishes alliance.<br>
+                    <strong>Article II:</strong> Mutual defense.<br>
+                    <strong>Article III:</strong> Aid when needed.<br>
+                    <strong>Article IV:</strong> Shared knowledge.<br>
+                    <strong>Article V:</strong> Hospitality.<br>
+                    <strong>Article VI:</strong> Fellowship.
                 </p>
             </div>
         </div>
@@ -239,23 +259,13 @@ ul {
             <h2>Decree of Founding</h2>
 
             <p>
-                Let it be known throughout the world that the Council of the Red Rose, 
-                in divine accord, hereby ordains the formation of a sacred brotherhood 
-                and chivalric order:
+                Let it be known throughout the world that the Council of the Red Rose ordains the formation of:
             </p>
 
             <p><strong>The Order of the Argent Gryphon.</strong></p>
 
             <p>
-                The Council grants full command to Valkera Blackheart, Praetor of the Red Rose, 
-                empowering her to raise the Order in the Vandura mountains as she deems fit. 
-                She is tasked to anoint warriors of pure hearts and arm each with the Griffin Shield—
-                a symbol of vigilance and bravery.
-            </p>
-
-            <p>
-                Founded in the spirit of unwavering honour and vigilant protection of the innocent, 
-                the Argent Gryphon shall stand as a beacon against the encroaching forces of evil.
+                Founded in honour and vigilance, the Order stands as a beacon against the encroaching forces of evil.
             </p>
         </div>
 
@@ -264,14 +274,14 @@ ul {
             <h2>Ranks</h2>
 
             <ul>
-                <li><strong>👑 Lord Warden</strong> – Guides policy and leads the council.</li>
-                <li><strong>🛡 Warden</strong> – Oversees all affairs of the Order.</li>
-                <li><strong>📜 Oathsworn</strong> – Keepers of the Order’s deepest lore.</li>
-                <li><strong>✨ Enlightened</strong> – Bearers of ancient wisdom.</li>
-                <li><strong>🛡 Shieldbearer</strong> – Proven warriors entrusted with duty.</li>
-                <li><strong>🔥 Initiate</strong> – Aspirants seeking to prove their worth.</li>
-                <li><strong>⚔ Sentinel</strong> – Soldiers and agents of the Order.</li>
-                <li><strong>🏰 Ward</strong> – Guests under the Order’s protection.</li>
+                <li><strong>👑 Lord Warden</strong> – Leads the council.</li>
+                <li><strong>🛡 Warden</strong> – Oversees the Order.</li>
+                <li><strong>📜 Oathsworn</strong> – Keepers of lore.</li>
+                <li><strong>✨ Enlightened</strong> – Bearers of wisdom.</li>
+                <li><strong>🛡 Shieldbearer</strong> – Proven warriors.</li>
+                <li><strong>🔥 Initiate</strong> – Aspirants.</li>
+                <li><strong>⚔ Sentinel</strong> – Soldiers.</li>
+                <li><strong>🏰 Ward</strong> – Protected guests.</li>
             </ul>
         </div>
 
