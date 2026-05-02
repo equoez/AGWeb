@@ -45,10 +45,14 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    background: rgba(0, 0, 0, 0.65);
+
+    background: rgba(0, 0, 0, 0.5);
     padding: 10px 15px;
     border-radius: 14px;
-    backdrop-filter: blur(6px);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
     margin-bottom: 20px;
     max-width: 95%;
 }
@@ -70,12 +74,21 @@ body {
     background: #ffd27a;
 }
 
-/* Content panel */
+/* Content panel (UPDATED) */
 .content-box {
-    background: rgba(0, 0, 0, 0.62);
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.55),
+        rgba(0, 0, 0, 0.7)
+    );
+
     padding: 26px;
     border-radius: 15px;
-    backdrop-filter: blur(6px);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 
     width: 100%;
     max-width: 620px;
@@ -120,7 +133,7 @@ li {
     margin-bottom: 8px;
 }
 
-/* Codex styling (now unified) */
+/* Codex styling */
 .section {
     margin-top: 10px;
 }
