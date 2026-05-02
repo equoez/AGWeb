@@ -10,26 +10,25 @@
 <link rel="icon" type="image/png" sizes="16x16" href="AG2_Shield_16x16.png">    
 
 <style>
-html {
+html, body {
+    height: 100%;
+    margin: 0;
     -webkit-text-size-adjust: 100%;
 }
 
-/* FIXED BACKGROUND (reliable method) */
+/* FIXED BACKGROUND (stable version) */
 body {
-    margin: 0;
     color: #f5f5f5;
 
     background: url("AGbg.png") no-repeat center center fixed;
     background-size: cover;
+
+    overflow-x: hidden;
 }
 
-/* FORCE TEXT COLOR EVERYWHERE */
-body, p, li, div, span, strong, em, h1, h2, h3, h4, h5 {
-    color: #f5f5f5;
-}
-    
-/* Layout */
+/* Layout wrapper */
 .container {
+    min-height: 100vh; /* prevents background re-scaling issues */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -67,9 +66,13 @@ body, p, li, div, span, strong, em, h1, h2, h3, h4, h5 {
     border: none;
     border-radius: 8px;
     cursor: pointer;
+
     background: rgba(255, 255, 255, 0.9);
+    color: #000;
+
     font-size: 14px;
     font-family: "Georgia", serif;
+
     transition: 0.2s;
     white-space: nowrap;
 }
@@ -78,11 +81,11 @@ body, p, li, div, span, strong, em, h1, h2, h3, h4, h5 {
     background: #ffd27a;
 }
 
-/* Content panel */
+/* Content box */
 .content-box {
     background: linear-gradient(
-        rgba(0, 0, 0, 0.3),
-        rgba(0, 0, 0, 0.4)
+        rgba(0, 0, 0, 0.60),
+        rgba(0, 0, 0, 0.75)
     );
 
     padding: 26px;
@@ -101,6 +104,11 @@ body, p, li, div, span, strong, em, h1, h2, h3, h4, h5 {
     color: #f5f5f5;
 }
 
+/* Force text readability */
+body, p, li, div, span, strong, em, h1, h2, h3 {
+    color: #f5f5f5;
+}
+
 /* Pages */
 .page {
     display: none;
@@ -110,7 +118,7 @@ body, p, li, div, span, strong, em, h1, h2, h3, h4, h5 {
     display: block;
 }
 
-/* Typography */
+/* Headings */
 h2 {
     margin-top: 0;
     margin-bottom: 14px;
@@ -124,6 +132,7 @@ h3 {
     color: #ffe2a6;
 }
 
+/* Text */
 p {
     margin: 0 0 14px 0;
     line-height: 1.75;
@@ -139,7 +148,7 @@ li {
     margin-bottom: 8px;
 }
 
-/* Codex styling */
+/* Codex */
 .section {
     margin-top: 10px;
 }
@@ -165,10 +174,6 @@ li {
     margin-top: 3px;
     opacity: 0.95;
     flex-shrink: 0;
-}
-
-.codex-item div {
-    line-height: 1.75;
 }
 
 /* Mobile */
@@ -214,8 +219,7 @@ li {
             <h2>Order of the Argent Gryphon</h2>
             <p>
                 Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice.
-                From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith,
-                strength, wisdom and the old oaths of their predecessors.
+                From their mountain hideout, they watch and defend the lands against corruption and evil.
             </p>
         </div>
 
@@ -223,12 +227,10 @@ li {
             <h2>Argent Codex</h2>
 
             <p>
-                The Argent Gryphons adhere to a codex, a sacred set of regulations for life, conduct, and duty,
-                forged in discipline and honour.
+                The Argent Gryphons adhere to a codex forged in discipline and honour.
             </p>
 
             <div class="section">
-
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
                     <div><strong>Exhort Righteousness.</strong><br>Let thy steel and magic serve justice.</div>
@@ -236,88 +238,40 @@ li {
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Shield the Innocent.</strong><br>Stand between the helpless and harm, though it cost thee all.</div>
+                    <div><strong>Shield the Innocent.</strong><br>Stand between the helpless and harm.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Serve with Humility.</strong><br>Let pride be cast down, and duty be thy crown.</div>
+                    <div><strong>Serve with Humility.</strong><br>Let pride be cast down.</div>
                 </div>
 
                 <div class="codex-item">
                     <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Seek Wisdom.</strong><br>Knowledge is the flame by which corruption is purged.</div>
+                    <div><strong>Seek Wisdom.</strong><br>Knowledge is the flame against corruption.</div>
                 </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Show Mercy, without Weakness.</strong><br>Strike not in wrath, nor stay thy hand when retribution calls.</div>
-                </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Keep the Vigil.</strong><br>Wherever the Gryphon flies, let no infamy go unchallenged.</div>
-                </div>
-
-                <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
-                    <div><strong>Die with Honour.</strong><br>If thy end must come, let it be noble and unafraid.</div>
-                </div>
-
             </div>
         </div>
 
         <div id="diplomacy" class="page">
             <h2>Diplomacy</h2>
-
-            <p>
-                Argent Gryphon has formalized diplomatic ties with allied guilds.
-            </p>
-
-            <div class="section">
-                <h3>📜 Treaty of Alliance</h3>
-                <p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p>
-
-                <p>
-                    We agree with the articles written below. May this alliance be blessed by Banor!<br>
-                    <em>Nezel Stonehaze, 9 March 2026.</em>
-                </p>
-
-                <p>
-                    <strong>Article I:</strong> Establishes alliance.<br>
-                    <strong>Article II:</strong> Mutual defense.<br>
-                    <strong>Article III:</strong> Aid when needed.<br>
-                    <strong>Article IV:</strong> Shared knowledge.<br>
-                    <strong>Article V:</strong> Hospitality.<br>
-                    <strong>Article VI:</strong> Fellowship.
-                </p>
-            </div>
+            <p>Allied guild treaties and relations.</p>
         </div>
 
         <div id="founding" class="page">
             <h2>Decree of Founding</h2>
-
-            <p>
-                Let it be known throughout the world that the Council of the Red Rose ordains the formation of the Order of the Argent Gryphon.
-            </p>
-
-            <p>
-                Founded in honour and vigilance, the Order stands as a beacon against the encroaching forces of evil.
-            </p>
+            <p>The Order was founded in honour and vigilance.</p>
         </div>
 
         <div id="ranks" class="page">
             <h2>Ranks</h2>
-
             <ul>
-                <li><strong>👑 Lord Warden</strong> – Leads the council.</li>
-                <li><strong>🛡 Warden</strong> – Oversees the Order.</li>
-                <li><strong>📜 Oathsworn</strong> – Keepers of lore.</li>
-                <li><strong>✨ Enlightened</strong> – Bearers of wisdom.</li>
-                <li><strong>🛡 Shieldbearer</strong> – Proven warriors.</li>
-                <li><strong>🔥 Initiate</strong> – Aspirants.</li>
-                <li><strong>⚔ Sentinel</strong> – Soldiers.</li>
-                <li><strong>🏰 Ward</strong> – Protected guests.</li>
+                <li><strong>Lord Warden</strong></li>
+                <li><strong>Warden</strong></li>
+                <li><strong>Oathsworn</strong></li>
+                <li><strong>Enlightened</strong></li>
+                <li><strong>Shieldbearer</strong></li>
+                <li><strong>Initiate</strong></li>
             </ul>
         </div>
 
