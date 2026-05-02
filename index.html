@@ -14,8 +14,10 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
+/* FIXED BACKGROUND (reliable method) */
 body {
     margin: 0;
+    color: #f5f5f5;
 
     background: url("AGbg.png") no-repeat center center fixed;
     background-size: cover;
@@ -71,7 +73,7 @@ body {
     background: #ffd27a;
 }
 
-/* Content panel (UPDATED) */
+/* Content panel */
 .content-box {
     background: linear-gradient(
         rgba(0, 0, 0, 0.55),
@@ -90,6 +92,8 @@ body {
     width: 100%;
     max-width: 620px;
     box-sizing: border-box;
+
+    color: #f5f5f5;
 }
 
 /* Pages */
@@ -101,7 +105,7 @@ body {
     display: block;
 }
 
-/* Typography system */
+/* Typography */
 h2 {
     margin-top: 0;
     margin-bottom: 14px;
@@ -162,7 +166,7 @@ li {
     line-height: 1.75;
 }
 
-/* Mobile adjustments */
+/* Mobile */
 @media (max-width: 480px) {
 
     .logo {
@@ -201,7 +205,6 @@ li {
 
     <div class="content-box">
 
-        <!-- HOME -->
         <div id="home" class="page active">
             <h2>Order of the Argent Gryphon</h2>
             <p>
@@ -211,7 +214,6 @@ li {
             </p>
         </div>
 
-        <!-- CODEX -->
         <div id="codex" class="page">
             <h2>Argent Codex</h2>
 
@@ -260,7 +262,6 @@ li {
             </div>
         </div>
 
-        <!-- DIPLOMACY -->
         <div id="diplomacy" class="page">
             <h2>Diplomacy</h2>
 
@@ -288,7 +289,6 @@ li {
             </div>
         </div>
 
-        <!-- FOUNDING -->
         <div id="founding" class="page">
             <h2>Decree of Founding</h2>
 
@@ -301,7 +301,6 @@ li {
             </p>
         </div>
 
-        <!-- RANKS -->
         <div id="ranks" class="page">
             <h2>Ranks</h2>
 
