@@ -34,6 +34,16 @@
 }
 
 /* ============================================================
+   Text size consistency — prevents iOS Safari and Android
+   Chrome from auto-inflating font sizes on narrow viewports
+   ============================================================ */
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust:    100%;
+    text-size-adjust:         100%;
+}
+
+/* ============================================================
    Reset & Base
    ============================================================ */
 *,
