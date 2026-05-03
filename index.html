@@ -11,7 +11,7 @@
 
 <body>
 
-    <!-- Fixed background — stays in place on all devices including iOS -->
+    <!-- Fixed background -->
     <div class="bg-fixed"></div>
 
     <div class="container">
@@ -25,6 +25,7 @@
             <button class="nav-button" onclick="showPage('diplomacy')">Diplomacy</button>
             <button class="nav-button" onclick="showPage('founding')">Founding</button>
             <button class="nav-button" onclick="showPage('ranks')">Ranks</button>
+            <button class="nav-button" onclick="showPage('members')">Members</button>
         </nav>
 
         <!-- Content panel -->
@@ -59,7 +60,6 @@
                             Let thy steel and magic serve justice.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -67,7 +67,6 @@
                             Stand between the helpless and harm, though it cost thee all.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -75,7 +74,6 @@
                             Let pride be cast down, and duty be thy crown.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -83,7 +81,6 @@
                             Knowledge is the flame by which corruption is purged.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -91,7 +88,6 @@
                             Strike not in wrath, nor stay thy hand when retribution calls.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -99,7 +95,6 @@
                             Wherever the Gryphon flies, let no infamy go unchallenged.
                         </div>
                     </div>
-
                     <div class="codex-item">
                         <img src="FWD_Fist.png" class="codex-icon" alt="">
                         <div>
@@ -116,7 +111,6 @@
                 <p>
                     The Argent Gryphon has formalised diplomatic ties with two other guilds at this time.
                 </p>
-
                 <div class="section treaty">
                     <h3>Treaty of Alliance</h3>
                     <p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p>
@@ -164,66 +158,67 @@
                     <img src="img/ranks/ranks_wardens_rankbadge.png" class="rank-icon" alt="Lord Warden badge">
                     <div class="rank-text">
                         <strong>Lord Warden</strong>
-                        Guides policy and leads the council.
+                        <span>Guides policy and leads the council.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_wardens_rankbadge.png" class="rank-icon" alt="Warden badge">
                     <div class="rank-text">
                         <strong>Warden</strong>
-                        Oversees all affairs of the Order.
+                        <span>Oversees all affairs of the Order.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_oathsworn_rankbadge.png" class="rank-icon" alt="Oathsworn badge">
                     <div class="rank-text">
                         <strong>Oathsworn</strong>
-                        Keepers of the Order's deepest lore.
+                        <span>Keepers of the Order's deepest lore.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_enlightened_rankbadge.png" class="rank-icon" alt="Enlightened badge">
                     <div class="rank-text">
                         <strong>Enlightened</strong>
-                        Bearers of ancient wisdom.
+                        <span>Bearers of ancient wisdom.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_shieldbearer_rankbadge.png" class="rank-icon" alt="Shieldbearer badge">
                     <div class="rank-text">
                         <strong>Shieldbearer</strong>
-                        Proven warriors entrusted with duty.
+                        <span>Proven warriors entrusted with duty.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_initiate_rankbadge.png" class="rank-icon" alt="Initiate badge">
                     <div class="rank-text">
                         <strong>Initiate</strong>
-                        Aspirants seeking to prove their worth.
+                        <span>Aspirants seeking to prove their worth.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_sentinel_rankbadge.png" class="rank-icon" alt="Sentinel badge">
                     <div class="rank-text">
                         <strong>Sentinel</strong>
-                        Soldiers and agents of the Order.
+                        <span>Soldiers and agents of the Order.</span>
                     </div>
                 </div>
-
                 <div class="rank-item">
                     <img src="img/ranks/ranks_ward_rankbadge.png" class="rank-icon" alt="Ward badge">
                     <div class="rank-text">
                         <strong>Ward</strong>
-                        Guests under the Order's protection.
+                        <span>Guests under the Order's protection.</span>
                     </div>
                 </div>
+            </section>
 
+            <!-- MEMBERS -->
+            <section id="members" class="page">
+                <h2>Members</h2>
+                <p id="members-error" style="display:none; color:#ff8888;">
+                    Could not load member data. Make sure <em>sources/characters.txt</em> is in place.
+                </p>
+                <div id="members-list"></div>
             </section>
 
         </main>
@@ -231,9 +226,83 @@
     </div>
 
     <script>
+        /* ============================================================
+           RANK BADGE MAP
+           Lord Warden and Lady Warden both use the wardens badge.
+           Add any new rank variants here if needed in the future.
+           ============================================================ */
+        const RANK_BADGE = {
+            "Lord Warden":  "img/ranks/ranks_wardens_rankbadge.png",
+            "Lady Warden":  "img/ranks/ranks_wardens_rankbadge.png",
+            "Warden":       "img/ranks/ranks_wardens_rankbadge.png",
+            "Oathsworn":    "img/ranks/ranks_oathsworn_rankbadge.png",
+            "Enlightened":  "img/ranks/ranks_enlightened_rankbadge.png",
+            "Shieldbearer": "img/ranks/ranks_shieldbearer_rankbadge.png",
+            "Initiate":     "img/ranks/ranks_initiate_rankbadge.png",
+            "Sentinel":     "img/ranks/ranks_sentinel_rankbadge.png",
+            "Ward":         "img/ranks/ranks_ward_rankbadge.png",
+        };
+
+        /* ============================================================
+           PAGE SWITCHING
+           ============================================================ */
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+            if (pageId === 'members') loadMembers();
+        }
+
+        /* ============================================================
+           LOAD MEMBERS
+           Reads sources/characters.txt — format per line:
+             Character Name - Rank - Points
+
+           Valid ranks: Lord Warden, Lady Warden, Warden, Oathsworn,
+           Enlightened, Shieldbearer, Initiate, Sentinel, Ward
+           ============================================================ */
+        function loadMembers() {
+            const list = document.getElementById('members-list');
+            const err  = document.getElementById('members-error');
+
+            if (list.dataset.loaded === 'true') return;
+
+            fetch('sources/characters.txt')
+                .then(function(r) {
+                    if (!r.ok) throw new Error('fetch failed');
+                    return r.text();
+                })
+                .then(function(text) {
+                    list.dataset.loaded = 'true';
+
+                    var lines = text.trim().split('\n').filter(function(l) {
+                        return l.trim() !== '';
+                    });
+
+                    lines.forEach(function(line) {
+                        var parts = line.split(' - ');
+                        if (parts.length < 3) return;
+
+                        var name   = parts[0].trim();
+                        var rank   = parts[1].trim();
+                        var points = parts[2].trim();
+                        var badge  = RANK_BADGE[rank] || '';
+
+                        var card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML =
+                            '<img class="member-badge" src="' + badge + '" alt="' + rank + ' badge">' +
+                            '<div class="member-info">' +
+                                '<div class="member-name">' + name + '</div>' +
+                                '<div class="member-rank-label">' + rank + '</div>' +
+                            '</div>' +
+                            '<div class="member-points">' + points + '</div>';
+
+                        list.appendChild(card);
+                    });
+                })
+                .catch(function() {
+                    err.style.display = 'block';
+                });
         }
     </script>
 
