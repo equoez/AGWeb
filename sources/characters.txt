@@ -4,15 +4,15 @@ Raejk - Warden - 0
 Roderic Rivershaw - Warden - 0
 Tyr Thundershield - Warden - 0
 Valarya - Oathsworn - 5
-Mighty Micu - Enlightened - 0
+Mighty Micu - Enlightened - 4
 Lev Myshkin - Shieldbearer - 0
-Volgowrath - Shieldbearer - 0
-Adaelina Blackheart - Initiate - 0
+Volgowrath - Shieldbearer - 3
+Adaelina Blackheart - Initiate - 2
 Amelia Lillywhite - Initiate - 0
-Digi der Greif - Initiate - 0
+Digi der Greif - Initiate - 2
 Julian au Bellona - Initiate - 0
 Ophelia Starwhisper - Initiate - 0
-Wizard Ceori - Initiate - 0
+Wizard Ceori - Initiate - 2
 Allyn Lillywhite - Sentinel - 0
 Baelor Ironthorn - Sentinel - 0
 Bryndelwin Ironthorn - Sentinel - 0
