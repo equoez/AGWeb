@@ -3,7 +3,7 @@ Marlon der Nachtfall - Warden - 0
 Raejk - Warden - 0
 Roderic Rivershaw - Warden - 0
 Tyr Thundershield - Warden - 0
-Valarya - Oathsworn - 0
+Valarya - Oathsworn - 5
 Mighty Micu - Enlightened - 0
 Lev Myshkin - Shieldbearer - 0
 Volgowrath - Shieldbearer - 0
