@@ -451,15 +451,40 @@ strong {
     line-height: 1.4;
 }
 
+/* Points — only rendered when points > 0 */
 .member-points {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 5px;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+}
+
+.member-points-number {
     font-family: var(--font-display);
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-gold);
+    line-height: 1;
+}
+
+.member-points-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
-    min-width: 32px;
-    text-align: right;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
 /* ============================================================
@@ -499,5 +524,14 @@ strong {
     .rank-text span,
     .member-rank-label {
         font-size: 0.78rem;
+    }
+
+    .member-points-number {
+        font-size: 0.95rem;
+    }
+
+    .member-points-icon {
+        width: 17px;
+        height: 17px;
     }
 }
