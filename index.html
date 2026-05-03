@@ -223,28 +223,7 @@
 
     </div>
 
-    /* ============================================================
-   DARK MAGIC HOVER EFFECT (Heroic Scroll)
-   ============================================================ */
 
-    let darkMagicTimer = null;
-
-    document.addEventListener('mouseover', function(e) {
-    if (e.target.classList.contains('member-points-icon')) {
-
-        darkMagicTimer = setTimeout(function() {
-            document.querySelector('.bg-fixed').classList.add('dark-magic');
-            }, 3000); // 3 seconds
-        }
-    });
-
-    document.addEventListener('mouseout', function(e) {
-        if (e.target.classList.contains('member-points-icon')) {
-
-        clearTimeout(darkMagicTimer);
-        document.querySelector('.bg-fixed').classList.remove('dark-magic');
-            }
-    });
 
     
     <script>
@@ -335,6 +314,29 @@
                     err.style.display = 'block';
                 });
         }
+    /* ============================================================
+   DARK MAGIC HOVER EFFECT (Heroic Scroll)
+   ============================================================ */
+
+    let darkMagicTimer = null;
+
+    document.addEventListener('mouseover', function(e) {
+    if (e.target.classList.contains('member-points-icon')) {
+
+        darkMagicTimer = setTimeout(function() {
+            document.querySelector('.bg-fixed').classList.add('dark-magic');
+            }, 3000); // 3 seconds
+        }
+    });
+
+    document.addEventListener('mouseout', function(e) {
+        if (e.target.classList.contains('member-points-icon')) {
+
+        clearTimeout(darkMagicTimer);
+        document.querySelector('.bg-fixed').classList.remove('dark-magic');
+            }
+    });
+        
     </script>
 
 </body>
