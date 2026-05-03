@@ -62,13 +62,16 @@ body {
 
 /* ============================================================
    Fixed Background
-   A separate element pinned to the viewport so it never
-   scrolls, even on iOS Safari where background-attachment:
-   fixed is broken.
+   Oversized slightly (110%) so the iOS viewport-height shift
+   when the browser chrome appears/disappears never reveals
+   an edge or causes a visible zoom effect.
    ============================================================ */
 .bg-fixed {
     position: fixed;
-    inset: 0;
+    top:    -5%;
+    left:   -5%;
+    width:  110%;
+    height: 110%;
     z-index: -1;
     background: url("AGbg.png") no-repeat center center;
     background-size: cover;
@@ -273,7 +276,9 @@ strong {
    ============================================================ */
 .rank-item {
     display: flex;
+    flex-direction: row;   /* always row — never wraps to column */
     align-items: center;
+    flex-wrap: nowrap;
     gap: 16px;
     padding: 10px 14px;
     margin-bottom: 10px;
@@ -295,13 +300,16 @@ strong {
     width: 48px;
     height: 48px;
     object-fit: contain;
-    flex-shrink: 0;
+    flex-shrink: 0;        /* icon never shrinks */
     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
 }
 
 .rank-text {
     display: flex;
     flex-direction: column;
+    min-width: 0;          /* allows text to shrink inside the flex row */
+    color: var(--color-text);
+    font-size: 0.95rem;
 }
 
 .rank-text strong {
@@ -311,11 +319,7 @@ strong {
     letter-spacing: 0.03em;
     color: var(--color-gold-light);
     margin-bottom: 2px;
-}
-
-.rank-text {
-    color: var(--color-text);
-    font-size: 0.95rem;
+    white-space: nowrap;   /* rank name stays on one line */
 }
 
 /* ============================================================
