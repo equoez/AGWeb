@@ -7,14 +7,12 @@
 
 /* --- CSS Variables --- */
 :root {
-    --color-bg-overlay:     rgba(0, 0, 0, 0.62);
     --color-bg-panel:       rgba(10, 8, 4, 0.72);
     --color-gold:           #ffd27a;
     --color-gold-light:     #ffe9b0;
     --color-gold-dim:       #c9a040;
     --color-text:           #e8dfc8;
     --color-text-muted:     #b0a080;
-    --color-white:          #ffffff;
     --color-nav-bg:         rgba(5, 4, 2, 0.75);
     --color-nav-btn:        rgba(235, 220, 185, 0.92);
     --color-nav-btn-hover:  #ffd27a;
@@ -59,9 +57,22 @@ body {
     font-size: 17px;
     line-height: 1.7;
     color: var(--color-text);
-    background: url("AGbg.png") no-repeat center center fixed;
-    background-size: cover;
     min-height: 100vh;
+    /* No background here — handled by .bg-fixed below */
+}
+
+/* ============================================================
+   Fixed Background
+   A separate element pinned to the viewport so it never
+   scrolls, even on iOS Safari where background-attachment:
+   fixed is broken.
+   ============================================================ */
+.bg-fixed {
+    position: fixed;
+    inset: 0;                  /* top/right/bottom/left: 0 */
+    z-index: -1;
+    background: url("AGbg.png") no-repeat center center;
+    background-size: cover;
 }
 
 /* ============================================================
@@ -72,7 +83,6 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 28px 16px 48px;
-    gap: 0;
 }
 
 /* ============================================================
