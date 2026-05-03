@@ -229,7 +229,6 @@
         /* ============================================================
            RANK BADGE MAP
            Lord Warden and Lady Warden both use the wardens badge.
-           Add any new rank variants here if needed in the future.
            ============================================================ */
         const RANK_BADGE = {
             "Lord Warden":  "img/ranks/ranks_wardens_rankbadge.png",
@@ -257,12 +256,12 @@
            Reads sources/characters.txt — format per line:
              Character Name - Rank - Points
 
-           Valid ranks: Lord Warden, Lady Warden, Warden, Oathsworn,
-           Enlightened, Shieldbearer, Initiate, Sentinel, Ward
+           Points of 0 are hidden. Points above 0 show with the
+           heroicscroll icon beside them.
            ============================================================ */
         function loadMembers() {
-            const list = document.getElementById('members-list');
-            const err  = document.getElementById('members-error');
+            var list = document.getElementById('members-list');
+            var err  = document.getElementById('members-error');
 
             if (list.dataset.loaded === 'true') return;
 
@@ -284,8 +283,18 @@
 
                         var name   = parts[0].trim();
                         var rank   = parts[1].trim();
-                        var points = parts[2].trim();
+                        var points = parseInt(parts[2].trim(), 10);
                         var badge  = RANK_BADGE[rank] || '';
+
+                        /* Only render points if greater than 0 */
+                        var pointsHtml = '';
+                        if (points > 0) {
+                            pointsHtml =
+                                '<div class="member-points">' +
+                                    '<span class="member-points-number">' + points + '</span>' +
+                                    '<img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">' +
+                                '</div>';
+                        }
 
                         var card = document.createElement('div');
                         card.className = 'member-card';
@@ -295,7 +304,7 @@
                                 '<div class="member-name">' + name + '</div>' +
                                 '<div class="member-rank-label">' + rank + '</div>' +
                             '</div>' +
-                            '<div class="member-points">' + points + '</div>';
+                            pointsHtml;
 
                         list.appendChild(card);
                     });
