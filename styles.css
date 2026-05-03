@@ -32,8 +32,7 @@
 }
 
 /* ============================================================
-   Text size consistency — prevents iOS Safari and Android
-   Chrome from auto-inflating font sizes on narrow viewports
+   Text size consistency
    ============================================================ */
 html {
     -webkit-text-size-adjust: 100%;
@@ -62,9 +61,6 @@ body {
 
 /* ============================================================
    Fixed Background
-   Oversized slightly (110%) so the iOS viewport-height shift
-   when the browser chrome appears/disappears never reveals
-   an edge or causes a visible zoom effect.
    ============================================================ */
 .bg-fixed {
     position: fixed;
@@ -81,8 +77,15 @@ body {
    Layout
    ============================================================ */
 .container {
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
     align-items: center;
     padding: 28px 16px 48px;
 }
@@ -100,13 +103,19 @@ body {
    Navigation Bar
    ============================================================ */
 .navbar {
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
     justify-content: center;
     gap: 10px;
     background: var(--color-nav-bg);
     padding: 14px 28px;
     border-radius: var(--radius-nav);
+    -webkit-backdrop-filter: var(--blur-panel);
     backdrop-filter: var(--blur-panel);
     border: 1px solid rgba(255, 210, 122, 0.15);
     margin-bottom: 24px;
@@ -126,18 +135,19 @@ body {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    transition: background var(--transition-fast),
-                color var(--transition-fast),
-                transform var(--transition-fast);
+    -webkit-transition: background var(--transition-fast), color var(--transition-fast), -webkit-transform var(--transition-fast);
+    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
 .nav-button:hover {
     background: var(--color-nav-btn-hover);
     color: #0d0900;
+    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
 }
 
 .nav-button:active {
+    -webkit-transform: translateY(0);
     transform: translateY(0);
 }
 
@@ -148,10 +158,11 @@ body {
     background: var(--color-bg-panel);
     padding: var(--panel-padding);
     border-radius: var(--radius-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
     backdrop-filter: var(--blur-panel);
     border: 1px solid rgba(255, 210, 122, 0.12);
     width: var(--panel-width);
-    max-width: 92vw;
+    max-width: 96vw;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
 }
 
@@ -226,7 +237,15 @@ strong {
    Codex Items
    ============================================================ */
 .codex-item {
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
     align-items: flex-start;
     gap: 14px;
     margin-bottom: 18px;
@@ -234,6 +253,7 @@ strong {
     border-radius: 8px;
     background: rgba(255, 210, 122, 0.04);
     border: 1px solid rgba(255, 210, 122, 0.08);
+    -webkit-transition: background var(--transition-fast);
     transition: background var(--transition-fast);
 }
 
@@ -250,6 +270,7 @@ strong {
     height: 22px;
     margin-top: 3px;
     opacity: 0.9;
+    -webkit-flex-shrink: 0;
     flex-shrink: 0;
 }
 
@@ -275,17 +296,27 @@ strong {
    Ranks
    ============================================================ */
 .rank-item {
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
-    flex-direction: row;   /* always row — never wraps to column */
-    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
-    gap: 16px;
-    padding: 10px 14px;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
     margin-bottom: 10px;
     border-radius: 8px;
     background: rgba(255, 210, 122, 0.04);
     border: 1px solid rgba(255, 210, 122, 0.08);
+    -webkit-transition: background var(--transition-fast);
     transition: background var(--transition-fast);
+    width: 100%;
 }
 
 .rank-item:last-child {
@@ -297,29 +328,138 @@ strong {
 }
 
 .rank-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     object-fit: contain;
-    flex-shrink: 0;        /* icon never shrinks */
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
 }
 
 .rank-text {
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
     flex-direction: column;
-    min-width: 0;          /* allows text to shrink inside the flex row */
-    color: var(--color-text);
-    font-size: 0.95rem;
+    -webkit-flex: 1 1 0%;
+    flex: 1 1 0%;
+    min-width: 0;
 }
 
 .rank-text strong {
     display: block;
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 0.03em;
     color: var(--color-gold-light);
-    margin-bottom: 2px;
-    white-space: nowrap;   /* rank name stays on one line */
+    margin-bottom: 1px;
+}
+
+.rank-text span {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* ============================================================
+   Members
+   ============================================================ */
+.member-card {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: rgba(255, 210, 122, 0.04);
+    border: 1px solid rgba(255, 210, 122, 0.08);
+    width: 100%;
+    -webkit-transition: background var(--transition-fast);
+    transition: background var(--transition-fast);
+}
+
+.member-card:last-child {
+    margin-bottom: 0;
+}
+
+.member-card:hover {
+    background: rgba(255, 210, 122, 0.08);
+}
+
+.member-badge {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    object-fit: contain;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.member-info {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 1 1 0%;
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.member-name {
+    font-family: var(--font-display);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-gold-light);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.member-rank-label {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-gold-dim);
+    line-height: 1.4;
+}
+
+.member-points {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    min-width: 32px;
+    text-align: right;
 }
 
 /* ============================================================
@@ -327,7 +467,7 @@ strong {
    ============================================================ */
 @media (max-width: 680px) {
     :root {
-        --panel-padding: 24px 20px;
+        --panel-padding: 20px 16px;
     }
 
     h2 {
@@ -343,8 +483,21 @@ strong {
         padding: 8px 14px;
     }
 
-    .rank-icon {
-        width: 40px;
-        height: 40px;
+    .rank-icon,
+    .member-badge {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        min-height: 38px;
+    }
+
+    .rank-text strong,
+    .member-name {
+        font-size: 0.82rem;
+    }
+
+    .rank-text span,
+    .member-rank-label {
+        font-size: 0.78rem;
     }
 }
