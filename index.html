@@ -1,289 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Argent Gryphon</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: "Georgia", serif;
-    background: url("AGbg.png") no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-}
-
-/* Layout */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-}
-
-/* Logo */
-.logo {
-    width: 200px;
-    margin-bottom: 10px;
-}
-
-/* Navbar */
-.navbar {
-    display: flex;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.65);
-    padding: 12px 25px;
-    border-radius: 14px;
-    backdrop-filter: blur(6px);
-    margin-bottom: 20px;
-}
-
-/* Buttons */
-.nav-button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.9);
-    font-size: 15px;
-    transition: 0.2s;
-    font-family: "Georgia", serif;
-}
-
-.nav-button:hover {
-    background: #ffd27a;
-}
-
-/* Content panel */
-.content-box {
-    background: rgba(0, 0, 0, 0.6);
-    padding: 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(6px);
-    width: 600px;
-    max-width: 90%;
-}
-
-/* Pages */
-.page {
-    display: none;
-}
-
-.page.active {
-    display: block;
-}
-
-/* Typography */
-h2 {
-    margin-top: 0;
-    color: #ffd27a;
-}
-
-p {
-    line-height: 1.6;
-}
-
-ul {
-    line-height: 1.6;
-}
-
-/* Codex items */
-.codex-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.codex-icon {
-    width: 22px;
-    height: 22px;
-    margin-top: 4px;
-    opacity: 0.95;
-}
-
-.section {
-    margin-bottom: 25px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order of the Argent Gryphon</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
 <div class="container">
 
-    <img src="AGlogo.png" class="logo">
+    <img src="AGlogo.png" alt="Argent Gryphon crest" class="logo">
 
-    <div class="navbar">
+    <!-- Navigation -->
+    <nav class="navbar">
         <button class="nav-button" onclick="showPage('home')">Home</button>
         <button class="nav-button" onclick="showPage('codex')">Codex</button>
         <button class="nav-button" onclick="showPage('diplomacy')">Diplomacy</button>
         <button class="nav-button" onclick="showPage('founding')">Founding</button>
         <button class="nav-button" onclick="showPage('ranks')">Ranks</button>
-    </div>
+    </nav>
 
-    <div class="content-box">
+    <!-- Content panel -->
+    <main class="content-box">
 
         <!-- HOME -->
-        <div id="home" class="page active">
+        <section id="home" class="page active">
             <h2>Order of the Argent Gryphon</h2>
             <p>
-                Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice. 
-                From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith, 
-                strength, wisdom and the old oaths of their predecessors.
+                Formally known as the Order of the Argent Gryphon, they are a chivalric order
+                devoted to honour and justice. From their mountain hideout, they watch and defend
+                the lands against corruption and evil, guided by faith, strength, wisdom, and
+                the old oaths of their predecessors.
             </p>
-        </div>
+        </section>
 
         <!-- CODEX -->
-        <div id="codex" class="page">
+        <section id="codex" class="page">
             <h2>Argent Codex</h2>
-
             <p>
-                Argent Gryphons adheres to a codex, a set of regulations for daily life, behaviour, and values, 
-                which emphasize chivalry, piety, and a strict moral code. This codex, written by Roderic Rivershaw, 
-                outlines the ideal behaviour for a gryphon, including aspects of monastic life and military conduct.
+                The Argent Gryphon adheres to a codex — a set of regulations for daily life,
+                behaviour, and values — emphasising chivalry, piety, and a strict moral code.
+                Written by Roderic Rivershaw, it outlines the ideal conduct for a Gryphon,
+                encompassing both monastic life and military service.
             </p>
 
             <div class="section">
-
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Exhort Righteousness.</strong><br>
+                        <strong>Exhort Righteousness</strong>
                         Let thy steel and magic serve justice.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Shield the Innocent.</strong><br>
+                        <strong>Shield the Innocent</strong>
                         Stand between the helpless and harm, though it cost thee all.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Serve with Humility.</strong><br>
+                        <strong>Serve with Humility</strong>
                         Let pride be cast down, and duty be thy crown.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Seek Wisdom.</strong><br>
+                        <strong>Seek Wisdom</strong>
                         Knowledge is the flame by which corruption is purged.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Show Mercy, without Weakness.</strong><br>
+                        <strong>Show Mercy, Without Weakness</strong>
                         Strike not in wrath, nor stay thy hand when retribution calls.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Keep the Vigil.</strong><br>
+                        <strong>Keep the Vigil</strong>
                         Wherever the Gryphon flies, let no infamy go unchallenged.
                     </div>
                 </div>
 
                 <div class="codex-item">
-                    <img src="FWD_Fist.png" class="codex-icon">
+                    <img src="FWD_Fist.png" class="codex-icon" alt="">
                     <div>
-                        <strong>Die with Honour.</strong><br>
+                        <strong>Die with Honour</strong>
                         If thy end must come, let it be noble and unafraid.
                     </div>
                 </div>
-
             </div>
-        </div>
+        </section>
 
         <!-- DIPLOMACY -->
-        <div id="diplomacy" class="page">
+        <section id="diplomacy" class="page">
             <h2>Diplomacy</h2>
-
             <p>
-                Argent Gryphon has formalized diplomatic ties with two other guilds at this time.
+                The Argent Gryphon has formalised diplomatic ties with two other guilds at this time.
             </p>
 
-            <div class="section">
-                <h3>📜 Treaty of Alliance</h3>
+            <div class="section treaty">
+                <h3>Treaty of Alliance</h3>
                 <p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p>
-
                 <p>
                     We agree with the articles written below. May this alliance be blessed by Banor!<br>
-                    <em>Nezel Stonehaze, 9. Mar 2026.</em>
+                    <em>— Nezel Stonehaze, 9 March 2026</em>
                 </p>
-
                 <p>
-                    <strong>Article I:</strong> Purpose — Establishes alliance.<br>
-                    <strong>Article II:</strong> Alliance in Arms — Mutual defense against evil.<br>
-                    <strong>Article III:</strong> Mutual Aid — Assistance when needed.<br>
-                    <strong>Article IV:</strong> Exchange of Knowledge — Shared intelligence.<br>
-                    <strong>Article V:</strong> Hospitality — Open guildhalls.<br>
-                    <strong>Article VI:</strong> Fellowship — Regular meetings.
+                    <strong>Article I</strong> — Purpose: Establishes the alliance.<br>
+                    <strong>Article II</strong> — Alliance in Arms: Mutual defence against evil.<br>
+                    <strong>Article III</strong> — Mutual Aid: Assistance when needed.<br>
+                    <strong>Article IV</strong> — Exchange of Knowledge: Shared intelligence.<br>
+                    <strong>Article V</strong> — Hospitality: Open guildhalls to one another.<br>
+                    <strong>Article VI</strong> — Fellowship: Regular meetings between members.
                 </p>
             </div>
-        </div>
+        </section>
 
         <!-- FOUNDING -->
-        <div id="founding" class="page">
+        <section id="founding" class="page">
             <h2>Decree of Founding</h2>
-
             <p>
-                Let it be known throughout the world that the Council of the Red Rose, 
-                in divine accord, hereby ordains the formation of a sacred brotherhood 
+                Let it be known throughout the world that the Council of the Red Rose,
+                in divine accord, hereby ordains the formation of a sacred brotherhood
                 and chivalric order:
             </p>
-
             <p><strong>The Order of the Argent Gryphon.</strong></p>
-
             <p>
-                The Council grants full command to Valkera Blackheart, Praetor of the Red Rose, 
-                empowering her to raise the Order in the Vandura mountains as she deems fit. 
-                She is tasked to anoint warriors of pure hearts and arm each with the Griffin Shield—
-                a symbol of vigilance and bravery.
+                The Council grants full command to Valkera Blackheart, Praetor of the Red Rose,
+                empowering her to raise the Order in the Vandura mountains as she deems fit.
+                She is tasked to anoint warriors of pure hearts and arm each with the Griffin
+                Shield — a symbol of vigilance and bravery.
             </p>
-
             <p>
-                Founded in the spirit of unwavering honour and vigilant protection of the innocent, 
+                Founded in the spirit of unwavering honour and vigilant protection of the innocent,
                 the Argent Gryphon shall stand as a beacon against the encroaching forces of evil.
             </p>
-        </div>
+        </section>
 
         <!-- RANKS -->
-        <div id="ranks" class="page">
+        <section id="ranks" class="page">
             <h2>Ranks</h2>
-
             <ul>
-                <li><strong>👑 Lord Warden</strong> – Guides policy and leads the council.</li>
-                <li><strong>🛡 Warden</strong> – Oversees all affairs of the Order.</li>
-                <li><strong>📜 Oathsworn</strong> – Keepers of the Order’s deepest lore.</li>
-                <li><strong>✨ Enlightened</strong> – Bearers of ancient wisdom.</li>
-                <li><strong>🛡 Shieldbearer</strong> – Proven warriors entrusted with duty.</li>
-                <li><strong>🔥 Initiate</strong> – Aspirants seeking to prove their worth.</li>
-                <li><strong>⚔ Sentinel</strong> – Soldiers and agents of the Order.</li>
-                <li><strong>🏰 Ward</strong> – Guests under the Order’s protection.</li>
+                <li><strong>👑 Lord Warden</strong> — Guides policy and leads the council.</li>
+                <li><strong>🛡 Warden</strong> — Oversees all affairs of the Order.</li>
+                <li><strong>📜 Oathsworn</strong> — Keepers of the Order's deepest lore.</li>
+                <li><strong>✨ Enlightened</strong> — Bearers of ancient wisdom.</li>
+                <li><strong>🛡 Shieldbearer</strong> — Proven warriors entrusted with duty.</li>
+                <li><strong>🔥 Initiate</strong> — Aspirants seeking to prove their worth.</li>
+                <li><strong>⚔ Sentinel</strong> — Soldiers and agents of the Order.</li>
+                <li><strong>🏰 Ward</strong> — Guests under the Order's protection.</li>
             </ul>
-        </div>
+        </section>
 
-    </div>
+    </main>
 
 </div>
 
 <script>
-function showPage(pageId) {
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-}
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
 </script>
 
 </body>
