@@ -42,22 +42,70 @@ html {
 
 /* Base transition so it feels smooth */
 .bg-fixed {
-    transition: filter 0.5s ease, transform 0.5s ease;
+    transition: filter 0.4s ease, opacity 0.4s ease;
 }
 
-/* DARK MAGIC STATE */
+/* The dark background layer — sits on top of normal, fades in */
+.bg-fixed::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("AGbgd.png") no-repeat center center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* DARK MAGIC STATE — reveal dark bg and corrupt the whole scene */
 .bg-fixed.dark-magic {
-    animation: darkPulse 2s infinite;
-    filter: brightness(0.6) contrast(1.3) hue-rotate(-40deg);
+    animation: darkPulse 1.6s infinite;
 }
 
-/* Flickering / corruption effect */
+.bg-fixed.dark-magic::after {
+    opacity: 1;
+    animation: darkBgFlicker 1.6s infinite;
+}
+
+/* Flickering corruption on the dark background itself */
+@keyframes darkBgFlicker {
+    0%   { opacity: 1;    filter: brightness(0.85) contrast(1.2) saturate(1.4); }
+    15%  { opacity: 0.82; filter: brightness(0.7)  contrast(1.5) saturate(1.8) hue-rotate(-15deg); }
+    30%  { opacity: 0.95; filter: brightness(0.9)  contrast(1.1) saturate(1.3); }
+    50%  { opacity: 0.78; filter: brightness(0.65) contrast(1.6) saturate(2.0) hue-rotate(-25deg); }
+    65%  { opacity: 0.92; filter: brightness(0.8)  contrast(1.3) saturate(1.5); }
+    80%  { opacity: 0.7;  filter: brightness(0.6)  contrast(1.7) saturate(2.2) hue-rotate(-20deg); }
+    100% { opacity: 1;    filter: brightness(0.85) contrast(1.2) saturate(1.4); }
+}
+
+/* Underlying bg also dims for depth */
 @keyframes darkPulse {
-    0%   { filter: brightness(0.6) contrast(1.3) hue-rotate(-40deg); }
-    25%  { filter: brightness(0.5) contrast(1.5) hue-rotate(-60deg); }
-    50%  { filter: brightness(0.7) contrast(1.2) hue-rotate(-30deg); }
-    75%  { filter: brightness(0.55) contrast(1.4) hue-rotate(-70deg); }
-    100% { filter: brightness(0.6) contrast(1.3) hue-rotate(-40deg); }
+    0%   { filter: brightness(0.9)  contrast(1.1); }
+    25%  { filter: brightness(0.75) contrast(1.3); }
+    50%  { filter: brightness(0.85) contrast(1.0); }
+    75%  { filter: brightness(0.7)  contrast(1.4); }
+    100% { filter: brightness(0.9)  contrast(1.1); }
+}
+
+/* Shake + glow on the heroic scroll icon when dark magic is active */
+.dark-magic-active .member-points-icon {
+    animation: scrollShake 0.25s infinite, scrollGlow 1.6s infinite;
+}
+
+@keyframes scrollShake {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    20%  { transform: translate(-2px, 1px) rotate(-3deg); }
+    40%  { transform: translate(2px, -1px) rotate(3deg); }
+    60%  { transform: translate(-1px, 2px) rotate(-2deg); }
+    80%  { transform: translate(1px, -2px) rotate(2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes scrollGlow {
+    0%   { filter: drop-shadow(0 0 4px rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+    25%  { filter: drop-shadow(0 0 8px rgba(180, 0, 255, 0.9)) drop-shadow(0 0 16px rgba(100, 0, 180, 0.5)); }
+    50%  { filter: drop-shadow(0 0 5px rgba(80, 0, 160, 0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+    75%  { filter: drop-shadow(0 0 10px rgba(200, 50, 255, 1.0)) drop-shadow(0 0 20px rgba(120, 0, 200, 0.6)); }
+    100% { filter: drop-shadow(0 0 4px rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
 }
 
 
