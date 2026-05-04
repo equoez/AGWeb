@@ -129,7 +129,7 @@
                 </div>
             </section>
 
-            <!-- FOUNDING -->
+            <!-- DECREE -->
             <section id="decree" class="page">
                 <h2>Silverhand Decree</h2>
                 <p>
@@ -138,7 +138,7 @@
                     of the Argent Gryphon.
                 </p>
                 <p>
-                    The Silverhands of Liberty Bay reaffirm the old oath, empowering the Warden’s 
+                    The Silverhands of Liberty Bay reaffirm the old oath, empowering the Warden's 
                     Council with the charge of vigilance in the Vandura Mountains. They are free to 
                     anoint warriors of the true Gods, and to arm each with the Griffin Shield - a 
                     symbol of strength and courage.
@@ -223,28 +223,25 @@
 
     </div>
 
-
-
-    
     <script>
         /* ============================================================
-           RANK BADGE MAP
+           Rank Badge Map
            Lord Warden and Lady Warden both use the wardens badge.
            ============================================================ */
         const RANK_BADGE = {
-            "Lord Warden":  "img/ranks/ranks_wardens_rankbadge.png",
-            "Lady Warden":  "img/ranks/ranks_wardens_rankbadge.png",
-            "Warden":       "img/ranks/ranks_wardens_rankbadge.png",
-            "Oathsworn":    "img/ranks/ranks_oathsworn_rankbadge.png",
-            "Enlightened":  "img/ranks/ranks_enlightened_rankbadge.png",
-            "Shieldbearer": "img/ranks/ranks_shieldbearer_rankbadge.png",
-            "Initiate":     "img/ranks/ranks_initiate_rankbadge.png",
-            "Sentinel":     "img/ranks/ranks_sentinel_rankbadge.png",
-            "Ward":         "img/ranks/ranks_ward_rankbadge.png",
+            'Lord Warden':  'img/ranks/ranks_wardens_rankbadge.png',
+            'Lady Warden':  'img/ranks/ranks_wardens_rankbadge.png',
+            'Warden':       'img/ranks/ranks_wardens_rankbadge.png',
+            'Oathsworn':    'img/ranks/ranks_oathsworn_rankbadge.png',
+            'Enlightened':  'img/ranks/ranks_enlightened_rankbadge.png',
+            'Shieldbearer': 'img/ranks/ranks_shieldbearer_rankbadge.png',
+            'Initiate':     'img/ranks/ranks_initiate_rankbadge.png',
+            'Sentinel':     'img/ranks/ranks_sentinel_rankbadge.png',
+            'Ward':         'img/ranks/ranks_ward_rankbadge.png',
         };
 
         /* ============================================================
-           PAGE SWITCHING
+           Page Switching
            ============================================================ */
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -253,94 +250,84 @@
         }
 
         /* ============================================================
-           LOAD MEMBERS
-           Reads sources/characters.txt — format per line:
+           Load Members
+           Reads sources/characters.txt — one entry per line:
              Character Name - Rank - Points
-
            Points of 0 are hidden. Points above 0 show with the
-           heroicscroll icon beside them.
+           heroic scroll icon beside them.
            ============================================================ */
         function loadMembers() {
-            var list = document.getElementById('members-list');
-            var err  = document.getElementById('members-error');
+            const list = document.getElementById('members-list');
+            const err  = document.getElementById('members-error');
 
             if (list.dataset.loaded === 'true') return;
 
             fetch('sources/characters.txt')
-                .then(function(r) {
+                .then(r => {
                     if (!r.ok) throw new Error('fetch failed');
                     return r.text();
                 })
-                .then(function(text) {
+                .then(text => {
                     list.dataset.loaded = 'true';
 
-                    var lines = text.trim().split('\n').filter(function(l) {
-                        return l.trim() !== '';
-                    });
+                    const lines = text.trim().split('\n').filter(l => l.trim() !== '');
 
-                    lines.forEach(function(line) {
-                        var parts = line.split(' - ');
+                    lines.forEach(line => {
+                        const parts = line.split(' - ');
                         if (parts.length < 3) return;
 
-                        var name   = parts[0].trim();
-                        var rank   = parts[1].trim();
-                        var points = parseInt(parts[2].trim(), 10);
-                        var badge  = RANK_BADGE[rank] || '';
+                        const name   = parts[0].trim();
+                        const rank   = parts[1].trim();
+                        const points = parseInt(parts[2].trim(), 10);
+                        const badge  = RANK_BADGE[rank] || '';
 
-                        /* Only render points if greater than 0 */
-                        var pointsHtml = '';
-                        if (points > 0) {
-                            pointsHtml =
-                                '<div class="member-points">' +
-                                    '<span class="member-points-number">' + points + '</span>' +
-                                    '<img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">' +
-                                '</div>';
-                        }
+                        const pointsHtml = points > 0
+                            ? `<div class="member-points">
+                                   <span class="member-points-number">${points}</span>
+                                   <img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">
+                               </div>`
+                            : '';
 
-                        var card = document.createElement('div');
+                        const card = document.createElement('div');
                         card.className = 'member-card';
                         card.innerHTML =
-                            '<img class="member-badge" src="' + badge + '" alt="' + rank + ' badge">' +
-                            '<div class="member-info">' +
-                                '<div class="member-name">' + name + '</div>' +
-                                '<div class="member-rank-label">' + rank + '</div>' +
-                            '</div>' +
-                            pointsHtml;
+                            `<img class="member-badge" src="${badge}" alt="${rank} badge">
+                             <div class="member-info">
+                                 <div class="member-name">${name}</div>
+                                 <div class="member-rank-label">${rank}</div>
+                             </div>
+                             ${pointsHtml}`;
 
                         list.appendChild(card);
                     });
                 })
-                .catch(function() {
+                .catch(() => {
                     err.style.display = 'block';
                 });
         }
-    /* ============================================================
-   DARK MAGIC HOVER EFFECT (Heroic Scroll)
-   ============================================================ */
 
-    let darkMagicTimer = null;
+        /* ============================================================
+           Dark Magic — Easter Egg
+           Hovering the heroic scroll icon triggers a background swap
+           and flicker animation. The dark background lingers for 30s
+           after the cursor leaves.
+           ============================================================ */
+        const bgEl = document.querySelector('.bg-fixed');
+        let darkMagicTimer = null;
 
-    document.addEventListener('mouseover', function(e) {
-        if (e.target.classList.contains('member-points-icon')) {
+        document.addEventListener('mouseover', e => {
+            if (!e.target.classList.contains('member-points-icon')) return;
             clearTimeout(darkMagicTimer);
-            document.querySelector('.bg-fixed').classList.add('dark-magic');
-            document.querySelector('.bg-fixed').classList.add('dark-magic-anim');
+            bgEl.classList.add('dark-magic', 'dark-magic-anim');
             document.body.classList.add('dark-magic-active');
-        }
-    });
+        });
 
-    document.addEventListener('mouseout', function(e) {
-        if (e.target.classList.contains('member-points-icon')) {
-            // Stop animation immediately, keep the dark image for 30s
-            document.querySelector('.bg-fixed').classList.remove('dark-magic-anim');
+        document.addEventListener('mouseout', e => {
+            if (!e.target.classList.contains('member-points-icon')) return;
+            bgEl.classList.remove('dark-magic-anim');
             document.body.classList.remove('dark-magic-active');
-
-            darkMagicTimer = setTimeout(function() {
-                document.querySelector('.bg-fixed').classList.remove('dark-magic');
-            }, 30000);
-        }
-    });
-        
+            darkMagicTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
+        });
     </script>
 
 </body>
