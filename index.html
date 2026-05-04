@@ -324,16 +324,20 @@
         if (e.target.classList.contains('member-points-icon')) {
             clearTimeout(darkMagicTimer);
             document.querySelector('.bg-fixed').classList.add('dark-magic');
+            document.querySelector('.bg-fixed').classList.add('dark-magic-anim');
             document.body.classList.add('dark-magic-active');
         }
     });
 
     document.addEventListener('mouseout', function(e) {
         if (e.target.classList.contains('member-points-icon')) {
+            // Stop animation immediately, keep the dark image for 30s
+            document.querySelector('.bg-fixed').classList.remove('dark-magic-anim');
+            document.body.classList.remove('dark-magic-active');
+
             darkMagicTimer = setTimeout(function() {
                 document.querySelector('.bg-fixed').classList.remove('dark-magic');
-                document.body.classList.remove('dark-magic-active');
-            }, 30000); // linger for 30 seconds
+            }, 30000);
         }
     });
         
