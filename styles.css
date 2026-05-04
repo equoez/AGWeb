@@ -32,92 +32,6 @@
 }
 
 /* ============================================================
-   Text size consistency
-   ============================================================ */
-html {
-    -webkit-text-size-adjust: 100%;
-    -moz-text-size-adjust:    100%;
-    text-size-adjust:         100%;
-}
-
-/* Base transition so it feels smooth */
-.bg-fixed {
-    transition: filter 0.4s ease, opacity 0.4s ease;
-}
-
-/* The dark background layer — sits on top of normal, fades in */
-.bg-fixed::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url("AGbgd.png") no-repeat center center;
-    background-size: cover;
-    opacity: 0;
-    filter: brightness(1) contrast(1) saturate(1);
-    transition: opacity 0.5s ease, filter 1.2s ease;
-}
-
-/* DARK MAGIC STATE — reveal the dark bg, settle to neutral filters */
-.bg-fixed.dark-magic::after {
-    opacity: 1;
-    filter: brightness(1) contrast(1) saturate(1);
-}
-
-/* ANIMATION — only while hovering the scroll icon */
-.bg-fixed.dark-magic-anim {
-    animation: darkPulse 1.6s infinite;
-}
-
-.bg-fixed.dark-magic-anim::after {
-    /* disable transition while animating so keyframes take full control */
-    transition: opacity 0.5s ease;
-    animation: darkBgFlicker 1.6s infinite;
-}
-
-/* Flickering corruption — visible but not too dark */
-@keyframes darkBgFlicker {
-    0%   { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
-    15%  { opacity: 0.88; filter: brightness(0.88) contrast(1.22) saturate(1.35) hue-rotate(-8deg); }
-    30%  { opacity: 0.96; filter: brightness(1.0)  contrast(1.05) saturate(1.15); }
-    50%  { opacity: 0.85; filter: brightness(0.85) contrast(1.28) saturate(1.45) hue-rotate(-12deg); }
-    65%  { opacity: 0.93; filter: brightness(0.95) contrast(1.08) saturate(1.2); }
-    80%  { opacity: 0.82; filter: brightness(0.83) contrast(1.25) saturate(1.4) hue-rotate(-10deg); }
-    100% { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
-}
-
-/* Underlying bg dims gently */
-@keyframes darkPulse {
-    0%   { filter: brightness(0.95) contrast(1.05); }
-    25%  { filter: brightness(0.85) contrast(1.12); }
-    50%  { filter: brightness(0.92) contrast(1.0); }
-    75%  { filter: brightness(0.84) contrast(1.14); }
-    100% { filter: brightness(0.95) contrast(1.05); }
-}
-
-/* Shake + glow on the heroic scroll icon when dark magic is active */
-.dark-magic-active .member-points-icon {
-    animation: scrollShake 0.25s infinite, scrollGlow 1.6s infinite;
-}
-
-@keyframes scrollShake {
-    0%   { transform: translate(0, 0) rotate(0deg); }
-    20%  { transform: translate(-2px, 1px) rotate(-3deg); }
-    40%  { transform: translate(2px, -1px) rotate(3deg); }
-    60%  { transform: translate(-1px, 2px) rotate(-2deg); }
-    80%  { transform: translate(1px, -2px) rotate(2deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-@keyframes scrollGlow {
-    0%   { filter: drop-shadow(0 0 4px rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
-    25%  { filter: drop-shadow(0 0 8px rgba(180, 0, 255, 0.9)) drop-shadow(0 0 16px rgba(100, 0, 180, 0.5)); }
-    50%  { filter: drop-shadow(0 0 5px rgba(80, 0, 160, 0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
-    75%  { filter: drop-shadow(0 0 10px rgba(200, 50, 255, 1.0)) drop-shadow(0 0 20px rgba(120, 0, 200, 0.6)); }
-    100% { filter: drop-shadow(0 0 4px rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
-}
-
-
-/* ============================================================
    Reset & Base
    ============================================================ */
 *,
@@ -126,6 +40,12 @@ html {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust:    100%;
+    text-size-adjust:         100%;
 }
 
 body {
@@ -148,21 +68,89 @@ body {
     z-index: -1;
     background: url("AGbg.png") no-repeat center center;
     background-size: cover;
+    transition: filter 0.4s ease;
+}
+
+/* Dark background layer — hidden by default, fades in on dark magic */
+.bg-fixed::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("AGbgd.png") no-repeat center center;
+    background-size: cover;
+    opacity: 0;
+    filter: brightness(1) contrast(1) saturate(1);
+    transition: opacity 0.5s ease, filter 1.2s ease;
+}
+
+/* ============================================================
+   Dark Magic — Background States
+   ============================================================ */
+
+/* Reveal the dark background image */
+.bg-fixed.dark-magic::after {
+    opacity: 1;
+    filter: brightness(1) contrast(1) saturate(1);
+}
+
+/* Flickering animation — only active while hovering the scroll icon */
+.bg-fixed.dark-magic-anim {
+    animation: darkPulse 1.6s infinite;
+}
+
+.bg-fixed.dark-magic-anim::after {
+    transition: opacity 0.5s ease; /* disable filter transition so keyframes take full control */
+    animation: darkBgFlicker 1.6s infinite;
+}
+
+@keyframes darkBgFlicker {
+    0%   { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
+    15%  { opacity: 0.88; filter: brightness(0.88) contrast(1.22) saturate(1.35) hue-rotate(-8deg); }
+    30%  { opacity: 0.96; filter: brightness(1.0)  contrast(1.05) saturate(1.15); }
+    50%  { opacity: 0.85; filter: brightness(0.85) contrast(1.28) saturate(1.45) hue-rotate(-12deg); }
+    65%  { opacity: 0.93; filter: brightness(0.95) contrast(1.08) saturate(1.2); }
+    80%  { opacity: 0.82; filter: brightness(0.83) contrast(1.25) saturate(1.4)  hue-rotate(-10deg); }
+    100% { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
+}
+
+@keyframes darkPulse {
+    0%   { filter: brightness(0.95) contrast(1.05); }
+    25%  { filter: brightness(0.85) contrast(1.12); }
+    50%  { filter: brightness(0.92) contrast(1.0); }
+    75%  { filter: brightness(0.84) contrast(1.14); }
+    100% { filter: brightness(0.95) contrast(1.05); }
+}
+
+/* ============================================================
+   Dark Magic — Scroll Icon (shake + glow while hovering)
+   ============================================================ */
+.dark-magic-active .member-points-icon {
+    animation: scrollShake 0.25s infinite, scrollGlow 1.6s infinite;
+}
+
+@keyframes scrollShake {
+    0%   { transform: translate(0, 0)    rotate(0deg); }
+    20%  { transform: translate(-2px, 1px)  rotate(-3deg); }
+    40%  { transform: translate(2px, -1px)  rotate(3deg); }
+    60%  { transform: translate(-1px, 2px)  rotate(-2deg); }
+    80%  { transform: translate(1px, -2px)  rotate(2deg); }
+    100% { transform: translate(0, 0)    rotate(0deg); }
+}
+
+@keyframes scrollGlow {
+    0%   { filter: drop-shadow(0 0 4px  rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
+    25%  { filter: drop-shadow(0 0 8px  rgba(180, 0, 255, 0.9)) drop-shadow(0 0 16px rgba(100, 0, 180, 0.5)); }
+    50%  { filter: drop-shadow(0 0 5px  rgba(80,  0, 160, 0.7)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
+    75%  { filter: drop-shadow(0 0 10px rgba(200, 50, 255, 1.0)) drop-shadow(0 0 20px rgba(120, 0, 200, 0.6)); }
+    100% { filter: drop-shadow(0 0 4px  rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
 }
 
 /* ============================================================
    Layout
    ============================================================ */
 .container {
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
     flex-direction: column;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
     align-items: center;
     padding: 28px 16px 48px;
 }
@@ -180,13 +168,8 @@ body {
    Navigation Bar
    ============================================================ */
 .navbar {
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
     justify-content: center;
     gap: 10px;
     background: var(--color-nav-bg);
@@ -212,19 +195,16 @@ body {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    -webkit-transition: background var(--transition-fast), color var(--transition-fast), -webkit-transform var(--transition-fast);
     transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
 .nav-button:hover {
     background: var(--color-nav-btn-hover);
     color: #0d0900;
-    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
 }
 
 .nav-button:active {
-    -webkit-transform: translateY(0);
     transform: translateY(0);
 }
 
@@ -311,35 +291,64 @@ strong {
 }
 
 /* ============================================================
-   Codex Items
+   Shared — Row Card (used by Codex, Ranks, Members)
    ============================================================ */
-.codex-item {
-    display: -webkit-box;
-    display: -webkit-flex;
+.codex-item,
+.rank-item,
+.member-card {
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-    -webkit-box-align: start;
-    -webkit-align-items: flex-start;
-    align-items: flex-start;
+    align-items: center;
     gap: 14px;
-    margin-bottom: 18px;
-    padding: 12px 14px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
     border-radius: 8px;
     background: rgba(255, 210, 122, 0.04);
     border: 1px solid rgba(255, 210, 122, 0.08);
-    -webkit-transition: background var(--transition-fast);
+    width: 100%;
     transition: background var(--transition-fast);
 }
 
-.codex-item:last-child {
+.codex-item:last-child,
+.rank-item:last-child,
+.member-card:last-child {
     margin-bottom: 0;
 }
 
-.codex-item:hover {
+.codex-item:hover,
+.rank-item:hover,
+.member-card:hover {
     background: rgba(255, 210, 122, 0.08);
+}
+
+/* Shared — Badge / Icon image (used by Ranks and Members) */
+.rank-icon,
+.member-badge {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
+    flex-grow: 0;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Shared — Text column (used by Ranks and Members) */
+.rank-text,
+.member-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+/* ============================================================
+   Codex
+   ============================================================ */
+.codex-item {
+    align-items: flex-start;
+    padding: 12px 14px;
+    margin-bottom: 18px;
 }
 
 .codex-icon {
@@ -347,7 +356,6 @@ strong {
     height: 22px;
     margin-top: 3px;
     opacity: 0.9;
-    -webkit-flex-shrink: 0;
     flex-shrink: 0;
 }
 
@@ -360,7 +368,7 @@ strong {
 }
 
 /* ============================================================
-   Diplomacy — Treaty block
+   Diplomacy — Treaty Block
    ============================================================ */
 .treaty {
     padding: 18px 20px;
@@ -372,64 +380,6 @@ strong {
 /* ============================================================
    Ranks
    ============================================================ */
-.rank-item {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background: rgba(255, 210, 122, 0.04);
-    border: 1px solid rgba(255, 210, 122, 0.08);
-    -webkit-transition: background var(--transition-fast);
-    transition: background var(--transition-fast);
-    width: 100%;
-}
-
-.rank-item:last-child {
-    margin-bottom: 0;
-}
-
-.rank-item:hover {
-    background: rgba(255, 210, 122, 0.08);
-}
-
-.rank-icon {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    object-fit: contain;
-    -webkit-flex-shrink: 0;
-    flex-shrink: 0;
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-.rank-text {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex: 1 1 0%;
-    flex: 1 1 0%;
-    min-width: 0;
-}
-
 .rank-text strong {
     display: block;
     font-family: var(--font-display);
@@ -445,71 +395,12 @@ strong {
     font-size: 0.9rem;
     color: var(--color-text);
     line-height: 1.4;
-    word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 /* ============================================================
    Members
    ============================================================ */
-.member-card {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background: rgba(255, 210, 122, 0.04);
-    border: 1px solid rgba(255, 210, 122, 0.08);
-    width: 100%;
-    -webkit-transition: background var(--transition-fast);
-    transition: background var(--transition-fast);
-}
-
-.member-card:last-child {
-    margin-bottom: 0;
-}
-
-.member-card:hover {
-    background: rgba(255, 210, 122, 0.08);
-}
-
-.member-badge {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    object-fit: contain;
-    -webkit-flex-shrink: 0;
-    flex-shrink: 0;
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-.member-info {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex: 1 1 0%;
-    flex: 1 1 0%;
-    min-width: 0;
-}
-
 .member-name {
     font-family: var(--font-display);
     font-size: 0.88rem;
@@ -517,7 +408,6 @@ strong {
     color: var(--color-gold-light);
     letter-spacing: 0.02em;
     line-height: 1.3;
-    word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
@@ -530,20 +420,9 @@ strong {
 
 /* Points — only rendered when points > 0 */
 .member-points {
-    display: -webkit-box;
-    display: -webkit-flex;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
     align-items: center;
     gap: 5px;
-    -webkit-flex-shrink: 0;
     flex-shrink: 0;
 }
 
@@ -559,7 +438,6 @@ strong {
     width: 20px;
     height: 20px;
     object-fit: contain;
-    -webkit-flex-shrink: 0;
     flex-shrink: 0;
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
