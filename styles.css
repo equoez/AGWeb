@@ -56,13 +56,17 @@ html {
     transition: opacity 0.5s ease;
 }
 
-/* DARK MAGIC STATE — reveal dark bg and corrupt the whole scene */
-.bg-fixed.dark-magic {
+/* DARK MAGIC STATE — reveal the dark background image */
+.bg-fixed.dark-magic::after {
+    opacity: 1;
+}
+
+/* ANIMATION — only while hovering the scroll icon */
+.bg-fixed.dark-magic-anim {
     animation: darkPulse 1.6s infinite;
 }
 
-.bg-fixed.dark-magic::after {
-    opacity: 1;
+.bg-fixed.dark-magic-anim::after {
     animation: darkBgFlicker 1.6s infinite;
 }
 
