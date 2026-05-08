@@ -11,114 +11,44 @@
 
 <body>
 
-    <!-- Fixed background -->
     <div class="bg-fixed"></div>
 
     <div class="container">
 
         <img src="AGlogo.png" alt="Argent Gryphon crest" class="logo">
 
-        <!-- Navigation -->
-        <nav class="navbar">
-            <button class="nav-button" onclick="showPage('home')">Home</button>
-            <button class="nav-button" onclick="showPage('codex')">Codex</button>
-            <button class="nav-button" onclick="showPage('journal')">Journal</button>
-            <button class="nav-button" onclick="showPage('diplomacy')">Diplomacy</button>
-            <button class="nav-button" onclick="showPage('decree')">Decree</button>
-            <button class="nav-button" onclick="showPage('ranks')">Ranks</button>
-            <button class="nav-button" onclick="showPage('members')">Members</button>
-        </nav>
+        <nav class="navbar" id="navbar"></nav>
 
-        <!-- Content panel -->
         <main class="content-box">
 
             <!-- HOME -->
             <section id="home" class="page active">
                 <h2>Order of the Argent Gryphon</h2>
-                <p>
-                    Formally known as the Order of the Argent Gryphon, they are a chivalric order
-                    devoted to honour and justice. From their mountain hideout, they watch and defend
-                    the lands against corruption and evil, guided by faith, strength, wisdom, and
-                    the old oaths of their predecessors.
-                </p>
+                <p>Formally known as the Order of the Argent Gryphon, they are a chivalric order
+                devoted to honour and justice. From their mountain hideout, they watch and defend
+                the lands against corruption and evil, guided by faith, strength, wisdom, and
+                the old oaths of their predecessors.</p>
             </section>
 
             <!-- CODEX -->
             <section id="codex" class="page">
                 <h2>Argent Codex</h2>
-                <p>
-                    The Argent Gryphon adheres to a codex — a set of regulations for daily life,
-                    behaviour, and values — emphasising chivalry, piety, and a strict moral code.
-                    Written by Roderic Rivershaw, it outlines the ideal conduct for a Gryphon,
-                    encompassing both monastic life and military service.
-                </p>
-
-                <div class="section">
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Exhort Supremacy</strong>
-                            Let thy steel and magic bolster the Gryphon's superiority.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Secure the Advantage</strong>
-                            Strike swiftly, audaciously and without warning.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Serve Dauntlessly</strong>
-                            Let humility be cast aside, and boldness be thy crown.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Seek Wisdom</strong>
-                            Knowledge is the flame by which decadence is purged.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Show No Mercy</strong>
-                            Unsheathe thy weapons without pity, for mercy prolongs suffering.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Keep the Vigil</strong>
-                            Wherever the Gryphon flies, let no infamy go unchallenged.
-                        </div>
-                    </div>
-                    <div class="codex-item">
-                        <img src="FWD_Fist.png" class="codex-icon" alt="">
-                        <div>
-                            <strong>Unyielding Reputation</strong>
-                            Should thy end come, let them pay the highest toll.
-                        </div>
-                    </div>
-                </div>
+                <p>The Argent Gryphon adheres to a codex — a set of regulations for daily life,
+                behaviour, and values — emphasising chivalry, piety, and a strict moral code.
+                Written by Roderic Rivershaw, it outlines the ideal conduct for a Gryphon,
+                encompassing both monastic life and military service.</p>
+                <div class="section" id="codex-list"></div>
             </section>
 
             <!-- DIPLOMACY -->
             <section id="diplomacy" class="page">
                 <h2>Diplomacy</h2>
-                <p>
-                    The Argent Gryphon has formalised diplomatic ties other guilds.
-                </p>
+                <p>The Argent Gryphon has formalised diplomatic ties other guilds.</p>
                 <div class="section treaty">
                     <h3>Treaty of Alliance</h3>
                     <p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p>
-                    <p>
-                        We agree with the articles written below. May this alliance be blessed by Banor!<br>
-                        <em>— Nezel Stonehaze, 9 March 2026</em>
-                    </p>
+                    <p>We agree with the articles written below. May this alliance be blessed by Banor!<br>
+                    <em>— Nezel Stonehaze, 9 March 2026</em></p>
                     <p>
                         <strong>Article I</strong> — Purpose: Establishes the alliance.<br>
                         <strong>Article II</strong> — Alliance in Arms: Mutual defence against evil.<br>
@@ -133,82 +63,20 @@
             <!-- DECREE -->
             <section id="decree" class="page">
                 <h2>Silverhand Decree</h2>
-                <p>
-                    Let it be known throughout Vandura that Governor Percy Silverhand, 
-                    by royal right, hereby grants full sovereignty to the chivalric Order 
-                    of the Argent Gryphon.
-                </p>
-                <p>
-                    The Silverhands of Liberty Bay reaffirm the old oath, empowering the Warden's 
-                    Council with the charge of vigilance in the Vandura Mountains. They are free to 
-                    anoint warriors of the true Gods, and to arm each with the Griffin Shield - a 
-                    symbol of strength and courage.
-                </p>
-                <p>
-                    May the Argent Gryphon bring order to chaos, whatever the cost may be.
-                </p>
+                <p>Let it be known throughout Vandura that Governor Percy Silverhand,
+                by royal right, hereby grants full sovereignty to the chivalric Order
+                of the Argent Gryphon.</p>
+                <p>The Silverhands of Liberty Bay reaffirm the old oath, empowering the Warden's
+                Council with the charge of vigilance in the Vandura Mountains. They are free to
+                anoint warriors of the true Gods, and to arm each with the Griffin Shield - a
+                symbol of strength and courage.</p>
+                <p>May the Argent Gryphon bring order to chaos, whatever the cost may be.</p>
             </section>
 
             <!-- RANKS -->
             <section id="ranks" class="page">
                 <h2>Ranks</h2>
-
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_wardens_rankbadge.png" class="rank-icon" alt="Lord Warden badge">
-                    <div class="rank-text">
-                        <strong>Lord Warden</strong>
-                        <span>Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_wardens_rankbadge.png" class="rank-icon" alt="Warden badge">
-                    <div class="rank-text">
-                        <strong>Warden</strong>
-                        <span>Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_oathsworn_rankbadge.png" class="rank-icon" alt="Oathsworn badge">
-                    <div class="rank-text">
-                        <strong>Oathsworn</strong>
-                        <span>Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_enlightened_rankbadge.png" class="rank-icon" alt="Enlightened badge">
-                    <div class="rank-text">
-                        <strong>Enlightened</strong>
-                        <span>Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_shieldbearer_rankbadge.png" class="rank-icon" alt="Shieldbearer badge">
-                    <div class="rank-text">
-                        <strong>Shieldbearer</strong>
-                        <span>Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_initiate_rankbadge.png" class="rank-icon" alt="Initiate badge">
-                    <div class="rank-text">
-                        <strong>Initiate</strong>
-                        <span>Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_sentinel_rankbadge.png" class="rank-icon" alt="Sentinel badge">
-                    <div class="rank-text">
-                        <strong>Sentinel</strong>
-                        <span>Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay.</span>
-                    </div>
-                </div>
-                <div class="rank-item">
-                    <img src="img/ranks/ranks_ward_rankbadge.png" class="rank-icon" alt="Ward badge">
-                    <div class="rank-text">
-                        <strong>Ward</strong>
-                        <span>Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.</span>
-                    </div>
-                </div>
+                <div id="ranks-list"></div>
             </section>
 
             <!-- MEMBERS -->
@@ -223,12 +91,8 @@
             <!-- JOURNAL -->
             <section id="journal" class="page">
                 <h2>Valkera's Journal</h2>
-                <p class="journal-intro">
-                    Personal chronicles of Lady Warden Valkera — kept in her own hand,
-                    sealed within the fortress archive.
-                </p>
-
-                <!-- Entry selector -->
+                <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand,
+                sealed within the fortress archive.</p>
                 <div class="journal-nav">
                     <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
                     <div class="journal-index-wrap">
@@ -237,8 +101,6 @@
                     </div>
                     <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
                 </div>
-
-                <!-- Entry display -->
                 <div id="journal-entry-title" class="journal-entry-title"></div>
                 <div id="journal-entry-body" class="journal-entry-body"></div>
             </section>
@@ -248,88 +110,41 @@
     </div>
 
     <script>
-        /* ============================================================
-           Rank Badge Map
-           ============================================================ */
+
+        /* --- Data --- */
+
+        const PAGES = ['home','codex','journal','diplomacy','decree','ranks','members'];
+
+        const CODEX_ITEMS = [
+            ['Exhort Supremacy',      "Let thy steel and magic bolster the Gryphon's superiority."],
+            ['Secure the Advantage',  'Strike swiftly, audaciously and without warning.'],
+            ['Serve Dauntlessly',     'Let humility be cast aside, and boldness be thy crown.'],
+            ['Seek Wisdom',           'Knowledge is the flame by which decadence is purged.'],
+            ['Show No Mercy',         'Unsheathe thy weapons without pity, for mercy prolongs suffering.'],
+            ['Keep the Vigil',        'Wherever the Gryphon flies, let no infamy go unchallenged.'],
+            ['Unyielding Reputation', 'Should thy end come, let them pay the highest toll.'],
+        ];
+
+        const RANKS = [
+            ['Lord Warden',  'wardens',     "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals."],
+            ['Warden',       'wardens',     'Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose.'],
+            ['Oathsworn',    'oathsworn',   "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril."],
+            ['Enlightened',  'enlightened', "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."],
+            ['Shieldbearer', 'shieldbearer','Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties.'],
+            ['Initiate',     'initiate',    'Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order.'],
+            ['Sentinel',     'sentinel',    'Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay.'],
+            ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
+        ];
+
         const RANK_BADGE = {
-            'Lord Warden':  'img/ranks/ranks_wardens_rankbadge.png',
-            'Lady Warden':  'img/ranks/ranks_wardens_rankbadge.png',
-            'Warden':       'img/ranks/ranks_wardens_rankbadge.png',
-            'Oathsworn':    'img/ranks/ranks_oathsworn_rankbadge.png',
-            'Enlightened':  'img/ranks/ranks_enlightened_rankbadge.png',
-            'Shieldbearer': 'img/ranks/ranks_shieldbearer_rankbadge.png',
-            'Initiate':     'img/ranks/ranks_initiate_rankbadge.png',
-            'Sentinel':     'img/ranks/ranks_sentinel_rankbadge.png',
-            'Ward':         'img/ranks/ranks_ward_rankbadge.png',
+            'Lord Warden': 'wardens', 'Lady Warden': 'wardens', 'Warden': 'wardens',
+            'Oathsworn': 'oathsworn', 'Enlightened': 'enlightened',
+            'Shieldbearer': 'shieldbearer', 'Initiate': 'initiate',
+            'Sentinel': 'sentinel', 'Ward': 'ward',
         };
 
-        /* ============================================================
-           Page Switching
-           ============================================================ */
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            if (pageId === 'members') loadMembers();
-            if (pageId === 'journal')  initJournal();
-            location.hash = pageId;
-        }
+        const badgeSrc = key => `img/ranks/ranks_${RANK_BADGE[key]}_rankbadge.png`;
 
-        /* ============================================================
-           Load Members
-           ============================================================ */
-        function loadMembers() {
-            const list = document.getElementById('members-list');
-            const err  = document.getElementById('members-error');
-
-            if (list.dataset.loaded === 'true') return;
-
-            fetch('sources/characters.txt')
-                .then(r => {
-                    if (!r.ok) throw new Error('fetch failed');
-                    return r.text();
-                })
-                .then(text => {
-                    list.dataset.loaded = 'true';
-
-                    const lines = text.trim().split('\n').filter(l => l.trim() !== '');
-
-                    lines.forEach(line => {
-                        const parts = line.split(' - ');
-                        if (parts.length < 3) return;
-
-                        const name   = parts[0].trim();
-                        const rank   = parts[1].trim();
-                        const points = parseInt(parts[2].trim(), 10);
-                        const badge  = RANK_BADGE[rank] || '';
-
-                        const pointsHtml = points > 0
-                            ? `<div class="member-points">
-                                   <span class="member-points-number">${points}</span>
-                                   <img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">
-                               </div>`
-                            : '';
-
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML =
-                            `<img class="member-badge" src="${badge}" alt="${rank} badge">
-                             <div class="member-info">
-                                 <div class="member-name">${name}</div>
-                                 <div class="member-rank-label">${rank}</div>
-                             </div>
-                             ${pointsHtml}`;
-
-                        list.appendChild(card);
-                    });
-                })
-                .catch(() => {
-                    err.style.display = 'block';
-                });
-        }
-
-        /* ============================================================
-           Journal Entries
-           ============================================================ */
         const JOURNAL_ENTRIES = [
             {
                 title: "I — The Fortress Restored",
@@ -572,13 +387,80 @@ And for what we do in this world, Morgaroth shall reward us.`
             }
         ];
 
+
+        /* --- Build static elements from data --- */
+
+        document.getElementById('navbar').innerHTML = PAGES.map(p =>
+            `<button class="nav-button" onclick="showPage('${p}')">${p.charAt(0).toUpperCase() + p.slice(1)}</button>`
+        ).join('');
+
+        document.getElementById('codex-list').innerHTML = CODEX_ITEMS.map(([title, text]) =>
+            `<div class="codex-item">
+                <img src="FWD_Fist.png" class="codex-icon" alt="">
+                <div><strong>${title}</strong> ${text}</div>
+            </div>`
+        ).join('');
+
+        document.getElementById('ranks-list').innerHTML = RANKS.map(([name, key, desc]) =>
+            `<div class="rank-item">
+                <img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge">
+                <div class="rank-text"><strong>${name}</strong><span>${desc}</span></div>
+            </div>`
+        ).join('');
+
+
+        /* --- Page switching --- */
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if (pageId === 'members') loadMembers();
+            if (pageId === 'journal') initJournal();
+            history.replaceState(null, '', '#' + pageId);
+        }
+
+
+        /* --- Members --- */
+
+        function loadMembers() {
+            const list = document.getElementById('members-list');
+            if (list.dataset.loaded) return;
+            list.dataset.loaded = 'true';
+
+            fetch('sources/characters.txt')
+                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+                .then(text => {
+                    list.innerHTML = text.trim().split('\n')
+                        .filter(l => l.trim())
+                        .map(line => {
+                            const [name, rank, pts] = line.split(' - ').map(s => s.trim());
+                            if (!rank) return '';
+                            const points = parseInt(pts, 10);
+                            return `<div class="member-card">
+                                <img class="member-badge" src="${badgeSrc(rank)}" alt="${rank} badge">
+                                <div class="member-info">
+                                    <div class="member-name">${name}</div>
+                                    <div class="member-rank-label">${rank}</div>
+                                </div>
+                                ${points > 0 ? `<div class="member-points">
+                                    <span class="member-points-number">${points}</span>
+                                    <img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">
+                                </div>` : ''}
+                            </div>`;
+                        }).join('');
+                })
+                .catch(() => { document.getElementById('members-error').style.display = 'block'; });
+        }
+
+
+        /* --- Journal --- */
+
         let currentJournalIndex = 0;
         let journalReady = false;
 
         function initJournal() {
             if (journalReady) return;
             journalReady = true;
-
             const tabsEl = document.getElementById('journal-tabs');
             JOURNAL_ENTRIES.forEach((entry, i) => {
                 const btn = document.createElement('button');
@@ -588,33 +470,19 @@ And for what we do in this world, Morgaroth shall reward us.`
                 btn.onclick = () => showJournalEntry(i);
                 tabsEl.appendChild(btn);
             });
-
             showJournalEntry(0);
         }
 
         function showJournalEntry(index) {
             currentJournalIndex = index;
             const entry = JOURNAL_ENTRIES[index];
-
-            // Update title
             document.getElementById('journal-entry-title').textContent = entry.title;
-
-            // Format body — blank lines become paragraph breaks
-            const bodyEl = document.getElementById('journal-entry-body');
-            bodyEl.innerHTML = '';
-            entry.body.split(/\n\n+/).forEach(para => {
-                const p = document.createElement('p');
-                // preserve single line breaks within a paragraph
-                p.innerHTML = para.trim().replace(/\n/g, '<br>');
-                bodyEl.appendChild(p);
-            });
-
-            // Update tab highlights
-            document.querySelectorAll('.journal-tab').forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
-            });
-
-            // Update arrow states
+            document.getElementById('journal-entry-body').innerHTML = entry.body
+                .split(/\n\n+/)
+                .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
+                .join('');
+            document.querySelectorAll('.journal-tab').forEach((btn, i) =>
+                btn.classList.toggle('active', i === index));
             document.getElementById('journal-prev').disabled = index === 0;
             document.getElementById('journal-next').disabled = index === JOURNAL_ENTRIES.length - 1;
         }
@@ -624,9 +492,9 @@ And for what we do in this world, Morgaroth shall reward us.`
             if (next >= 0 && next < JOURNAL_ENTRIES.length) showJournalEntry(next);
         }
 
-        /* ============================================================
-           Dark Magic — Easter Egg
-           ============================================================ */
+
+        /* --- Dark magic easter egg --- */
+
         const bgEl = document.querySelector('.bg-fixed');
         let darkMagicTimer = null;
 
@@ -644,12 +512,12 @@ And for what we do in this world, Morgaroth shall reward us.`
             darkMagicTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
         });
 
-        /* ============================================================
-           Hash-based routing — read page from URL on load
-           ============================================================ */
-        const VALID_PAGES = ['home', 'codex', 'journal', 'diplomacy', 'decree', 'ranks', 'members'];
+
+        /* --- Hash routing --- */
+
         const startPage = location.hash.slice(1);
-        showPage(VALID_PAGES.includes(startPage) ? startPage : 'home');
+        showPage(PAGES.includes(startPage) ? startPage : 'home');
+
     </script>
 
 </body>
