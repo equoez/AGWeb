@@ -21,7 +21,6 @@
 
         <main class="content-box">
 
-            <!-- HOME -->
             <section data-page="home" class="page active">
                 <h2>Order of the Argent Gryphon</h2>
                 <p>Formally known as the Order of the Argent Gryphon, they are a chivalric order
@@ -30,7 +29,6 @@
                 the old oaths of their predecessors.</p>
             </section>
 
-            <!-- CODEX -->
             <section data-page="codex" class="page">
                 <h2>Argent Codex</h2>
                 <p>The Argent Gryphon adheres to a codex — a set of regulations for daily life,
@@ -40,7 +38,6 @@
                 <div class="section" id="codex-list"></div>
             </section>
 
-            <!-- DIPLOMACY -->
             <section data-page="diplomacy" class="page">
                 <h2>Diplomacy</h2>
                 <p>The Argent Gryphon has formalised diplomatic ties other guilds.</p>
@@ -60,7 +57,6 @@
                 </div>
             </section>
 
-            <!-- DECREE -->
             <section data-page="decree" class="page">
                 <h2>Silverhand Decree</h2>
                 <p>Let it be known throughout Vandura that Governor Percy Silverhand,
@@ -73,13 +69,11 @@
                 <p>May the Argent Gryphon bring order to chaos, whatever the cost may be.</p>
             </section>
 
-            <!-- RANKS -->
             <section data-page="ranks" class="page">
                 <h2>Ranks</h2>
                 <div id="ranks-list"></div>
             </section>
 
-            <!-- MEMBERS -->
             <section data-page="members" class="page">
                 <h2>Members</h2>
                 <p id="members-error" style="display:none; color:#ff8888;">
@@ -88,7 +82,6 @@
                 <div id="members-list"></div>
             </section>
 
-            <!-- JOURNAL -->
             <section data-page="journal" class="page">
                 <h2>Valkera's Journal</h2>
                 <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand,
@@ -111,8 +104,6 @@
 
     <script>
 
-        /* --- Data --- */
-
         const PAGES = ['home','codex','journal','diplomacy','decree','ranks','members'];
 
         const CODEX_ITEMS = [
@@ -125,6 +116,7 @@
             ['Unyielding Reputation', 'Should thy end come, let them pay the highest toll.'],
         ];
 
+        // [name, badge-key, description]
         const RANKS = [
             ['Lord Warden',  'wardens',     "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals."],
             ['Warden',       'wardens',     'Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose.'],
@@ -136,34 +128,25 @@
             ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
         ];
 
-        const RANK_BADGE = {
-            'Lord Warden': 'wardens', 'Lady Warden': 'wardens', 'Warden': 'wardens',
-            'Oathsworn': 'oathsworn', 'Enlightened': 'enlightened',
-            'Shieldbearer': 'shieldbearer', 'Initiate': 'initiate',
-            'Sentinel': 'sentinel', 'Ward': 'ward',
-        };
-
-        const badgeSrc = key => `img/ranks/ranks_${RANK_BADGE[key]}_rankbadge.png`;
+        // Map rank name → badge key (derived from RANKS, no separate lookup needed)
+        const RANK_KEY = Object.fromEntries(
+            RANKS.map(([name, key]) => [name, key]).concat([['Lady Warden', 'wardens']])
+        );
+        const badgeSrc = rank => `img/ranks/ranks_${RANK_KEY[rank]}_rankbadge.png`;
 
 
-        /* --- Build static elements from data --- */
+        /* --- Build static HTML --- */
 
         document.getElementById('navbar').innerHTML = PAGES.map(p =>
-            `<button class="nav-button" onclick="showPage('${p}')">${p.charAt(0).toUpperCase() + p.slice(1)}</button>`
+            `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase() + p.slice(1)}</button>`
         ).join('');
 
         document.getElementById('codex-list').innerHTML = CODEX_ITEMS.map(([title, text]) =>
-            `<div class="codex-item">
-                <img src="FWD_Fist.png" class="codex-icon" alt="">
-                <div><strong>${title}</strong> ${text}</div>
-            </div>`
+            `<div class="codex-item"><img src="FWD_Fist.png" class="codex-icon" alt=""><div><strong>${title}</strong> ${text}</div></div>`
         ).join('');
 
         document.getElementById('ranks-list').innerHTML = RANKS.map(([name, key, desc]) =>
-            `<div class="rank-item">
-                <img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge">
-                <div class="rank-text"><strong>${name}</strong><span>${desc}</span></div>
-            </div>`
+            `<div class="rank-item"><img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge"><div class="rank-text"><strong>${name}</strong><span>${desc}</span></div></div>`
         ).join('');
 
 
@@ -184,28 +167,22 @@
             const list = document.getElementById('members-list');
             if (list.dataset.loaded) return;
             list.dataset.loaded = 'true';
-
             fetch('sources/characters.txt')
                 .then(r => { if (!r.ok) throw new Error(); return r.text(); })
                 .then(text => {
-                    list.innerHTML = text.trim().split('\n')
-                        .filter(l => l.trim())
-                        .map(line => {
-                            const [name, rank, pts] = line.split(' - ').map(s => s.trim());
-                            if (!rank) return '';
-                            const points = parseInt(pts, 10);
-                            return `<div class="member-card">
-                                <img class="member-badge" src="${badgeSrc(rank)}" alt="${rank} badge">
-                                <div class="member-info">
-                                    <div class="member-name">${name}</div>
-                                    <div class="member-rank-label">${rank}</div>
-                                </div>
-                                ${points > 0 ? `<div class="member-points">
-                                    <span class="member-points-number">${points}</span>
-                                    <img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">
-                                </div>` : ''}
-                            </div>`;
-                        }).join('');
+                    list.innerHTML = text.trim().split('\n').filter(Boolean).map(line => {
+                        const [name, rank, pts] = line.split(' - ').map(s => s.trim());
+                        if (!rank) return '';
+                        const points = parseInt(pts, 10);
+                        return `<div class="member-card">
+                            <img class="member-badge" src="${badgeSrc(rank)}" alt="${rank} badge">
+                            <div class="member-info">
+                                <div class="member-name">${name}</div>
+                                <div class="member-rank-label">${rank}</div>
+                            </div>
+                            ${points > 0 ? `<div class="member-points"><span class="member-points-number">${points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
+                        </div>`;
+                    }).join('');
                 })
                 .catch(() => { document.getElementById('members-error').style.display = 'block'; });
         }
@@ -213,27 +190,18 @@
 
         /* --- Journal --- */
 
-        let JOURNAL_ENTRIES = [];
-        let currentJournalIndex = 0;
-        let journalReady = false;
+        const journal = { entries: [], index: 0, ready: false };
 
         function initJournal() {
-            if (journalReady) return;
-            journalReady = true;
-
+            if (journal.ready) return;
+            journal.ready = true;
             fetch('sources/journal.json')
                 .then(r => { if (!r.ok) throw new Error(); return r.json(); })
                 .then(entries => {
-                    JOURNAL_ENTRIES = entries;
-                    const tabsEl = document.getElementById('journal-tabs');
-                    entries.forEach((entry, i) => {
-                        const btn = document.createElement('button');
-                        btn.className = 'journal-tab' + (i === 0 ? ' active' : '');
-                        btn.textContent = i + 1;
-                        btn.setAttribute('aria-label', entry.title);
-                        btn.onclick = () => showJournalEntry(i);
-                        tabsEl.appendChild(btn);
-                    });
+                    journal.entries = entries;
+                    document.getElementById('journal-tabs').innerHTML = entries.map((e, i) =>
+                        `<button class="journal-tab${i === 0 ? ' active' : ''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i + 1}</button>`
+                    ).join('');
                     showJournalEntry(0);
                 })
                 .catch(() => {
@@ -241,34 +209,31 @@
                 });
         }
 
-        function showJournalEntry(index) {
-            currentJournalIndex = index;
-            const entry = JOURNAL_ENTRIES[index];
-            document.getElementById('journal-entry-title').textContent = entry.title;
-            document.getElementById('journal-entry-body').innerHTML = entry.body
-                .split(/\n\n+/)
-                .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
-                .join('');
-            document.querySelectorAll('.journal-tab').forEach((btn, i) =>
-                btn.classList.toggle('active', i === index));
-            document.getElementById('journal-prev').disabled = index === 0;
-            document.getElementById('journal-next').disabled = index === JOURNAL_ENTRIES.length - 1;
+        function showJournalEntry(i) {
+            journal.index = i;
+            const e = journal.entries[i];
+            document.getElementById('journal-entry-title').textContent = e.title;
+            document.getElementById('journal-entry-body').innerHTML = e.body
+                .split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('');
+            document.querySelectorAll('.journal-tab').forEach((btn, j) => btn.classList.toggle('active', j === i));
+            document.getElementById('journal-prev').disabled = i === 0;
+            document.getElementById('journal-next').disabled = i === journal.entries.length - 1;
         }
 
         function journalStep(dir) {
-            const next = currentJournalIndex + dir;
-            if (next >= 0 && next < JOURNAL_ENTRIES.length) showJournalEntry(next);
+            const next = journal.index + dir;
+            if (next >= 0 && next < journal.entries.length) showJournalEntry(next);
         }
 
 
         /* --- Dark magic easter egg --- */
 
         const bgEl = document.querySelector('.bg-fixed');
-        let darkMagicTimer = null;
+        let dmTimer;
 
         document.addEventListener('mouseover', e => {
             if (!e.target.classList.contains('member-points-icon')) return;
-            clearTimeout(darkMagicTimer);
+            clearTimeout(dmTimer);
             bgEl.classList.add('dark-magic', 'dark-magic-anim');
             document.body.classList.add('dark-magic-active');
         });
@@ -277,7 +242,7 @@
             if (!e.target.classList.contains('member-points-icon')) return;
             bgEl.classList.remove('dark-magic-anim');
             document.body.classList.remove('dark-magic-active');
-            darkMagicTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
+            dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
         });
 
 
