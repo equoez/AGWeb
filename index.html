@@ -26,6 +26,7 @@
             <button class="nav-button" onclick="showPage('decree')">Decree</button>
             <button class="nav-button" onclick="showPage('ranks')">Ranks</button>
             <button class="nav-button" onclick="showPage('members')">Members</button>
+            <button class="nav-button" onclick="showPage('journal')">Journal</button>
         </nav>
 
         <!-- Content panel -->
@@ -219,6 +220,31 @@
                 <div id="members-list"></div>
             </section>
 
+            <!-- JOURNAL -->
+            <section id="journal" class="page">
+                <h2>Valkera's Journal</h2>
+                <p class="journal-intro">
+                    Personal chronicles of Lady Warden Valkera — kept in her own hand,
+                    sealed within the fortress archive.
+                </p>
+
+                <!-- Entry selector -->
+                <div class="journal-nav">
+                    <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
+                    <div class="journal-index-wrap">
+                        <span class="journal-label">Entry</span>
+                        <div id="journal-tabs" class="journal-tabs"></div>
+                    </div>
+                    <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
+                </div>
+
+                <!-- Entry display -->
+                <div class="journal-scroll">
+                    <div id="journal-entry-title" class="journal-entry-title"></div>
+                    <div id="journal-entry-body" class="journal-entry-body"></div>
+                </div>
+            </section>
+
         </main>
 
     </div>
@@ -226,7 +252,6 @@
     <script>
         /* ============================================================
            Rank Badge Map
-           Lord Warden and Lady Warden both use the wardens badge.
            ============================================================ */
         const RANK_BADGE = {
             'Lord Warden':  'img/ranks/ranks_wardens_rankbadge.png',
@@ -247,14 +272,11 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             if (pageId === 'members') loadMembers();
+            if (pageId === 'journal')  initJournal();
         }
 
         /* ============================================================
            Load Members
-           Reads sources/characters.txt — one entry per line:
-             Character Name - Rank - Points
-           Points of 0 are hidden. Points above 0 show with the
-           heroic scroll icon beside them.
            ============================================================ */
         function loadMembers() {
             const list = document.getElementById('members-list');
@@ -307,10 +329,307 @@
         }
 
         /* ============================================================
+           Journal Entries
+           ============================================================ */
+        const JOURNAL_ENTRIES = [
+            {
+                title: "I — The Fortress Restored",
+                body: `Roderic and I have successfully restored the old fortress to its former glory. Time has not been kind to it, and whoever last inhabited this place must have abandoned it long ago. The main entrance was blocked by rubble and decay, forcing us to scale the thick ivy that clung to the walls. Once secured, we removed the ivy entirely to prevent others from gaining entry as we did.
+
+In the basement, hidden beneath loose stones, we uncovered old scrolls, remnants from the days when the Circle of Golgari resided here. I once walked among them in my misguided youth, before the light found me. These scrolls hold secrets, dark knowledge to be sure, but things that might be turned into righteous purpose. We secured them in the library vault for now.
+
+As for the Order, we are nearly ready. The fortress stands firm once more, and the Moot Hall is being prepared for the founding ceremony. Now we must find warriors willing to walk the righteous path and prove themselves worthy initiates.`
+            },
+            {
+                title: "II — Initiates Gathered",
+                body: `Sidney Beauclair has done well. She gathered four promising warriors to join the Order as initiates. So far so good, but we are not yet ready to fulfil our true purpose. In two weeks, the Order's founding ceremony will be held, and with some effort, others will join our cause. Only then can the hunt for Osamiron, the dark sorcerer, begin in earnest.
+
+I can't shake the feeling that the hooded acolyte Sidney encountered is tied to him somehow. Perhaps a disciple — like Mortazavi, or worse — a faithful Banorite under his control, like Othelen.
+
+I told everyone that the tome 'Be Cruel to Conquer' was written by the acolyte. It was a necessary fiction. In truth, I must unlock the tome's secret, not for study, but to strengthen the Order's power.
+
+Yes, some truths are better withheld. For the happiness of all mankind, I will stop at nothing to see justice done in this world once more. And may Othelen, blameless and martyred, rest in peace, knowing that his murderer will be brought to justice.`
+            },
+            {
+                title: "III — Seeds Sown",
+                body: `With Roderic's blessing, I have sent word to my kinsman, Ceori Blackheart, the Captain of Summerhaven, proposing a Treaty of Friendship with his people and our own. The slums of the city, rife with shadowy dealings, may serve as fertile ground for knowledge. It may grant us an advantage in the battles to come.
+
+Other seeds have been sown as well: the Lillywhite siblings. Their father, Steeve Lillywhite, was a knight of great renown before he disappeared. Sensing a mighty potential in them, I welcomed them into the fold without hesitation.
+
+They are on a quest of sorts, a path of pilgrimage, seeking to awaken ancient ways of life, buried by time. Such pursuits often lead to hidden powers.
+
+I am told that Amelia Lillywhite encountered a confused spirit beneath the ice island of Folda, which guided her to keys hidden in the deep, which lead to a long forgotten treasure. Though the relics proved of little worth to the Order, her keen instincts speak volumes. The apple, it seems, does not fall far from the tree. As for her brother, Allyn, his mettle remains unproven.`
+            },
+            {
+                title: "IV a — The Forbidden Tome",
+                body: `Yesterday, I summoned Initiate Ceori to question him about the forbidden tome he and Digi der Greif uncovered a week ago. Ceori claimed Digi held the tome, not he. Therefore, we were left without any clue it might have held.
+
+I sent Ceori to Fibula Chapel, where the hooded acolyte was last seen according to Sidney Beauclair. He encountered Sentinel Myrwen Blackheart, stationed there to guard the graves. She was hostile at first, taking her job seriously, but yielded when he showed proof of his higher rank.
+
+Ceori ordered her to assist him. After cutting down a nearby plant, claiming it might have been a spy in disguise, they followed the acolyte's trail to the latrine of the Fibula Bar. Remarkably, the acolyte had used the latrine as a hiding spot. Her journal was left behind, buried in filth.
+
+The journal spoke of "seeds sown". Ceori believed they were dealing with a farmer. I believed otherwise.`
+            },
+            {
+                title: "IV b — The Voodoo Cult",
+                body: `It was obvious the journal pointed to the voodoo cult beneath the Vandura mountains. It was her home, and she must have returned there after having left Fibula. I dispatched Ceori alone to locate the acolyte.
+
+Ceori faced death bravely, cutting through several cultists before finding the acolyte in a pitch-black corridor. Lacking any sense of subtlety, he announced himself as an Argent Gryphon, prompting the acolyte to raise her rod without hesitation. But, what the wizard lacked in wit, he made up for with sheer dumb luck. She died on the spot, but before he could get any information out of her.
+
+He brought her body back to the fortress for examination. Her wrist was tattooed with the mark of Osamiron, the sorcerer behind the murders of Othelen and Zoldan. We also found a black rose in her bag, pressed in a piece of cloth. Somehow, I suspect it connects to the Red Rose of Fibula. Ceori, again, insisted she had been a farmer. May Banor grant me patience with this one.`
+            },
+            {
+                title: "V a — The Haunting of Fibula",
+                body: `I summoned the Initiates Adaelina Blackheart and Volgowrath to assist in the matter of Myrwen Blackheart, who had gone silent while stationed at the martyrs' graves in Fibula. They accepted without hesitation, but not before supplying themselves with potions and runes.
+
+What they found was chaos. The chapel interior was in ruins. Stools shattered and fires raged, the scent of magic thick in the air. Myrwen stood amidst the wreckage, screaming for aid while holding a containment charm glowing with unstable power. The sorcerer Volgowrath reacted swiftly, uttering an enchantment to secure the charm, while Adaelina questioned Myrwen.
+
+Myrwen claimed the ghosts of Othelen and Zoldan had risen. Othelen turned violent to make sure Zoldan could escape. Another sentry, Kjartan, had followed her. Myrwen managed to trap Othelen's spirit within the charm and pleaded that the others pursue Kjartan.
+
+They tracked him to Scott's Inn in Senja, gravely wounded. He told them he battled Zoldan on Folda's ice where she nearly killed him. But she had let him live. Her mind, it seems, teetered on the edge of madness.`
+            },
+            {
+                title: "V b — The Ice Caves of Folda",
+                body: `Following her trail into the caves, Adaelina and Volgowrath found themselves in a nightmare. Crazed frost trolls, wolves and minotaurs stirred within. Worse still, an ancient magic clouded their senses, and even Volgowrath's exiva was useless.
+
+After what they felt was days of wandering, they found her. Zoldan's black spirit hid in a tomb of sealed coffins, screaming as if reliving past torment. She mistook them for her torturers, but when Adaelina mentioned Othelen, she calmed. Volgowrath then revealed the charm containing his spirit.
+
+Zoldan agreed to rejoin him on the condition they cast the charm into the depths of the King's Gulf. They complied.
+
+They returned this morning. I confess, I'm disappointed. The charm would have been valuable to the Order. But the threat to Fibula is ended. For now, at least, we have peace.`
+            },
+            {
+                title: "VI — The Founding",
+                body: `Yesterday, our home rang with laughter and vows as we gathered Roses, Loremasters, the good people of Above and friends to witness the birth of our Order. Under the gaze of Banor and with the Red Rose's blessing, Roderic Rivershaw proclaimed the founding of the Argent Gryphon and acknowledged our official decree.
+
+Rather than rule by decree, I decided to open for electing the Order's leadership. In a unanimous vote, I was chosen as the first Lady Warden, vowing to defend the realm with honour and faith.
+
+Our four initiates who had shown their dedication to the Order were anointed in sacred rite:
+  – Digi der Greif
+  – Wizard Ceori
+  – Volgowrath
+  – Adaelina Blackheart
+
+Each are now charged with completing the Griffin Shield quest to prove themselves worthy of the rank Shieldbearer.
+
+The night ended with sacred vows and blessings. The Gryphon now flies, and with it, a new hope rises.
+
+HAIL THE ARGENT GRYPHON!`
+            },
+            {
+                title: "VII — Summerhaven Accord",
+                body: `I met with my kinsman Ceori Blackheart, Captain of Summerhaven, whose resolve to shield the common folk is beyond doubt. I offered an accord: the Order will see their people fed and clothed by the riches of the greedy exploiters. We will strike at the plantation lords!
+
+In turn, Summerhaven's eyes and ears in the city will provide us with intelligence on the merchants, whose hands I suspect feed the dark cult that wages war upon us all.
+
+Yet, our blades won't be enough. To move against the merchants risks the wrath of Thais and Venore. Without assurances from our benefactor, our plans cannot take root. Therefore, I must gain audience with Rye Ane, Legate of Red Rose, and secure Fibula's protection before our scheme is set in motion.
+
+May Banor guide my tongue as well as my sword.`
+            },
+            {
+                title: "VIII — The Red Rose's Assurance",
+                body: `It is done. The Legatus of Red Rose, Rye Ane, has given us the assurances we need to move forward. Should Thais and Venore retaliate against Summerhaven or the Argent Gryphon, Red Rose will protect us. The threat alone should be enough to deter them.
+
+Now we must discover which traders support the voodoo cult before we raid the plantations. We could lure them out — make them reveal themselves, or infiltrate one of their homes and search for clues. Either way, I must wait until Warden Roderic returns from his travels. This is a decision not to be made lightly.`
+            },
+            {
+                title: "IX — Roderic Sleeps",
+                body: `Roderic has returned, but without his usual vigour. He breathes, his body unmarked, but his mind is absent, bound by an unknown curse. He is beyond my healing powers. Months have passed, and still he does not wake. Only Barnabus' careful hands keep him alive.
+
+Without my Warden, the Order is unsteady. I will not move against the voodoo cult while his fate remains uncertain. To act now would be reckless, and should Roderic be lost, the burden would rest with me alone.
+
+We need knowledge beyond our reach. I must seek the guardians of lore. The ancient Loremasters may know such curses by name. There is also the Alanui Institute, which has gathered wisdom from many lands. The Arcanum Lyceum Conservatory may also hold artefacts that bend the rules of magic itself.
+
+I may have to reach out to all of them.`
+            },
+            {
+                title: "X — Alliances Sought",
+                body: `The Loremasters proved unwilling to align themselves with any outside order, refusing even to meet. The Arcanum Lyceum Conservatory, though promising at first, has already fallen to apathy — their offices now stand abandoned.
+
+I have yet to approach the Alanui Institute, as I have been unable to locate a Director.
+
+Not all efforts have failed, however. I have secured cooperation with two other factions. The first is the Circle of Stonehaze, an old order of Stonehome wisemen who have recently formed a centralised structure. We have signed a treaty of alliance, pledging aid in arms, alms, and sanctuary.
+
+I have also made contact with a shadowed circle of mages known as the Arcanum, not to be confused with the Conservatory. I have pledged our knowledge and support in exchange for intelligence and destructive power, that we may uncover and destroy those who target us, and Warden Roderic in particular.
+
+Once our agent Myrwen Blackheart has secured her place among them, I will move to formalise the alliance.`
+            },
+            {
+                title: "XI — The Ringing",
+                body: `There has been no progress.
+
+The Circle of Stonehaze and the mages of the Arcanum have failed to name the curse, let alone break it. Barnabus says all we can do for Roderic is make him comfortable. He is right, I see it in his eyes. But I can't give up. I will never give in!
+
+Sleep escapes me. When it comes, it brings no rest. My thoughts are just noise, slipping through my fingers like sand. I remember the feeling. I have heard it before, long ago, in the war.
+
+This is worse.
+
+There is a sound beneath the castle. A faint ringing, low and constant, like a distant growl that never fades. I cannot silence it.
+
+I cannot burden the Gryphons with this. I am their Warden. I must show confidence.
+
+Yet I have never felt so alone.
+
+I find myself thinking of Pertwee. If he were here, he would know what to say. Or at least, he would listen.
+
+Something is wrong.
+
+PS. Marlon der Nachtfall and Julian au Bellona have joined the Order.`
+            },
+            {
+                title: "XII — The Demona Tomes",
+                body: `They speak softly around me now. Words hushed. They avoid my gaze when I enter, as if I wouldn't notice. I do not blame them. We all love Roderic, and they think he will die soon.
+
+They are wrong, of course — he will not die. Not without my leave.
+
+The healers have failed and are of no use to me now. Same with the scholars — their wisdom limited, worthless. I have wasted precious time on witless fools while Roderic slips further away.
+
+Tonight I opened the Demona tomes. Volumes sealed for centuries, black with dust, filled with rites condemned by the church. They call such knowledge forbidden, but how can I afford to be selective?
+
+Doneos was onto something concerning the mystery of life rings, though his research remains incomplete. I must know more. I care nothing for the judgement upon my character or soul, my people come first!
+
+When the goal is righteous, sacrifice is required. This is my sacrifice.`
+            },
+            {
+                title: "XIII — The Voice",
+                body: `I rose from bed to find the tower dark and quiet. Nothing but the familiar ringing in my ears. It has grown stronger. Or perhaps I have grown weaker.
+
+I am as tired as ever. Worse.
+
+Apparently I slept for days, though I cannot recall. I do not even remember closing my eyes.
+
+There was a letter on my desk next to a blessed ankh. When I reached for it, the metal stung my hand. Strange. That has never happened before.
+
+The letter was from Renai. He writes that Osamiron breached the castle and laid a curse upon it while I slept. It wasn't until I looked around the chamber that I felt it. Faint, but present. Death, lingering like a shadow.
+
+How come I did not notice immediately?
+
+And Renai, his words should stir me. Osamiron's name should ignite my soul to righteous fury. Instead, I feel... nothing. No anger. No indignation. No urgency.
+
+Only the ringing.
+
+I have written to Micu and Renai. They are to travel to the underground library of Drefia and gather whatever knowledge they can find. Books, scrolls, papers. Anything and everything.
+
+Roderic, my friend — I will not fail you.`
+            },
+            {
+                title: "XIV — Roderic Wakes",
+                body: `There has been no word from Micu and Renai.
+
+The curse still clings to the mountain. I see it now in every corridor, the stone blackened like soot inside a chimneypot. The others do not speak of it. Maybe they do not see as I do?
+
+The ringing is gone, replaced by a breathing whisper, echoing in my head. It is soft, gentle, as if sitting in the spaces between my thoughts. It tells me to submit, that I stop resisting.
+
+Tonight, I did.
+
+The voice led me below ground, down into the crypt where Roderic rests. The deeper I descended, the thicker the death haze became, soiling my lungs like smoke. I thought then to end it all. His suffering, perhaps... but more my own.
+
+I wept as I walked, but there was comfort in the thought. Soon, it would all be over.
+
+When I entered his chamber, I fell still.
+
+Roderic's eyes were open and awake. His chest rose and fell with every breath.
+
+He was pale, gaunt and frail, a shadow of his former self, but awake. His eyes met mine, and for the first time in months, I felt the weight upon me dissipate.
+
+I fell to my knees in gratitude, but I did not seek Banor, nor the "righteous" Gods who abandoned us in our hour of need.
+
+I prayed to the voice.
+
+And somewhere in the darkness, it rumbled back to me contentedly.`
+            },
+            {
+                title: "XV — Morgaroth",
+                body: `Somewhere within the darkness, the voice rumbled and growled.
+
+Then he revealed himself.
+
+Morgaroth. Archdemon of the Triangle of Terror.
+
+He did not stand before us physically, but as a presence in the mind. Vast, ominous, magnificent.
+
+I knew from the look on his face that Roderic felt it too, and in that moment we understood: it was he who had answered our pleas where Banor failed, and now he desired something in return.
+
+Our submission.
+
+There was no hesitation. The words came upon us at once. Together we spoke as one.
+
+"Mighty Morgaroth."
+"We turn to the southwest and kneel before you."
+"We cast aside the false half-god and devote ourselves to your will, O Great One."
+"Grant us strength, wisdom, and triumph over those who oppose us."
+"We shall bind men to our will, as we bind ourselves to You devoutly."
+"Hail Morgaroth!"
+"Hail Morgaroth!"
+"Hail Morgaroth!"
+
+The words burned in our throats as we uttered them, but the pain soon gave way to a gentle warmth, embracing me — stilling the long turmoil in my mind. At last, the noise faded.
+
+I now understand what our purpose must become.
+
+We are no mere brotherhood of honour. We shall bring order to chaos.
+
+And for what we do in this world, Morgaroth shall reward us.`
+            }
+        ];
+
+        let currentJournalIndex = 0;
+        let journalReady = false;
+
+        function initJournal() {
+            if (journalReady) return;
+            journalReady = true;
+
+            const tabsEl = document.getElementById('journal-tabs');
+            JOURNAL_ENTRIES.forEach((entry, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'journal-tab' + (i === 0 ? ' active' : '');
+                btn.textContent = i + 1;
+                btn.setAttribute('aria-label', entry.title);
+                btn.onclick = () => showJournalEntry(i);
+                tabsEl.appendChild(btn);
+            });
+
+            showJournalEntry(0);
+        }
+
+        function showJournalEntry(index) {
+            currentJournalIndex = index;
+            const entry = JOURNAL_ENTRIES[index];
+
+            // Update title
+            document.getElementById('journal-entry-title').textContent = entry.title;
+
+            // Format body — blank lines become paragraph breaks
+            const bodyEl = document.getElementById('journal-entry-body');
+            bodyEl.innerHTML = '';
+            entry.body.split(/\n\n+/).forEach(para => {
+                const p = document.createElement('p');
+                // preserve single line breaks within a paragraph
+                p.innerHTML = para.trim().replace(/\n/g, '<br>');
+                bodyEl.appendChild(p);
+            });
+
+            // Update tab highlights
+            document.querySelectorAll('.journal-tab').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+
+            // Update arrow states
+            document.getElementById('journal-prev').disabled = index === 0;
+            document.getElementById('journal-next').disabled = index === JOURNAL_ENTRIES.length - 1;
+
+            // Scroll scroll-box to top
+            document.querySelector('.journal-scroll').scrollTop = 0;
+        }
+
+        function journalStep(dir) {
+            const next = currentJournalIndex + dir;
+            if (next >= 0 && next < JOURNAL_ENTRIES.length) showJournalEntry(next);
+        }
+
+        /* ============================================================
            Dark Magic — Easter Egg
-           Hovering the heroic scroll icon triggers a background swap
-           and flicker animation. The dark background lingers for 30s
-           after the cursor leaves.
            ============================================================ */
         const bgEl = document.querySelector('.bg-fixed');
         let darkMagicTimer = null;
