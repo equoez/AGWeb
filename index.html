@@ -271,6 +271,7 @@
             document.getElementById(pageId).classList.add('active');
             if (pageId === 'members') loadMembers();
             if (pageId === 'journal')  initJournal();
+            location.hash = pageId;
         }
 
         /* ============================================================
@@ -642,6 +643,13 @@ And for what we do in this world, Morgaroth shall reward us.`
             document.body.classList.remove('dark-magic-active');
             darkMagicTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
         });
+
+        /* ============================================================
+           Hash-based routing — read page from URL on load
+           ============================================================ */
+        const VALID_PAGES = ['home', 'codex', 'journal', 'diplomacy', 'decree', 'ranks', 'members'];
+        const startPage = location.hash.slice(1);
+        showPage(VALID_PAGES.includes(startPage) ? startPage : 'home');
     </script>
 
 </body>
