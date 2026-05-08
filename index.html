@@ -116,9 +116,9 @@
             ['Unyielding Reputation', 'Should thy end come, let them pay the highest toll.'],
         ];
 
-        // [name, badge-key, description]
         const RANKS = [
             ['Lord Warden',  'wardens',     "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals."],
+            ['Lady Warden',  'wardens',     ''],
             ['Warden',       'wardens',     'Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose.'],
             ['Oathsworn',    'oathsworn',   "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril."],
             ['Enlightened',  'enlightened', "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."],
@@ -128,33 +128,31 @@
             ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
         ];
 
-        // Map rank name → badge key (derived from RANKS, no separate lookup needed)
-        const RANK_KEY = Object.fromEntries(
-            RANKS.map(([name, key]) => [name, key]).concat([['Lady Warden', 'wardens']])
-        );
-        const badgeSrc = rank => `img/ranks/ranks_${RANK_KEY[rank]}_rankbadge.png`;
+        const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
+        const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)}_rankbadge.png`;
+        const setHTML  = (id, html) => document.getElementById(id).innerHTML = html;
 
 
         /* --- Build static HTML --- */
 
-        document.getElementById('navbar').innerHTML = PAGES.map(p =>
-            `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase() + p.slice(1)}</button>`
-        ).join('');
+        setHTML('navbar', PAGES.map(p =>
+            `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase()}${p.slice(1)}</button>`
+        ).join(''));
 
-        document.getElementById('codex-list').innerHTML = CODEX_ITEMS.map(([title, text]) =>
+        setHTML('codex-list', CODEX_ITEMS.map(([title, text]) =>
             `<div class="codex-item"><img src="FWD_Fist.png" class="codex-icon" alt=""><div><strong>${title}</strong> ${text}</div></div>`
-        ).join('');
+        ).join(''));
 
-        document.getElementById('ranks-list').innerHTML = RANKS.map(([name, key, desc]) =>
+        setHTML('ranks-list', RANKS.filter(([,, desc]) => desc).map(([name, key, desc]) =>
             `<div class="rank-item"><img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge"><div class="rank-text"><strong>${name}</strong><span>${desc}</span></div></div>`
-        ).join('');
+        ).join(''));
 
 
         /* --- Page switching --- */
 
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelector('[data-page="' + pageId + '"]').classList.add('active');
+            document.querySelector('.page.active')?.classList.remove('active');
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
             if (pageId === 'members') loadMembers();
             if (pageId === 'journal') initJournal();
             try { history.replaceState(null, '', '#' + pageId); } catch(e) {}
@@ -170,7 +168,7 @@
             fetch('sources/characters.txt')
                 .then(r => { if (!r.ok) throw new Error(); return r.text(); })
                 .then(text => {
-                    list.innerHTML = text.trim().split('\n').filter(Boolean).map(line => {
+                    setHTML('members-list', text.trim().split('\n').filter(Boolean).map(line => {
                         const [name, rank, pts] = line.split(' - ').map(s => s.trim());
                         if (!rank) return '';
                         const points = parseInt(pts, 10);
@@ -182,7 +180,7 @@
                             </div>
                             ${points > 0 ? `<div class="member-points"><span class="member-points-number">${points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
                         </div>`;
-                    }).join('');
+                    }).join(''));
                 })
                 .catch(() => { document.getElementById('members-error').style.display = 'block'; });
         }
@@ -190,18 +188,18 @@
 
         /* --- Journal --- */
 
-        const journal = { entries: [], index: 0, ready: false };
+        let jEntries = [], jIdx = 0, jReady = false;
 
         function initJournal() {
-            if (journal.ready) return;
-            journal.ready = true;
+            if (jReady) return;
+            jReady = true;
             fetch('sources/journal.json')
                 .then(r => { if (!r.ok) throw new Error(); return r.json(); })
                 .then(entries => {
-                    journal.entries = entries;
-                    document.getElementById('journal-tabs').innerHTML = entries.map((e, i) =>
+                    jEntries = entries;
+                    setHTML('journal-tabs', entries.map((e, i) =>
                         `<button class="journal-tab${i === 0 ? ' active' : ''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i + 1}</button>`
-                    ).join('');
+                    ).join(''));
                     showJournalEntry(0);
                 })
                 .catch(() => {
@@ -210,19 +208,18 @@
         }
 
         function showJournalEntry(i) {
-            journal.index = i;
-            const e = journal.entries[i];
+            jIdx = i;
+            const e = jEntries[i];
             document.getElementById('journal-entry-title').textContent = e.title;
-            document.getElementById('journal-entry-body').innerHTML = e.body
-                .split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('');
+            setHTML('journal-entry-body', e.body.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join(''));
             document.querySelectorAll('.journal-tab').forEach((btn, j) => btn.classList.toggle('active', j === i));
             document.getElementById('journal-prev').disabled = i === 0;
-            document.getElementById('journal-next').disabled = i === journal.entries.length - 1;
+            document.getElementById('journal-next').disabled = i === jEntries.length - 1;
         }
 
         function journalStep(dir) {
-            const next = journal.index + dir;
-            if (next >= 0 && next < journal.entries.length) showJournalEntry(next);
+            const next = jIdx + dir;
+            if (next >= 0 && next < jEntries.length) showJournalEntry(next);
         }
 
 
@@ -248,8 +245,7 @@
 
         /* --- Hash routing --- */
 
-        const startPage = location.hash.slice(1);
-        showPage(PAGES.includes(startPage) ? startPage : 'home');
+        showPage(PAGES.find(p => p === location.hash.slice(1)) || 'home');
         window.scrollTo(0, 0);
 
     </script>
