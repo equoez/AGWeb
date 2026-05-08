@@ -87,19 +87,17 @@ body {
    Dark Magic — Background States
    ============================================================ */
 
-/* Reveal the dark background image */
 .bg-fixed.dark-magic::after {
     opacity: 1;
     filter: brightness(1) contrast(1) saturate(1);
 }
 
-/* Flickering animation — only active while hovering the scroll icon */
 .bg-fixed.dark-magic-anim {
     animation: darkPulse 1.6s infinite;
 }
 
 .bg-fixed.dark-magic-anim::after {
-    transition: opacity 0.5s ease; /* disable filter transition so keyframes take full control */
+    transition: opacity 0.5s ease;
     animation: darkBgFlicker 1.6s infinite;
 }
 
@@ -443,6 +441,159 @@ strong {
 }
 
 /* ============================================================
+   Journal
+   ============================================================ */
+
+/* Subtle intro line */
+.journal-intro {
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* Nav row: arrows + number tabs */
+.journal-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.journal-index-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.journal-label {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    color: var(--color-gold-dim);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.journal-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* Numbered tab buttons */
+.journal-tab {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 210, 122, 0.25);
+    border-radius: 4px;
+    background: rgba(255, 210, 122, 0.05);
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.journal-tab:hover {
+    background: rgba(255, 210, 122, 0.12);
+    color: var(--color-gold-light);
+    border-color: rgba(255, 210, 122, 0.45);
+}
+
+.journal-tab.active {
+    background: rgba(255, 210, 122, 0.18);
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+}
+
+/* Prev / Next arrow buttons */
+.journal-arrow {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255, 210, 122, 0.25);
+    border-radius: 6px;
+    background: rgba(255, 210, 122, 0.05);
+    color: var(--color-gold-dim);
+    font-size: 1.3rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    line-height: 1;
+    padding: 0;
+}
+
+.journal-arrow:hover:not(:disabled) {
+    background: rgba(255, 210, 122, 0.14);
+    color: var(--color-gold);
+}
+
+.journal-arrow:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+/* Scroll / parchment display area */
+.journal-scroll {
+    background: rgba(255, 210, 122, 0.03);
+    border: 1px solid rgba(255, 210, 122, 0.10);
+    border-radius: 10px;
+    padding: 22px 24px 20px;
+    max-height: 420px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 210, 122, 0.2) transparent;
+}
+
+.journal-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.journal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.journal-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 210, 122, 0.2);
+    border-radius: 3px;
+}
+
+/* Entry title inside the scroll */
+.journal-entry-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.12);
+}
+
+/* Entry body paragraphs */
+.journal-entry-body p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--color-text);
+    margin-bottom: 12px;
+}
+
+.journal-entry-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
@@ -488,5 +639,25 @@ strong {
     .member-points-icon {
         width: 17px;
         height: 17px;
+    }
+
+    /* Journal responsive */
+    .journal-tab {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .journal-scroll {
+        padding: 16px 14px;
+        max-height: 360px;
+    }
+
+    .journal-entry-title {
+        font-size: 0.9rem;
+    }
+
+    .journal-entry-body p {
+        font-size: 0.93rem;
     }
 }
