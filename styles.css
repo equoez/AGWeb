@@ -440,6 +440,19 @@ strong {
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
+/* Member link — for members who have a character sheet */
+.member-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.3);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.member-link:hover {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+}
+
 /* ============================================================
    Journal
    ============================================================ */
@@ -569,6 +582,118 @@ strong {
 }
 
 /* ============================================================
+   Character Sheet
+   ============================================================ */
+
+.char-back {
+    display: inline-block;
+    margin-bottom: 24px;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    color: var(--color-gold-dim);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.char-back::before {
+    content: '‹ ';
+}
+
+.char-back:hover {
+    opacity: 1;
+    color: var(--color-gold);
+}
+
+.char-header {
+    margin-bottom: 24px;
+}
+
+.char-name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+    margin-bottom: 4px;
+}
+
+.char-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.char-badge {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.char-rank {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.07em;
+    color: var(--color-gold-dim);
+}
+
+.char-separator {
+    color: rgba(255, 210, 122, 0.25);
+    font-size: 0.75rem;
+}
+
+.char-order {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+}
+
+.char-portrait-wrap {
+    width: 100%;
+    margin-bottom: 28px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 210, 122, 0.14);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+    line-height: 0;
+}
+
+.char-portrait {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.char-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right,
+        transparent,
+        rgba(255, 210, 122, 0.25) 20%,
+        rgba(255, 210, 122, 0.25) 80%,
+        transparent);
+    margin: 24px 0;
+}
+
+.char-body p {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+}
+
+.char-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
@@ -629,5 +754,10 @@ strong {
 
     .journal-entry-body p {
         font-size: 0.93rem;
+    }
+
+    /* Character sheet responsive */
+    .char-name {
+        font-size: 1.55rem;
     }
 }
