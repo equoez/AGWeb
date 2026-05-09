@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
     <title>Argent Gryphon</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="AG2_Shield_32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="AG2_Shield_16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
     <style>
         .sheet-icon-link {
@@ -32,7 +32,7 @@
 
     <div class="container">
 
-        <img src="AGlogo.png" alt="Argent Gryphon crest" class="logo">
+        <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
 
         <nav class="navbar" id="navbar"></nav>
 
@@ -163,7 +163,7 @@
         ).join(''));
 
         setHTML('codex-list', CODEX_ITEMS.map(([title, text]) =>
-            `<div class="codex-item"><img src="FWD_Fist.png" class="codex-icon" alt=""><div><strong>${title}</strong> ${text}</div></div>`
+            `<div class="codex-item"><img src="img/main/FWD_Fist.png" class="codex-icon" alt=""><div><strong>${title}</strong> ${text}</div></div>`
         ).join(''));
 
         setHTML('ranks-list', RANKS.filter(([,, desc]) => desc).map(([name, key, desc]) =>
