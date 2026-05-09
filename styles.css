@@ -71,7 +71,6 @@ body {
     transition: filter 0.4s ease;
 }
 
-/* Dark background layer — hidden by default, fades in on dark magic */
 .bg-fixed::after {
     content: '';
     position: absolute;
@@ -86,7 +85,6 @@ body {
 /* ============================================================
    Dark Magic — Background States
    ============================================================ */
-
 .bg-fixed.dark-magic::after {
     opacity: 1;
     filter: brightness(1) contrast(1) saturate(1);
@@ -127,12 +125,12 @@ body {
 }
 
 @keyframes scrollShake {
-    0%   { transform: translate(0, 0)    rotate(0deg); }
-    20%  { transform: translate(-2px, 1px)  rotate(-3deg); }
-    40%  { transform: translate(2px, -1px)  rotate(3deg); }
-    60%  { transform: translate(-1px, 2px)  rotate(-2deg); }
-    80%  { transform: translate(1px, -2px)  rotate(2deg); }
-    100% { transform: translate(0, 0)    rotate(0deg); }
+    0%   { transform: translate(0, 0)      rotate(0deg); }
+    20%  { transform: translate(-2px, 1px) rotate(-3deg); }
+    40%  { transform: translate(2px, -1px) rotate(3deg); }
+    60%  { transform: translate(-1px, 2px) rotate(-2deg); }
+    80%  { transform: translate(1px, -2px) rotate(2deg); }
+    100% { transform: translate(0, 0)      rotate(0deg); }
 }
 
 @keyframes scrollGlow {
@@ -224,13 +222,8 @@ body {
 /* ============================================================
    Pages (show/hide)
    ============================================================ */
-.page {
-    display: none;
-}
-
-.page.active {
-    display: block;
-}
+.page        { display: none; }
+.page.active { display: block; }
 
 /* ============================================================
    Typography
@@ -259,19 +252,10 @@ p {
     color: var(--color-text);
 }
 
-p:last-child {
-    margin-bottom: 0;
-}
+p:last-child { margin-bottom: 0; }
 
-em {
-    color: var(--color-text-muted);
-    font-style: italic;
-}
-
-strong {
-    color: var(--color-gold-light);
-    font-weight: 500;
-}
+em     { color: var(--color-text-muted); font-style: italic; }
+strong { color: var(--color-gold-light); font-weight: 500; }
 
 /* ============================================================
    Section Divider
@@ -289,7 +273,7 @@ strong {
 }
 
 /* ============================================================
-   Shared — Row Card (used by Codex, Ranks, Members)
+   Shared — Row Card (Codex, Ranks, Members)
    ============================================================ */
 .codex-item,
 .rank-item,
@@ -308,17 +292,13 @@ strong {
 
 .codex-item:last-child,
 .rank-item:last-child,
-.member-card:last-child {
-    margin-bottom: 0;
-}
+.member-card:last-child { margin-bottom: 0; }
 
 .codex-item:hover,
 .rank-item:hover,
-.member-card:hover {
-    background: rgba(255, 210, 122, 0.08);
-}
+.member-card:hover { background: rgba(255, 210, 122, 0.08); }
 
-/* Shared — Badge / Icon image (used by Ranks and Members) */
+/* Shared — Badge / Icon */
 .rank-icon,
 .member-badge {
     width: 44px;
@@ -331,7 +311,7 @@ strong {
     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
 }
 
-/* Shared — Text column (used by Ranks and Members) */
+/* Shared — Text column */
 .rank-text,
 .member-info {
     display: flex;
@@ -416,7 +396,6 @@ strong {
     line-height: 1.4;
 }
 
-/* Points — only rendered when points > 0 */
 .member-points {
     display: flex;
     align-items: center;
@@ -440,24 +419,31 @@ strong {
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
 }
 
-/* Member link — for members who have a character sheet */
-.member-link {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.3);
-    transition: color var(--transition-fast), border-color var(--transition-fast);
+/* Sheet icon — binder icon linking to character sheet */
+.sheet-icon-link {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    vertical-align: middle;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
 
-.member-link:hover {
-    color: var(--color-gold);
-    border-color: var(--color-gold-dim);
+.sheet-icon-link:hover {
+    opacity: 1;
+    transform: scale(1.12);
+}
+
+.sheet-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    image-rendering: pixelated;
 }
 
 /* ============================================================
    Journal
    ============================================================ */
-
-/* Subtle intro line */
 .journal-intro {
     font-style: italic;
     color: var(--color-text-muted);
@@ -465,7 +451,6 @@ strong {
     font-size: 0.95rem;
 }
 
-/* Nav row: arrows + number tabs */
 .journal-nav {
     display: flex;
     align-items: center;
@@ -496,7 +481,6 @@ strong {
     gap: 5px;
 }
 
-/* Numbered tab buttons */
 .journal-tab {
     width: 28px;
     height: 28px;
@@ -527,7 +511,6 @@ strong {
     border-color: var(--color-gold-dim);
 }
 
-/* Prev / Next arrow buttons */
 .journal-arrow {
     width: 32px;
     height: 32px;
@@ -556,7 +539,6 @@ strong {
     cursor: default;
 }
 
-/* Entry title */
 .journal-entry-title {
     font-family: var(--font-display);
     font-size: 1rem;
@@ -568,7 +550,6 @@ strong {
     border-bottom: 1px solid rgba(255, 210, 122, 0.12);
 }
 
-/* Entry body paragraphs */
 .journal-entry-body p {
     font-family: var(--font-body);
     font-size: 1rem;
@@ -577,14 +558,11 @@ strong {
     margin-bottom: 12px;
 }
 
-.journal-entry-body p:last-child {
-    margin-bottom: 0;
-}
+.journal-entry-body p:last-child { margin-bottom: 0; }
 
 /* ============================================================
    Character Sheet
    ============================================================ */
-
 .char-back {
     display: inline-block;
     margin-bottom: 24px;
@@ -597,18 +575,14 @@ strong {
     transition: opacity var(--transition-fast), color var(--transition-fast);
 }
 
-.char-back::before {
-    content: '‹ ';
-}
+.char-back::before { content: '‹ '; }
 
 .char-back:hover {
     opacity: 1;
     color: var(--color-gold);
 }
 
-.char-header {
-    margin-bottom: 24px;
-}
+.char-header { margin-bottom: 24px; }
 
 .char-name {
     font-family: var(--font-display);
@@ -689,25 +663,17 @@ strong {
     color: var(--color-text);
 }
 
-.char-body p:last-child {
-    margin-bottom: 0;
-}
+.char-body p:last-child { margin-bottom: 0; }
 
 /* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
-    :root {
-        --panel-padding: 20px 16px;
-    }
+    :root { --panel-padding: 20px 16px; }
 
-    h2 {
-        font-size: 1.4rem;
-    }
+    h2 { font-size: 1.4rem; }
 
-    .navbar {
-        padding: 12px 16px;
-    }
+    .navbar { padding: 12px 16px; }
 
     .nav-button {
         font-size: 13px;
@@ -723,41 +689,27 @@ strong {
     }
 
     .rank-text strong,
-    .member-name {
-        font-size: 0.82rem;
-    }
+    .member-name { font-size: 0.82rem; }
 
     .rank-text span,
-    .member-rank-label {
-        font-size: 0.78rem;
-    }
+    .member-rank-label { font-size: 0.78rem; }
 
-    .member-points-number {
-        font-size: 0.95rem;
-    }
+    .member-points-number { font-size: 0.95rem; }
 
     .member-points-icon {
         width: 17px;
         height: 17px;
     }
 
-    /* Journal responsive */
     .journal-tab {
         width: 24px;
         height: 24px;
         font-size: 0.65rem;
     }
 
-    .journal-entry-title {
-        font-size: 0.9rem;
-    }
+    .journal-entry-title { font-size: 0.9rem; }
 
-    .journal-entry-body p {
-        font-size: 0.93rem;
-    }
+    .journal-entry-body p { font-size: 0.93rem; }
 
-    /* Character sheet responsive */
-    .char-name {
-        font-size: 1.55rem;
-    }
+    .char-name { font-size: 1.55rem; }
 }
