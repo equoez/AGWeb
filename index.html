@@ -7,6 +7,22 @@
     <link rel="icon" type="image/png" sizes="32x32" href="AG2_Shield_32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .sheet-icon-link {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            opacity: 0.6;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .sheet-icon-link:hover { opacity: 1; transform: scale(1.12); }
+        .sheet-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+    </style>
 </head>
 
 <body>
@@ -182,15 +198,16 @@
                     setHTML('members-list', characters.map((c, i) => {
                         if (!c.rank) return '';
                         const hasSheet = !!c.sheet;
-                        const nameHtml = hasSheet
-                            ? `<a class="member-link" href="#character" onclick="showCharacterSheet(${i}); return false;">${c.name}</a>`
-                            : c.name;
+                        const sheetIcon = hasSheet
+                            ? `<a class="sheet-icon-link" href="#character" onclick="showCharacterSheet(${i}); return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
+                            : '';
                         return `<div class="member-card">
                             <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
                             <div class="member-info">
-                                <div class="member-name">${nameHtml}</div>
+                                <div class="member-name">${c.name}</div>
                                 <div class="member-rank-label">${c.rank}</div>
                             </div>
+                            ${sheetIcon}
                             ${c.points > 0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
                         </div>`;
                     }).join(''));
