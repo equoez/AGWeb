@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argent Gryphon — Journal Editor</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --color-input-bg:     rgba(255,255,255,0.05);
+            --color-input-border: rgba(255, 210, 122, 0.2);
+            --color-input-focus:  rgba(255, 210, 122, 0.45);
+            --color-danger:       #ff6b6b;
+            --color-success:      #6bff9e;
+            --color-section-bg:   rgba(255, 210, 122, 0.03);
+        }
+
+        body { padding-bottom: 80px; }
+
+        .editor-wrap { width: 720px; max-width: 96vw; }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255,210,122,0.15);
+        }
+        .editor-header h2 { margin: 0; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: var(--radius-btn);
+            border: 1px solid rgba(255,210,122,0.3);
+            background: rgba(255,210,122,0.08);
+            color: var(--color-gold);
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        }
+        .btn:hover { background: rgba(255,210,122,0.15); border-color: rgba(255,210,122,0.5); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: rgba(255,210,122,0.18); border-color: var(--color-gold-dim); }
+        .btn-primary:hover { background: rgba(255,210,122,0.28); }
+        .btn-danger { border-color: rgba(255,107,107,0.4); color: var(--color-danger); background: rgba(255,107,107,0.06); }
+        .btn-danger:hover { background: rgba(255,107,107,0.14); border-color: rgba(255,107,107,0.6); }
+        .btn-sm { padding: 6px 13px; font-size: 12px; }
+        .btn-xs { padding: 4px 10px; font-size: 11px; }
+
+        .instructions {
+            background: rgba(255,210,122,0.04);
+            border: 1px solid rgba(255,210,122,0.12);
+            border-left: 3px solid var(--color-gold-dim);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+        .instructions strong { color: var(--color-gold-light); }
+
+        .load-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .load-bar p { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
+
+        /* ── Entry cards ── */
+        .entry-card {
+            background: var(--color-section-bg);
+            border: 1px solid rgba(255,210,122,0.1);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .entry-card:hover { border-color: rgba(255,210,122,0.2); }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .drag-handle {
+            cursor: grab;
+            color: rgba(255,210,122,0.25);
+            font-size: 1rem;
+            padding: 0 4px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+        .drag-handle:hover { color: rgba(255,210,122,0.5); }
+
+        .entry-number {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-dim);
+            min-width: 24px;
+            flex-shrink: 0;
+        }
+        .card-head-title {
+            font-family: var(--font-display);
+            font-size: 0.88rem;
+            color: var(--color-gold-light);
+            font-weight: 600;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .card-chevron {
+            font-size: 1.2rem;
+            color: var(--color-gold-dim);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .card-head.open .card-chevron { transform: rotate(180deg); }
+
+        .card-body {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid rgba(255,210,122,0.08);
+        }
+        .card-body.open { display: block; }
+
+        /* ── Form ── */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 14px;
+        }
+        .field label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-dim);
+        }
+        .field input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,210,122,0.2);
+            border-radius: 6px;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            padding: 8px 10px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .field input:focus { border-color: rgba(255,210,122,0.45); }
+
+        /* ── Rich text editor ── */
+        .rte-wrap { margin-top: 14px; }
+        .rte-label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-dim);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,210,122,0.2);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+        }
+        .rte-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 26px;
+            padding: 0 7px;
+            border: 1px solid rgba(255,210,122,0.2);
+            border-radius: 4px;
+            background: rgba(255,210,122,0.05);
+            color: var(--color-text-muted);
+            font-family: var(--font-body);
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            line-height: 1;
+        }
+        .rte-btn:hover { background: rgba(255,210,122,0.14); color: var(--color-gold-light); border-color: rgba(255,210,122,0.4); }
+        .rte-btn.active { background: rgba(255,210,122,0.2); color: var(--color-gold); border-color: var(--color-gold-dim); }
+        .rte-btn-sep { width: 1px; background: rgba(255,210,122,0.15); margin: 2px 2px; align-self: stretch; }
+        .rte-editor {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,210,122,0.2);
+            border-radius: 0 0 6px 6px;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            outline: none;
+            min-height: 160px;
+            line-height: 1.75;
+            transition: border-color 0.2s;
+        }
+        .rte-editor:focus { border-color: rgba(255,210,122,0.45); }
+        .rte-editor strong { color: var(--color-gold-light); }
+        .rte-editor em { color: var(--color-text-muted); font-style: italic; }
+
+        /* ── Add / output ── */
+        .add-entry-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+        .output-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,210,122,0.15);
+        }
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .output-header h3 { margin: 0; }
+        #output-box {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,210,122,0.15);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--color-text-muted);
+            white-space: pre;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        .copy-feedback {
+            font-size: 12px;
+            color: var(--color-success);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: var(--font-body);
+        }
+        .copy-feedback.show { opacity: 1; }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-text-muted);
+            font-style: italic;
+        }
+        .entry-card.dragging { opacity: 0.5; }
+        .entry-card.drag-over { border-color: var(--color-gold-dim); }
+    </style>
+</head>
+<body>
+
+<div class="bg-fixed"></div>
+
+<div class="container">
+
+    <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
+
+    <div class="editor-wrap">
+        <div class="content-box">
+
+            <div class="editor-header">
+                <h2>Journal Editor</h2>
+                <a class="btn btn-sm" href="index.html">&#8592; Back to site</a>
+            </div>
+
+            <div class="instructions">
+                <strong>How to use:</strong> The current <em>journal.json</em> loads automatically. Edit entries, reorder them by dragging, then click <strong>Generate JSON</strong>. Copy the result and paste it into the GitHub editor for <code>sources/journal.json</code> — then commit.
+            </div>
+
+            <div class="load-bar">
+                <button class="btn btn-sm" onclick="fetchLive()">&#8635; Reload from site</button>
+                <label class="btn btn-sm" style="cursor:pointer;">
+                    &#8599; Load from file
+                    <input type="file" id="file-input" accept=".json" style="display:none">
+                </label>
+                <p id="load-status">Loading…</p>
+            </div>
+
+            <div id="entry-list"></div>
+
+            <div class="add-entry-row">
+                <button class="btn" onclick="addEntry()">+ Add entry</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>Generated JSON</h3>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span class="copy-feedback" id="copy-feedback">Copied!</span>
+                        <button class="btn btn-sm" onclick="copyOutput()">&#9647; Copy</button>
+                        <button class="btn btn-primary btn-sm" onclick="generateOutput()">&#8635; Generate JSON</button>
+                    </div>
+                </div>
+                <div id="output-box">Click "Generate JSON" to preview the output.</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+let entries = [];
+let dragSrc = null;
+
+/* ── Render all ── */
+function renderAll() {
+    const list = document.getElementById('entry-list');
+    if (entries.length === 0) {
+        list.innerHTML = '<div class="empty-state">No entries yet. Load a file or add one below.</div>';
+        return;
+    }
+    list.innerHTML = '';
+    entries.forEach((e, i) => list.appendChild(buildCard(e, i)));
+}
+
+/* ── Build card ── */
+function buildCard(e, i) {
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    card.dataset.index = i;
+    card.draggable = true;
+
+    card.addEventListener('dragstart', ev => { dragSrc = i; card.classList.add('dragging'); ev.dataTransfer.effectAllowed = 'move'; });
+    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+    card.addEventListener('dragover',  ev => { ev.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop',      ev => {
+        ev.preventDefault();
+        card.classList.remove('drag-over');
+        if (dragSrc !== null && dragSrc !== i) {
+            const tmp = entries[dragSrc];
+            entries.splice(dragSrc, 1);
+            entries.splice(i, 0, tmp);
+            renderAll();
+        }
+    });
+
+    card.innerHTML = `
+        <div class="card-head" onclick="toggleCard(this)">
+            <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+            <span class="entry-number">#${i + 1}</span>
+            <div class="card-head-title">${esc(e.title) || '<em style="opacity:0.4">Untitled</em>'}</div>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+
+        <div class="card-body"
+            onmouseenter="this.closest('.entry-card').draggable=false"
+            onmouseleave="this.closest('.entry-card').draggable=true"
+            onmousedown="event.stopPropagation()"
+            onclick="event.stopPropagation()">
+
+            <div class="field">
+                <label>Entry title</label>
+                <input type="text" value="${esc(e.title)}"
+                    oninput="update(${i},'title',this.value); refreshHead(${i})">
+            </div>
+
+            <div class="rte-wrap">
+                <label class="rte-label">Body</label>
+                <div class="rte-toolbar" id="rte-toolbar-${i}">
+                    <button class="rte-btn" title="Bold"      onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'bold')"><b>B</b></button>
+                    <button class="rte-btn" title="Italic"    onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'italic')"><i>I</i></button>
+                    <button class="rte-btn" title="Underline" onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'underline')"><u>U</u></button>
+                </div>
+                <div class="rte-editor"
+                    id="rte-${i}"
+                    contenteditable="true"
+                    oninput="syncBody(${i})"
+                    onkeyup="updateToolbarState(${i})"
+                    onmouseup="updateToolbarState(${i})"
+                    onmouseenter="this.closest('.entry-card').draggable=false"
+                    onmouseleave="this.closest('.entry-card').draggable=true"
+                >${bodyToHtml(e.body)}</div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger btn-xs" onclick="removeEntry(${i})">Remove entry</button>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
+/* ── Convert plain text body (legacy \n\n format) to HTML ── */
+function bodyToHtml(body) {
+    if (!body) return '';
+    // Already HTML (contains tags)
+    if (/<[a-z][\s\S]*>/i.test(body)) return body;
+    // Plain text — split on double newlines into paragraphs
+    return body.split(/\n\n+/).map(p =>
+        `<p>${p.trim().replace(/\n/g, '<br>')}</p>`
+    ).join('');
+}
+
+/* ── Convert HTML body back to plain text for JSON ── */
+function htmlToBody(html) {
+    // If the user only used basic formatting with no block structure, keep as HTML
+    // Otherwise convert back to plain text paragraph format
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    // If there are any bold/italic/underline tags, store as HTML
+    if (tmp.querySelector('b,strong,i,em,u')) return html;
+    // Plain — extract text with double newlines between blocks
+    const blocks = [];
+    tmp.querySelectorAll('p,div,h3').forEach(el => {
+        const t = el.innerText || el.textContent;
+        if (t.trim()) blocks.push(t.trim());
+    });
+    return blocks.length ? blocks.join('\n\n') : (tmp.innerText || tmp.textContent || '').trim();
+}
+
+/* ── Card toggle ── */
+function toggleCard(head) {
+    head.classList.toggle('open');
+    head.nextElementSibling.classList.toggle('open');
+}
+
+/* ── Refresh header title without full re-render ── */
+function refreshHead(i) {
+    const card = document.querySelector(`[data-index="${i}"]`);
+    if (!card) return;
+    const t = entries[i].title;
+    card.querySelector('.card-head-title').innerHTML = t ? esc(t) : '<em style="opacity:0.4">Untitled</em>';
+    card.querySelectorAll('.entry-number').forEach((el, j) => {
+        // re-number all after a drag
+    });
+}
+
+/* ── Data updates ── */
+function update(i, key, val) { entries[i][key] = val; }
+
+function syncBody(i) {
+    const editor = document.getElementById(`rte-${i}`);
+    entries[i].body = editor.innerHTML;
+}
+
+/* ── Rich text ── */
+function rteFormat(i, cmd) {
+    const editor = document.getElementById(`rte-${i}`);
+    editor.focus();
+    document.execCommand(cmd, false, null);
+    syncBody(i);
+    updateToolbarState(i);
+}
+
+function updateToolbarState(i) {
+    const toolbar = document.getElementById(`rte-toolbar-${i}`);
+    if (!toolbar) return;
+    ['bold','italic','underline'].forEach((cmd, j) => {
+        toolbar.querySelectorAll('.rte-btn')[j]?.classList.toggle('active', document.queryCommandState(cmd));
+    });
+}
+
+/* ── Add / remove ── */
+function addEntry() {
+    entries.push({ title: '', body: '' });
+    renderAll();
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.entry-card');
+        const last = cards[cards.length - 1];
+        if (last) {
+            last.querySelector('.card-head').classList.add('open');
+            last.querySelector('.card-body').classList.add('open');
+            last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 50);
+}
+
+function removeEntry(i) {
+    if (!confirm(`Remove entry "${entries[i].title || 'Untitled'}"?`)) return;
+    entries.splice(i, 1);
+    renderAll();
+}
+
+/* ── File loading ── */
+document.getElementById('file-input').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        try {
+            entries = JSON.parse(ev.target.result);
+            renderAll();
+            generateOutput();
+        } catch {
+            alert('Could not parse the file. Make sure it is a valid JSON file.');
+        }
+    };
+    reader.readAsText(file);
+    this.value = '';
+});
+
+/* ── Live fetch ── */
+function fetchLive() {
+    const status = document.getElementById('load-status');
+    status.textContent = 'Loading…';
+    status.style.color = '';
+    fetch('sources/journal.json?nocache=' + Date.now())
+        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(data => {
+            entries = data;
+            renderAll();
+            generateOutput();
+            status.textContent = 'Loaded from site ✓';
+            status.style.color = 'var(--color-success)';
+        })
+        .catch(() => {
+            status.textContent = 'Could not load — use "Load from file" instead.';
+            status.style.color = 'var(--color-danger)';
+            renderAll();
+        });
+}
+
+/* ── Output ── */
+function generateOutput() {
+    // Sync all open editors first
+    entries.forEach((e, i) => {
+        const editor = document.getElementById(`rte-${i}`);
+        if (editor) e.body = editor.innerHTML;
+    });
+    const out = entries.map(e => ({
+        title: e.title || '',
+        body: htmlToBody(e.body || '')
+    }));
+    document.getElementById('output-box').textContent = JSON.stringify(out, null, 2);
+}
+
+function copyOutput() {
+    const text = document.getElementById('output-box').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const fb = document.getElementById('copy-feedback');
+        fb.classList.add('show');
+        setTimeout(() => fb.classList.remove('show'), 2000);
+    });
+}
+
+function esc(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Init ── */
+fetchLive();
+
+</script>
+</body>
+</html>
