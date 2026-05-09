@@ -128,6 +128,11 @@
             ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
         ];
 
+        /* Registry — add an entry here whenever a character sheet exists */
+        const CHARACTER_PAGES = {
+            'Valarya': 'characters/valarya.html',
+        };
+
         const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
         const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)}_rankbadge.png`;
         const setHTML  = (id, html) => document.getElementById(id).innerHTML = html;
@@ -172,10 +177,13 @@
                         const [name, rank, pts] = line.split(' - ').map(s => s.trim());
                         if (!rank) return '';
                         const points = parseInt(pts, 10);
+                        const nameHtml = CHARACTER_PAGES[name]
+                            ? `<a class="member-link" href="${CHARACTER_PAGES[name]}">${name}</a>`
+                            : name;
                         return `<div class="member-card">
                             <img class="member-badge" src="${badgeSrc(rank)}" alt="${rank} badge">
                             <div class="member-info">
-                                <div class="member-name">${name}</div>
+                                <div class="member-name">${nameHtml}</div>
                                 <div class="member-rank-label">${rank}</div>
                             </div>
                             ${points > 0 ? `<div class="member-points"><span class="member-points-number">${points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
