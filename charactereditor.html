@@ -229,40 +229,78 @@
         .sheet-fields { display: none; }
         .sheet-fields.open { display: block; }
 
-        /* ── Bio paragraphs ── */
-        .bio-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-        .bio-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
+        /* ── Rich text editor ── */
+        .rte-wrap {
+            margin-top: 14px;
         }
-        .bio-row textarea {
-            flex: 1;
+        .rte-label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-dim);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--color-input-border);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+        }
+        .rte-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 26px;
+            padding: 0 7px;
+            border: 1px solid rgba(255,210,122,0.2);
+            border-radius: 4px;
+            background: rgba(255,210,122,0.05);
+            color: var(--color-text-muted);
+            font-family: var(--font-body);
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            line-height: 1;
+        }
+        .rte-btn:hover { background: rgba(255,210,122,0.14); color: var(--color-gold-light); border-color: rgba(255,210,122,0.4); }
+        .rte-btn.active { background: rgba(255,210,122,0.2); color: var(--color-gold); border-color: var(--color-gold-dim); }
+        .rte-btn-sep {
+            width: 1px;
+            background: rgba(255,210,122,0.15);
+            margin: 2px 2px;
+            align-self: stretch;
+        }
+        .rte-editor {
             background: var(--color-input-bg);
             border: 1px solid var(--color-input-border);
-            border-radius: 6px;
+            border-radius: 0 0 6px 6px;
             color: var(--color-text);
             font-family: var(--font-body);
-            font-size: 0.88rem;
-            padding: 8px 10px;
+            font-size: 0.95rem;
+            padding: 12px 14px;
             outline: none;
-            min-height: 64px;
-            resize: vertical;
+            min-height: 200px;
+            line-height: 1.75;
             transition: border-color 0.2s;
         }
-        .bio-row textarea:focus { border-color: var(--color-input-focus); }
-        .bio-remove {
-            background: none;
-            border: none;
-            color: rgba(255,107,107,0.5);
-            font-size: 1.1rem;
-            cursor: pointer;
-            padding: 4px;
-            margin-top: 4px;
-            line-height: 1;
-            transition: color 0.2s;
+        .rte-editor:focus { border-color: var(--color-input-focus); }
+        .rte-editor h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-gold-light);
+            letter-spacing: 0.04em;
+            margin: 10px 0 4px;
         }
-        .bio-remove:hover { color: var(--color-danger); }
+        .rte-editor p { margin: 0 0 8px; }
+        .rte-editor strong { color: var(--color-gold-light); }
+        .rte-editor em { color: var(--color-text-muted); font-style: italic; }
 
         /* ── Add character ── */
         .add-char-row {
@@ -496,14 +534,22 @@ function buildCard(c, i) {
                                 oninput="updateSheet(${i},'portrait',this.value)">
                         </div>
                     </div>
-                    <div style="margin-top:14px;">
-                        <label style="font-family:var(--font-display);font-size:11px;letter-spacing:0.06em;color:var(--color-gold-dim);display:block;margin-bottom:8px;">
-                            Biography — each box is one paragraph
-                        </label>
-                        <div class="bio-list" id="bio-list-${i}">
-                            ${(c.sheet?.bio||[]).map((p,j) => bioParagraphHTML(i,j,p)).join('')}
+                    <div class="rte-wrap">
+                        <label class="rte-label">Biography</label>
+                        <div class="rte-toolbar" id="rte-toolbar-${i}">
+                            <button class="rte-btn" title="Header" onmousedown="event.preventDefault(); rteFormat(${i},'header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                            <div class="rte-btn-sep"></div>
+                            <button class="rte-btn" title="Bold" onmousedown="event.preventDefault(); rteFormat(${i},'bold')"><b>B</b></button>
+                            <button class="rte-btn" title="Italic" onmousedown="event.preventDefault(); rteFormat(${i},'italic')"><i>I</i></button>
+                            <button class="rte-btn" title="Underline" onmousedown="event.preventDefault(); rteFormat(${i},'underline')"><u>U</u></button>
                         </div>
-                        <button class="btn btn-xs" onclick="addParagraph(${i})">+ Add paragraph</button>
+                        <div class="rte-editor"
+                            id="rte-${i}"
+                            contenteditable="true"
+                            oninput="syncBio(${i})"
+                            onkeyup="updateToolbarState(${i})"
+                            onmouseup="updateToolbarState(${i})"
+                        >${bioToHtml(c.sheet?.bio)}</div>
                     </div>
                 </div>
             </div>
@@ -516,11 +562,64 @@ function buildCard(c, i) {
     return card;
 }
 
-function bioParagraphHTML(charIdx, paraIdx, text) {
-    return `<div class="bio-row" id="bio-row-${charIdx}-${paraIdx}">
-        <textarea oninput="updateBio(${charIdx},${paraIdx},this.value)">${esc(text)}</textarea>
-        <button class="bio-remove" onclick="removeParagraph(${charIdx},${paraIdx})" title="Remove paragraph">&#215;</button>
-    </div>`;
+function bioParagraphHTML(charIdx, paraIdx, text) { return ''; } // legacy stub
+
+/* ── Rich text editor ── */
+
+// Convert stored bio (array of strings or single HTML string) to editor HTML
+function bioToHtml(bio) {
+    if (!bio) return '';
+    if (typeof bio === 'string') return bio;
+    // Legacy array format — join paragraphs
+    return bio.map(p => `<p>${p}</p>`).join('');
+}
+
+// Sync editor HTML back to characters data
+function syncBio(i) {
+    if (!characters[i].sheet) return;
+    const editor = document.getElementById(`rte-${i}`);
+    characters[i].sheet.bio = editor.innerHTML;
+}
+
+// Apply a format command
+function rteFormat(i, cmd) {
+    const editor = document.getElementById(`rte-${i}`);
+    editor.focus();
+    if (cmd === 'header') {
+        // Toggle selection between H3 and P
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const node = sel.getRangeAt(0).commonAncestorContainer;
+        const block = node.nodeType === 3 ? node.parentElement : node;
+        const inHeader = !!block.closest('h3');
+        document.execCommand('formatBlock', false, inHeader ? 'p' : 'h3');
+    } else {
+        document.execCommand(cmd, false, null);
+    }
+    syncBio(i);
+    updateToolbarState(i);
+}
+
+// Highlight toolbar buttons based on current selection state
+function updateToolbarState(i) {
+    const toolbar = document.getElementById(`rte-toolbar-${i}`);
+    if (!toolbar) return;
+    const btns = toolbar.querySelectorAll('.rte-btn');
+    const checks = ['header', 'bold', 'italic', 'underline'];
+    btns.forEach((btn, idx) => {
+        if (checks[idx] === 'header') {
+            const sel = window.getSelection();
+            let inH = false;
+            if (sel && sel.rangeCount) {
+                const node = sel.getRangeAt(0).commonAncestorContainer;
+                const el = node.nodeType === 3 ? node.parentElement : node;
+                inH = !!el.closest('h3');
+            }
+            btn.classList.toggle('active', inH);
+        } else {
+            btn.classList.toggle('active', document.queryCommandState(checks[idx]));
+        }
+    });
 }
 
 /* ── Card toggle ── */
@@ -549,7 +648,7 @@ function updateSheet(i, key, val) {
 
 function toggleSheet(i, on) {
     if (on) {
-        characters[i].sheet = characters[i].sheet || { portrait: '', bio: [] };
+        characters[i].sheet = characters[i].sheet || { portrait: '', bio: '' };
     } else {
         delete characters[i].sheet;
     }
@@ -566,29 +665,6 @@ function toggleSheet(i, on) {
     } else if (!on && sheetTag) {
         sheetTag.remove();
     }
-}
-
-function updateBio(charIdx, paraIdx, val) {
-    if (!characters[charIdx].sheet) return;
-    characters[charIdx].sheet.bio[paraIdx] = val;
-}
-
-function addParagraph(i) {
-    if (!characters[i].sheet) characters[i].sheet = { portrait: '', bio: [] };
-    const bio = characters[i].sheet.bio;
-    const idx = bio.length;
-    bio.push('');
-    const list = document.getElementById(`bio-list-${i}`);
-    list.insertAdjacentHTML('beforeend', bioParagraphHTML(i, idx, ''));
-}
-
-function removeParagraph(charIdx, paraIdx) {
-    if (!characters[charIdx].sheet) return;
-    characters[charIdx].sheet.bio.splice(paraIdx, 1);
-    const card = document.querySelector(`[data-index="${charIdx}"]`);
-    if (!card) return;
-    const list = document.getElementById(`bio-list-${charIdx}`);
-    list.innerHTML = characters[charIdx].sheet.bio.map((p, j) => bioParagraphHTML(charIdx, j, p)).join('');
 }
 
 function addCharacter() {
@@ -633,14 +709,18 @@ document.getElementById('file-input').addEventListener('change', function() {
 
 /* ── Output generation ── */
 function generateOutput() {
-    // Build clean output objects
+    // Sync all open rich text editors before building output
+    characters.forEach((c, i) => {
+        const editor = document.getElementById(`rte-${i}`);
+        if (editor && c.sheet) c.sheet.bio = editor.innerHTML;
+    });
     const out = characters.map(c => {
         const obj = { name: c.name || '', rank: c.rank || '', points: c.points || 0 };
         if (c.sheet) {
             obj.sheet = {};
             if (c.sheet.portrait) obj.sheet.portrait = c.sheet.portrait;
-            const bio = (c.sheet.bio || []).filter(p => p.trim());
-            if (bio.length) obj.sheet.bio = bio;
+            const bio = c.sheet.bio || '';
+            if (bio.trim()) obj.sheet.bio = bio;
         }
         return obj;
     });
