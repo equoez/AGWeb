@@ -7,23 +7,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .sheet-icon-link {
-            display: inline-flex;
-            align-items: center;
-            margin-left: 8px;
-            vertical-align: middle;
-            opacity: 0.7;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-        .sheet-icon-link:hover { opacity: 1; transform: scale(1.12); }
-        .sheet-icon {
-            width: 22px;
-            height: 22px;
-            object-fit: contain;
-            image-rendering: pixelated;
-        }
-    </style>
 </head>
 
 <body>
@@ -115,7 +98,6 @@
                 <div id="journal-entry-body" class="journal-entry-body"></div>
             </section>
 
-            <!-- Character sheet — rendered dynamically, never listed in PAGES nav -->
             <section data-page="character" class="page">
                 <a class="char-back" href="#members" onclick="showPage('members'); return false;">Return to the Order</a>
                 <div id="char-sheet-content"></div>
@@ -154,7 +136,7 @@
         const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
         const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)}_rankbadge.png`;
         const setHTML  = (id, html) => document.getElementById(id).innerHTML = html;
-
+        const nameToSlug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
         /* --- Build static HTML --- */
 
@@ -170,7 +152,6 @@
             `<div class="rank-item"><img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge"><div class="rank-text"><strong>${name}</strong><span>${desc}</span></div></div>`
         ).join(''));
 
-
         /* --- Page switching --- */
 
         function showPage(pageId) {
@@ -181,31 +162,27 @@
             try { history.replaceState(null, '', '/#' + pageId); } catch(e) {}
         }
 
-
         /* --- Members --- */
 
-        // Stores loaded character data for sheet rendering
         let characterData = [];
 
         function loadMembers() {
             const list = document.getElementById('members-list');
             if (list.dataset.loaded) return;
             list.dataset.loaded = 'true';
-
             fetch('sources/characters.json')
                 .then(r => { if (!r.ok) throw new Error(); return r.json(); })
                 .then(characters => {
                     characterData = characters;
                     setHTML('members-list', characters.map((c, i) => {
                         if (!c.rank) return '';
-                        const hasSheet = !!c.sheet;
-                        const sheetIcon = hasSheet
-                            ? `<a class="sheet-icon-link" href="#character" onclick="showCharacterSheet(${i}); return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
+                        const icon = c.sheet
+                            ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" onclick="showCharacterSheet(${i}); return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
                             : '';
                         return `<div class="member-card">
                             <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
                             <div class="member-info">
-                                <div class="member-name">${c.name}${sheetIcon}</div>
+                                <div class="member-name">${c.name}${icon}</div>
                                 <div class="member-rank-label">${c.rank}</div>
                             </div>
                             ${c.points > 0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
@@ -215,62 +192,39 @@
                 .catch(() => { document.getElementById('members-error').style.display = 'block'; });
         }
 
-
         /* --- Character Sheet --- */
-
-        // Generate a URL-friendly slug from a name e.g. "Valkera Blackheart" -> "valkerablackheart"
-        function nameToSlug(name) {
-            return name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        }
 
         function showCharacterSheet(index) {
             const c = characterData[index];
-            if (!c || !c.sheet) return;
-
-            const rankKey = RANK_MAP.get(c.rank) || 'initiate';
-            const portraitHtml = c.sheet.portrait
-                ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>`
-                : '';
+            if (!c?.sheet) return;
             const bio = c.sheet.bio || '';
-            const bioHtml = typeof bio === 'string'
-                ? bio
-                : bio.map(p => `<p>${p}</p>`).join('');
-
             setHTML('char-sheet-content', `
                 <div class="char-header">
                     <div class="char-name">${c.name}</div>
                     <div class="char-meta">
-                        <img class="char-badge" src="img/ranks/ranks_${rankKey}_rankbadge.png" alt="${c.rank} badge">
+                        <img class="char-badge" src="img/ranks/ranks_${RANK_MAP.get(c.rank) || 'initiate'}_rankbadge.png" alt="${c.rank} badge">
                         <span class="char-rank">${c.rank}</span>
                         <span class="char-separator">·</span>
                         <span class="char-order">Order of the Argent Gryphon</span>
                     </div>
                 </div>
-                ${portraitHtml}
-                <div class="char-body">${bioHtml}</div>
+                ${c.sheet.portrait ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>` : ''}
+                <div class="char-body">${typeof bio === 'string' ? bio : bio.map(p => `<p>${p}</p>`).join('')}</div>
             `);
-
             showPage('character');
             try { history.replaceState(null, '', '/#' + nameToSlug(c.name)); } catch(e) {}
         }
 
-        // Try to open a character sheet by slug, loading members data first if needed
         function tryOpenCharacterBySlug(slug) {
-            if (characterData.length > 0) {
-                const idx = characterData.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
-                if (idx !== -1) { showCharacterSheet(idx); return; }
-            }
-            // Data not loaded yet — fetch it first
-            fetch('sources/characters.json')
-                .then(r => r.json())
-                .then(characters => {
-                    characterData = characters;
-                    const idx = characters.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
-                    if (idx !== -1) showCharacterSheet(idx);
-                })
-                .catch(() => {});
+            const open = chars => {
+                const idx = chars.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
+                if (idx !== -1) showCharacterSheet(idx);
+            };
+            if (characterData.length) { open(characterData); return; }
+            fetch('sources/characters.json').then(r => r.json()).then(chars => {
+                characterData = chars; open(chars);
+            }).catch(() => {});
         }
-
 
         /* --- Journal --- */
 
@@ -308,7 +262,6 @@
             if (next >= 0 && next < jEntries.length) showJournalEntry(next);
         }
 
-
         /* --- Dark magic easter egg --- */
 
         const bgEl = document.querySelector('.bg-fixed');
@@ -328,19 +281,12 @@
             dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
         });
 
-
         /* --- Hash routing --- */
 
         const hash = location.hash.slice(1);
-        const matchedPage = PAGES.find(p => p === hash);
-        if (matchedPage) {
-            showPage(matchedPage);
-        } else if (hash) {
-            // Could be a character slug — try to open it
-            tryOpenCharacterBySlug(hash);
-        } else {
-            showPage('home');
-        }
+        if (PAGES.includes(hash)) showPage(hash);
+        else if (hash)            tryOpenCharacterBySlug(hash);
+        else                      showPage('home');
         window.scrollTo(0, 0);
 
     </script>
