@@ -77,7 +77,7 @@
             <section data-page="members" class="page">
                 <h2>Members</h2>
                 <p id="members-error" style="display:none; color:#ff8888;">
-                    Could not load member data. Make sure <em>sources/characters.txt</em> is in place.
+                    Could not load member data. Make sure <em>sources/characters.json</em> is in place.
                 </p>
                 <div id="members-list"></div>
             </section>
@@ -96,6 +96,12 @@
                 </div>
                 <div id="journal-entry-title" class="journal-entry-title"></div>
                 <div id="journal-entry-body" class="journal-entry-body"></div>
+            </section>
+
+            <!-- Character sheet — rendered dynamically, never listed in PAGES nav -->
+            <section data-page="character" class="page">
+                <a class="char-back" href="#members" onclick="showPage('members'); return false;">Return to the Order</a>
+                <div id="char-sheet-content"></div>
             </section>
 
         </main>
@@ -127,11 +133,6 @@
             ['Sentinel',     'sentinel',    'Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay.'],
             ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
         ];
-
-        /* Registry — add an entry here whenever a character sheet exists */
-        const CHARACTER_PAGES = {
-            'Valarya': 'characters/valarya.html',
-        };
 
         const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
         const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)}_rankbadge.png`;
@@ -166,31 +167,65 @@
 
         /* --- Members --- */
 
+        // Stores loaded character data for sheet rendering
+        let characterData = [];
+
         function loadMembers() {
             const list = document.getElementById('members-list');
             if (list.dataset.loaded) return;
             list.dataset.loaded = 'true';
-            fetch('sources/characters.txt')
-                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
-                .then(text => {
-                    setHTML('members-list', text.trim().split('\n').filter(Boolean).map(line => {
-                        const [name, rank, pts] = line.split(' - ').map(s => s.trim());
-                        if (!rank) return '';
-                        const points = parseInt(pts, 10);
-                        const nameHtml = CHARACTER_PAGES[name]
-                            ? `<a class="member-link" href="${CHARACTER_PAGES[name]}">${name}</a>`
-                            : name;
+
+            fetch('sources/characters.json')
+                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+                .then(characters => {
+                    characterData = characters;
+                    setHTML('members-list', characters.map((c, i) => {
+                        if (!c.rank) return '';
+                        const hasSheet = !!c.sheet;
+                        const nameHtml = hasSheet
+                            ? `<a class="member-link" href="#character" onclick="showCharacterSheet(${i}); return false;">${c.name}</a>`
+                            : c.name;
                         return `<div class="member-card">
-                            <img class="member-badge" src="${badgeSrc(rank)}" alt="${rank} badge">
+                            <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
                             <div class="member-info">
                                 <div class="member-name">${nameHtml}</div>
-                                <div class="member-rank-label">${rank}</div>
+                                <div class="member-rank-label">${c.rank}</div>
                             </div>
-                            ${points > 0 ? `<div class="member-points"><span class="member-points-number">${points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
+                            ${c.points > 0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
                         </div>`;
                     }).join(''));
                 })
                 .catch(() => { document.getElementById('members-error').style.display = 'block'; });
+        }
+
+
+        /* --- Character Sheet --- */
+
+        function showCharacterSheet(index) {
+            const c = characterData[index];
+            if (!c || !c.sheet) return;
+
+            const rankKey = RANK_MAP.get(c.rank) || 'initiate';
+            const portraitHtml = c.sheet.portrait
+                ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>`
+                : '';
+            const bioHtml = (c.sheet.bio || []).map(p => `<p>${p}</p>`).join('');
+
+            setHTML('char-sheet-content', `
+                <div class="char-header">
+                    <div class="char-name">${c.name}</div>
+                    <div class="char-meta">
+                        <img class="char-badge" src="img/ranks/ranks_${rankKey}_rankbadge.png" alt="${c.rank} badge">
+                        <span class="char-rank">${c.rank}</span>
+                        <span class="char-separator">·</span>
+                        <span class="char-order">Order of the Argent Gryphon</span>
+                    </div>
+                </div>
+                ${portraitHtml}
+                <div class="char-body">${bioHtml}</div>
+            `);
+
+            showPage('character');
         }
 
 
