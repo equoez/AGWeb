@@ -160,7 +160,7 @@
             document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
             if (pageId === 'members') loadMembers();
             if (pageId === 'journal') initJournal();
-            try { history.replaceState(null, '', '#' + pageId); } catch(e) {}
+            try { history.replaceState(null, '', '/#' + pageId); } catch(e) {}
         }
 
 
