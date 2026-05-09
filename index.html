@@ -218,6 +218,11 @@
 
         /* --- Character Sheet --- */
 
+        // Generate a URL-friendly slug from a name e.g. "Valkera Blackheart" -> "valkerablackheart"
+        function nameToSlug(name) {
+            return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
         function showCharacterSheet(index) {
             const c = characterData[index];
             if (!c || !c.sheet) return;
@@ -246,6 +251,24 @@
             `);
 
             showPage('character');
+            try { history.replaceState(null, '', '/#' + nameToSlug(c.name)); } catch(e) {}
+        }
+
+        // Try to open a character sheet by slug, loading members data first if needed
+        function tryOpenCharacterBySlug(slug) {
+            if (characterData.length > 0) {
+                const idx = characterData.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
+                if (idx !== -1) { showCharacterSheet(idx); return; }
+            }
+            // Data not loaded yet — fetch it first
+            fetch('sources/characters.json')
+                .then(r => r.json())
+                .then(characters => {
+                    characterData = characters;
+                    const idx = characters.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
+                    if (idx !== -1) showCharacterSheet(idx);
+                })
+                .catch(() => {});
         }
 
 
@@ -308,7 +331,16 @@
 
         /* --- Hash routing --- */
 
-        showPage(PAGES.find(p => p === location.hash.slice(1)) || 'home');
+        const hash = location.hash.slice(1);
+        const matchedPage = PAGES.find(p => p === hash);
+        if (matchedPage) {
+            showPage(matchedPage);
+        } else if (hash) {
+            // Could be a character slug — try to open it
+            tryOpenCharacterBySlug(hash);
+        } else {
+            showPage('home');
+        }
         window.scrollTo(0, 0);
 
     </script>
