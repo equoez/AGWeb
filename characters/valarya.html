@@ -7,131 +7,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../AG2_Shield_32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../AG2_Shield_16x16.png">
     <link rel="stylesheet" href="../styles.css">
-    <style>
-
-        /* ============================================================
-           Character Sheet — Valarya
-           ============================================================ */
-
-        .char-portrait-wrap {
-            width: 100%;
-            margin-bottom: 28px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 210, 122, 0.14);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
-            line-height: 0; /* remove inline-block gap */
-        }
-
-        .char-portrait {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-
-        /* Name + rank header */
-        .char-header {
-            margin-bottom: 24px;
-        }
-
-        .char-name {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--color-gold);
-            letter-spacing: 0.08em;
-            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
-            margin-bottom: 4px;
-        }
-
-        .char-meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .char-badge {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            flex-shrink: 0;
-            filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
-        }
-
-        .char-rank {
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            letter-spacing: 0.07em;
-            color: var(--color-gold-dim);
-        }
-
-        .char-separator {
-            color: rgba(255, 210, 122, 0.25);
-            font-size: 0.75rem;
-        }
-
-        .char-order {
-            font-family: var(--font-body);
-            font-style: italic;
-            font-size: 0.88rem;
-            color: var(--color-text-muted);
-        }
-
-        /* Divider rule between portrait area and body text */
-        .char-rule {
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right,
-                transparent,
-                rgba(255, 210, 122, 0.25) 20%,
-                rgba(255, 210, 122, 0.25) 80%,
-                transparent);
-            margin: 24px 0;
-        }
-
-        /* Body text */
-        .char-body p {
-            margin-bottom: 16px;
-            font-size: 1rem;
-            line-height: 1.8;
-            color: var(--color-text);
-        }
-
-        .char-body p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Subtle back link */
-        .char-back {
-            display: inline-block;
-            margin-bottom: 24px;
-            font-family: var(--font-display);
-            font-size: 0.75rem;
-            letter-spacing: 0.07em;
-            color: var(--color-gold-dim);
-            text-decoration: none;
-            opacity: 0.7;
-            transition: opacity 0.2s ease, color 0.2s ease;
-        }
-
-        .char-back:hover {
-            opacity: 1;
-            color: var(--color-gold);
-        }
-
-        .char-back::before {
-            content: '‹ ';
-        }
-
-        @media (max-width: 680px) {
-            .char-name {
-                font-size: 1.55rem;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
@@ -144,7 +19,7 @@
 
         <main class="content-box">
 
-            <a class="char-back" href="../index.html">Return to the Order</a>
+            <a class="char-back" href="../index.html#members">Return to the Order</a>
 
             <div class="char-header">
                 <div class="char-name">Valarya</div>
