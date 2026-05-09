@@ -226,7 +226,10 @@
             const portraitHtml = c.sheet.portrait
                 ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>`
                 : '';
-            const bioHtml = (c.sheet.bio || []).map(p => `<p>${p}</p>`).join('');
+            const bio = c.sheet.bio || '';
+            const bioHtml = typeof bio === 'string'
+                ? bio
+                : bio.map(p => `<p>${p}</p>`).join('');
 
             setHTML('char-sheet-content', `
                 <div class="char-header">
