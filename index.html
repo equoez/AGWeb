@@ -154,12 +154,12 @@
 
         /* --- Page switching --- */
 
-        function showPage(pageId) {
+        function showPage(pageId, pushHistory = true) {
             document.querySelector('.page.active')?.classList.remove('active');
             document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
             if (pageId === 'members') loadMembers();
             if (pageId === 'journal') initJournal();
-            try { history.replaceState(null, '', '/#' + pageId); } catch(e) {}
+            if (pushHistory) try { history.pushState({ page: pageId }, '', '/#' + pageId); } catch(e) {}
         }
 
         /* --- Members --- */
@@ -211,8 +211,8 @@
                 ${c.sheet.portrait ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>` : ''}
                 <div class="char-body">${typeof bio === 'string' ? bio : bio.map(p => `<p>${p}</p>`).join('')}</div>
             `);
-            showPage('character');
-            try { history.replaceState(null, '', '/#' + nameToSlug(c.name)); } catch(e) {}
+            showPage('character', false);
+            try { history.pushState({ page: 'character', slug: nameToSlug(c.name) }, '', '/#' + nameToSlug(c.name)); } catch(e) {}
         }
 
         function tryOpenCharacterBySlug(slug) {
@@ -281,12 +281,28 @@
             dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
         });
 
-        /* --- Hash routing --- */
+        /* --- Back/forward button support --- */
+
+        window.addEventListener('popstate', e => {
+            const h = location.hash.slice(1);
+            if (PAGES.includes(h))      showPage(h, false);
+            else if (h)                 tryOpenCharacterBySlug(h);
+            else                        showPage('home', false);
+            window.scrollTo(0, 0);
+        });
+
+        /* --- Hash routing (initial load) --- */
 
         const hash = location.hash.slice(1);
-        if (PAGES.includes(hash)) showPage(hash);
-        else if (hash)            tryOpenCharacterBySlug(hash);
-        else                      showPage('home');
+        if (PAGES.includes(hash)) {
+            history.replaceState({ page: hash }, '', '/#' + hash);
+            showPage(hash, false);
+        } else if (hash) {
+            tryOpenCharacterBySlug(hash);
+        } else {
+            history.replaceState({ page: 'home' }, '', '/#home');
+            showPage('home', false);
+        }
         window.scrollTo(0, 0);
 
     </script>
