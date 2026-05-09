@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argent Gryphon — Editor</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="AG2_Shield_32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Editor-only overrides ── */
+        :root {
+            --color-input-bg:     rgba(255,255,255,0.05);
+            --color-input-border: rgba(255, 210, 122, 0.2);
+            --color-input-focus:  rgba(255, 210, 122, 0.45);
+            --color-danger:       #ff6b6b;
+            --color-success:      #6bff9e;
+            --color-section-bg:   rgba(255, 210, 122, 0.03);
+        }
+
+        body { padding-bottom: 80px; }
+
+        /* ── Editor container ── */
+        .editor-wrap {
+            width: 720px;
+            max-width: 96vw;
+        }
+
+        /* ── Panel header ── */
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255,210,122,0.15);
+        }
+
+        .editor-header h2 { margin: 0; }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: var(--radius-btn);
+            border: 1px solid rgba(255,210,122,0.3);
+            background: rgba(255,210,122,0.08);
+            color: var(--color-gold);
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        }
+        .btn:hover { background: rgba(255,210,122,0.15); border-color: rgba(255,210,122,0.5); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: rgba(255,210,122,0.18); border-color: var(--color-gold-dim); }
+        .btn-primary:hover { background: rgba(255,210,122,0.28); }
+        .btn-danger { border-color: rgba(255,107,107,0.4); color: var(--color-danger); background: rgba(255,107,107,0.06); }
+        .btn-danger:hover { background: rgba(255,107,107,0.14); border-color: rgba(255,107,107,0.6); }
+        .btn-sm { padding: 6px 13px; font-size: 12px; }
+        .btn-xs { padding: 4px 10px; font-size: 11px; }
+
+        /* ── Instructions box ── */
+        .instructions {
+            background: rgba(255,210,122,0.04);
+            border: 1px solid rgba(255,210,122,0.12);
+            border-left: 3px solid var(--color-gold-dim);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+        .instructions strong { color: var(--color-gold-light); }
+
+        /* ── Character cards ── */
+        .char-editor-card {
+            background: var(--color-section-bg);
+            border: 1px solid rgba(255,210,122,0.1);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .char-editor-card:hover { border-color: rgba(255,210,122,0.2); }
+
+        /* Card header (always visible) */
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .card-head-badge {
+            width: 36px; height: 36px;
+            min-width: 36px;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+        }
+        .card-head-info { flex: 1; min-width: 0; }
+        .card-head-name {
+            font-family: var(--font-display);
+            font-size: 0.88rem;
+            color: var(--color-gold-light);
+            font-weight: 600;
+        }
+        .card-head-rank {
+            font-size: 0.78rem;
+            color: var(--color-gold-dim);
+        }
+        .card-head-tags { display: flex; gap: 6px; align-items: center; }
+        .tag {
+            font-family: var(--font-display);
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,210,122,0.2);
+            background: rgba(255,210,122,0.06);
+            color: var(--color-gold-dim);
+        }
+        .tag-sheet { border-color: rgba(107,255,158,0.3); background: rgba(107,255,158,0.06); color: #6bff9e; }
+        .card-chevron {
+            font-size: 1.2rem;
+            color: var(--color-gold-dim);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .card-head.open .card-chevron { transform: rotate(180deg); }
+
+        /* Card body (expanded) */
+        .card-body {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid rgba(255,210,122,0.08);
+        }
+        .card-body.open { display: block; }
+
+        /* ── Form elements ── */
+        .field-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 160px;
+        }
+        .field label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-dim);
+        }
+        .field input,
+        .field select,
+        .field textarea {
+            background: var(--color-input-bg);
+            border: 1px solid var(--color-input-border);
+            border-radius: 6px;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            padding: 8px 10px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus { border-color: var(--color-input-focus); }
+        .field select option { background: #1a140a; }
+        .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+        /* ── Sheet section ── */
+        .sheet-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,210,122,0.08);
+        }
+        .sheet-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .sheet-toggle-label {
+            font-family: var(--font-display);
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            color: var(--color-gold-dim);
+        }
+
+        /* Toggle switch */
+        .toggle { position: relative; display: inline-block; width: 38px; height: 22px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; inset: 0;
+            background: rgba(255,210,122,0.1);
+            border: 1px solid rgba(255,210,122,0.2);
+            border-radius: 22px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            left: 2px; top: 2px;
+            background: var(--color-gold-dim);
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle input:checked + .toggle-slider { background: rgba(107,255,158,0.15); border-color: rgba(107,255,158,0.35); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: #6bff9e; }
+
+        .sheet-fields { display: none; }
+        .sheet-fields.open { display: block; }
+
+        /* ── Bio paragraphs ── */
+        .bio-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .bio-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .bio-row textarea {
+            flex: 1;
+            background: var(--color-input-bg);
+            border: 1px solid var(--color-input-border);
+            border-radius: 6px;
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            padding: 8px 10px;
+            outline: none;
+            min-height: 64px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        .bio-row textarea:focus { border-color: var(--color-input-focus); }
+        .bio-remove {
+            background: none;
+            border: none;
+            color: rgba(255,107,107,0.5);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px;
+            margin-top: 4px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .bio-remove:hover { color: var(--color-danger); }
+
+        /* ── Add character ── */
+        .add-char-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ── Output area ── */
+        .output-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,210,122,0.15);
+        }
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .output-header h3 { margin: 0; }
+        #output-box {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,210,122,0.15);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--color-text-muted);
+            white-space: pre;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        .copy-feedback {
+            font-size: 12px;
+            color: var(--color-success);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: var(--font-body);
+        }
+        .copy-feedback.show { opacity: 1; }
+
+        /* ── Load bar ── */
+        .load-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .load-bar p { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
+
+        /* ── Drag handle ── */
+        .drag-handle {
+            cursor: grab;
+            color: rgba(255,210,122,0.25);
+            font-size: 1rem;
+            padding: 0 4px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+        .drag-handle:hover { color: rgba(255,210,122,0.5); }
+        .char-editor-card.dragging { opacity: 0.5; }
+        .char-editor-card.drag-over { border-color: var(--color-gold-dim); }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-text-muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-fixed"></div>
+
+<div class="container">
+
+    <img src="AGlogo.png" alt="Argent Gryphon crest" class="logo">
+
+    <div class="editor-wrap">
+        <div class="content-box">
+
+            <div class="editor-header">
+                <h2>Characters Editor</h2>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a class="btn btn-sm" href="index.html">&#8592; Back to site</a>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <strong>How to use:</strong> Load the current <em>characters.json</em> file from your computer, make your changes, then click <strong>Generate JSON</strong>. Copy the result and paste it into the GitHub editor for <code>sources/characters.json</code> — then commit.
+            </div>
+
+            <!-- Load from file -->
+            <div class="load-bar">
+                <label class="btn btn-sm" style="cursor:pointer;">
+                    &#8599; Load characters.json
+                    <input type="file" id="file-input" accept=".json" style="display:none">
+                </label>
+                <p>or start fresh below</p>
+            </div>
+
+            <!-- Character list -->
+            <div id="char-list"></div>
+
+            <div class="add-char-row">
+                <button class="btn" onclick="addCharacter()">+ Add character</button>
+            </div>
+
+            <!-- Output -->
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>Generated JSON</h3>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span class="copy-feedback" id="copy-feedback">Copied!</span>
+                        <button class="btn btn-sm" onclick="copyOutput()">&#9647; Copy</button>
+                        <button class="btn btn-primary btn-sm" onclick="generateOutput()">&#8635; Generate JSON</button>
+                    </div>
+                </div>
+                <div id="output-box">Click "Generate JSON" to preview the output.</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+const RANKS = [
+    ['Lord Warden',  'wardens'],
+    ['Lady Warden',  'wardens'],
+    ['Warden',       'wardens'],
+    ['Oathsworn',    'oathsworn'],
+    ['Enlightened',  'enlightened'],
+    ['Shieldbearer', 'shieldbearer'],
+    ['Initiate',     'initiate'],
+    ['Sentinel',     'sentinel'],
+    ['Ward',         'ward'],
+];
+const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
+const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.png`;
+
+let characters = [];
+let dragSrc = null;
+
+/* ── Render all cards ── */
+function renderAll() {
+    const list = document.getElementById('char-list');
+    if (characters.length === 0) {
+        list.innerHTML = '<div class="empty-state">No characters yet. Load a file or add one below.</div>';
+        return;
+    }
+    list.innerHTML = '';
+    characters.forEach((c, i) => list.appendChild(buildCard(c, i)));
+}
+
+/* ── Build a single card ── */
+function buildCard(c, i) {
+    const card = document.createElement('div');
+    card.className = 'char-editor-card';
+    card.dataset.index = i;
+    card.draggable = true;
+
+    card.addEventListener('dragstart', e => { dragSrc = i; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop',      e => { e.preventDefault(); card.classList.remove('drag-over'); if (dragSrc !== null && dragSrc !== i) { const tmp = characters[dragSrc]; characters.splice(dragSrc,1); characters.splice(i,0,tmp); renderAll(); } });
+
+    const hasSheet = !!(c.sheet);
+    const rankKey = RANK_MAP.get(c.rank) || 'initiate';
+
+    card.innerHTML = `
+        <div class="card-head" onclick="toggleCard(this)">
+            <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+            <img class="card-head-badge" src="${badgeSrc(c.rank)}" alt="">
+            <div class="card-head-info">
+                <div class="card-head-name">${c.name || '<em>Unnamed</em>'}</div>
+                <div class="card-head-rank">${c.rank || '—'}</div>
+            </div>
+            <div class="card-head-tags">
+                ${c.points > 0 ? `<span class="tag">${c.points} pts</span>` : ''}
+                ${hasSheet ? `<span class="tag tag-sheet">Sheet</span>` : ''}
+            </div>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+
+        <div class="card-body">
+            <div class="field-row">
+                <div class="field">
+                    <label>Name</label>
+                    <input type="text" value="${esc(c.name)}" oninput="update(${i},'name',this.value); refreshHead(${i})">
+                </div>
+                <div class="field" style="max-width:180px;">
+                    <label>Rank</label>
+                    <select onchange="update(${i},'rank',this.value); refreshHead(${i})">
+                        ${RANKS.map(([r]) => `<option value="${r}"${c.rank===r?' selected':''}>${r}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="field" style="max-width:80px;">
+                    <label>Points</label>
+                    <input type="number" min="0" value="${c.points||0}" oninput="update(${i},'points',parseInt(this.value)||0)">
+                </div>
+            </div>
+
+            <!-- Character sheet section -->
+            <div class="sheet-section">
+                <div class="sheet-toggle-row">
+                    <label class="toggle">
+                        <input type="checkbox" ${hasSheet?'checked':''} onchange="toggleSheet(${i},this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="sheet-toggle-label">Has character sheet</span>
+                </div>
+
+                <div class="sheet-fields ${hasSheet?'open':''}">
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Portrait image path</label>
+                            <input type="text" placeholder="e.g. characters/valarya.png"
+                                value="${esc(c.sheet?.portrait||'')}"
+                                oninput="updateSheet(${i},'portrait',this.value)">
+                        </div>
+                    </div>
+                    <div style="margin-top:14px;">
+                        <label style="font-family:var(--font-display);font-size:11px;letter-spacing:0.06em;color:var(--color-gold-dim);display:block;margin-bottom:8px;">
+                            Biography — each box is one paragraph
+                        </label>
+                        <div class="bio-list" id="bio-list-${i}">
+                            ${(c.sheet?.bio||[]).map((p,j) => bioParagraphHTML(i,j,p)).join('')}
+                        </div>
+                        <button class="btn btn-xs" onclick="addParagraph(${i})">+ Add paragraph</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger btn-xs" onclick="removeCharacter(${i})">Remove character</button>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
+function bioParagraphHTML(charIdx, paraIdx, text) {
+    return `<div class="bio-row" id="bio-row-${charIdx}-${paraIdx}">
+        <textarea oninput="updateBio(${charIdx},${paraIdx},this.value)">${esc(text)}</textarea>
+        <button class="bio-remove" onclick="removeParagraph(${charIdx},${paraIdx})" title="Remove paragraph">&#215;</button>
+    </div>`;
+}
+
+/* ── Card toggle ── */
+function toggleCard(head) {
+    head.classList.toggle('open');
+    head.nextElementSibling.classList.toggle('open');
+}
+
+/* ── Refresh card header without full re-render ── */
+function refreshHead(i) {
+    const c = characters[i];
+    const card = document.querySelector(`[data-index="${i}"]`);
+    if (!card) return;
+    card.querySelector('.card-head-name').textContent = c.name || '';
+    card.querySelector('.card-head-rank').textContent = c.rank || '—';
+    card.querySelector('.card-head-badge').src = badgeSrc(c.rank);
+}
+
+/* ── Data updates ── */
+function update(i, key, val) { characters[i][key] = val; }
+
+function updateSheet(i, key, val) {
+    if (!characters[i].sheet) characters[i].sheet = {};
+    characters[i].sheet[key] = val;
+}
+
+function toggleSheet(i, on) {
+    if (on) {
+        characters[i].sheet = characters[i].sheet || { portrait: '', bio: [] };
+    } else {
+        delete characters[i].sheet;
+    }
+    const card = document.querySelector(`[data-index="${i}"]`);
+    if (!card) return;
+    card.querySelector('.sheet-fields').classList.toggle('open', on);
+    const sheetTag = card.querySelector('.tag-sheet');
+    if (on && !sheetTag) {
+        const tags = card.querySelector('.card-head-tags');
+        const t = document.createElement('span');
+        t.className = 'tag tag-sheet';
+        t.textContent = 'Sheet';
+        tags.appendChild(t);
+    } else if (!on && sheetTag) {
+        sheetTag.remove();
+    }
+}
+
+function updateBio(charIdx, paraIdx, val) {
+    if (!characters[charIdx].sheet) return;
+    characters[charIdx].sheet.bio[paraIdx] = val;
+}
+
+function addParagraph(i) {
+    if (!characters[i].sheet) characters[i].sheet = { portrait: '', bio: [] };
+    const bio = characters[i].sheet.bio;
+    const idx = bio.length;
+    bio.push('');
+    const list = document.getElementById(`bio-list-${i}`);
+    list.insertAdjacentHTML('beforeend', bioParagraphHTML(i, idx, ''));
+}
+
+function removeParagraph(charIdx, paraIdx) {
+    if (!characters[charIdx].sheet) return;
+    characters[charIdx].sheet.bio.splice(paraIdx, 1);
+    const card = document.querySelector(`[data-index="${charIdx}"]`);
+    if (!card) return;
+    const list = document.getElementById(`bio-list-${charIdx}`);
+    list.innerHTML = characters[charIdx].sheet.bio.map((p, j) => bioParagraphHTML(charIdx, j, p)).join('');
+}
+
+function addCharacter() {
+    characters.push({ name: 'New Character', rank: 'Initiate', points: 0 });
+    renderAll();
+    // Auto-open the last card
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.char-editor-card');
+        const last = cards[cards.length - 1];
+        if (last) {
+            const head = last.querySelector('.card-head');
+            head.classList.add('open');
+            last.querySelector('.card-body').classList.add('open');
+            last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 50);
+}
+
+function removeCharacter(i) {
+    if (!confirm(`Remove "${characters[i].name}"?`)) return;
+    characters.splice(i, 1);
+    renderAll();
+}
+
+/* ── File loading ── */
+document.getElementById('file-input').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            characters = JSON.parse(e.target.result);
+            renderAll();
+            generateOutput();
+        } catch {
+            alert('Could not parse the file. Make sure it is a valid JSON file.');
+        }
+    };
+    reader.readAsText(file);
+    this.value = '';
+});
+
+/* ── Output generation ── */
+function generateOutput() {
+    // Build clean output objects
+    const out = characters.map(c => {
+        const obj = { name: c.name || '', rank: c.rank || '', points: c.points || 0 };
+        if (c.sheet) {
+            obj.sheet = {};
+            if (c.sheet.portrait) obj.sheet.portrait = c.sheet.portrait;
+            const bio = (c.sheet.bio || []).filter(p => p.trim());
+            if (bio.length) obj.sheet.bio = bio;
+        }
+        return obj;
+    });
+    document.getElementById('output-box').textContent = JSON.stringify(out, null, 2);
+}
+
+/* ── Copy ── */
+function copyOutput() {
+    const text = document.getElementById('output-box').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const fb = document.getElementById('copy-feedback');
+        fb.classList.add('show');
+        setTimeout(() => fb.classList.remove('show'), 2000);
+    });
+}
+
+/* ── Helpers ── */
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── Init ── */
+renderAll();
+
+</script>
+</body>
+</html>
