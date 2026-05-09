@@ -360,16 +360,17 @@
             </div>
 
             <div class="instructions">
-                <strong>How to use:</strong> Load the current <em>characters.json</em> file from your computer, make your changes, then click <strong>Generate JSON</strong>. Copy the result and paste it into the GitHub editor for <code>sources/characters.json</code> — then commit.
+                <strong>How to use:</strong> The current <em>characters.json</em> loads automatically. Make your changes, then click <strong>Generate JSON</strong>. Copy the result and paste it into the GitHub editor for <code>sources/characters.json</code> — then commit.
             </div>
 
-            <!-- Load from file -->
+            <!-- Load bar -->
             <div class="load-bar">
+                <button class="btn btn-sm" onclick="fetchLive()">&#8635; Reload from site</button>
                 <label class="btn btn-sm" style="cursor:pointer;">
-                    &#8599; Load characters.json
+                    &#8599; Load from file
                     <input type="file" id="file-input" accept=".json" style="display:none">
                 </label>
-                <p>or start fresh below</p>
+                <p id="load-status">Loading…</p>
             </div>
 
             <!-- Character list -->
@@ -659,8 +660,29 @@ function copyOutput() {
 /* ── Helpers ── */
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+/* ── Live fetch ── */
+function fetchLive() {
+    const status = document.getElementById('load-status');
+    status.textContent = 'Loading…';
+    status.style.color = '';
+    fetch('sources/characters.json?nocache=' + Date.now())
+        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(data => {
+            characters = data;
+            renderAll();
+            generateOutput();
+            status.textContent = 'Loaded from site ✓';
+            status.style.color = 'var(--color-success)';
+        })
+        .catch(() => {
+            status.textContent = 'Could not load — use "Load from file" instead.';
+            status.style.color = 'var(--color-danger)';
+            renderAll();
+        });
+}
+
 /* ── Init ── */
-renderAll();
+fetchLive();
 
 </script>
 </body>
