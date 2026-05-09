@@ -497,7 +497,7 @@ function buildCard(c, i) {
             <span class="card-chevron">&#8964;</span>
         </div>
 
-        <div class="card-body">
+        <div class="card-body" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
             <div class="field-row">
                 <div class="field">
                     <label>Name</label>
@@ -537,11 +537,11 @@ function buildCard(c, i) {
                     <div class="rte-wrap">
                         <label class="rte-label">Biography</label>
                         <div class="rte-toolbar" id="rte-toolbar-${i}">
-                            <button class="rte-btn" title="Header" onmousedown="event.preventDefault(); rteFormat(${i},'header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                            <button class="rte-btn" title="Header" onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
                             <div class="rte-btn-sep"></div>
-                            <button class="rte-btn" title="Bold" onmousedown="event.preventDefault(); rteFormat(${i},'bold')"><b>B</b></button>
-                            <button class="rte-btn" title="Italic" onmousedown="event.preventDefault(); rteFormat(${i},'italic')"><i>I</i></button>
-                            <button class="rte-btn" title="Underline" onmousedown="event.preventDefault(); rteFormat(${i},'underline')"><u>U</u></button>
+                            <button class="rte-btn" title="Bold" onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'bold')"><b>B</b></button>
+                            <button class="rte-btn" title="Italic" onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'italic')"><i>I</i></button>
+                            <button class="rte-btn" title="Underline" onmousedown="event.preventDefault(); event.stopPropagation(); rteFormat(${i},'underline')"><u>U</u></button>
                         </div>
                         <div class="rte-editor"
                             id="rte-${i}"
