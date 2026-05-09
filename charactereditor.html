@@ -497,7 +497,7 @@ function buildCard(c, i) {
             <span class="card-chevron">&#8964;</span>
         </div>
 
-        <div class="card-body" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+        <div class="card-body" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()" onmouseenter="this.closest('.char-editor-card').draggable=false" onmouseleave="this.closest('.char-editor-card').draggable=true">
             <div class="field-row">
                 <div class="field">
                     <label>Name</label>
@@ -549,6 +549,8 @@ function buildCard(c, i) {
                             oninput="syncBio(${i})"
                             onkeyup="updateToolbarState(${i})"
                             onmouseup="updateToolbarState(${i})"
+                            onmouseenter="this.closest('.char-editor-card').draggable=false"
+                            onmouseleave="this.closest('.char-editor-card').draggable=true"
                         >${bioToHtml(c.sheet?.bio)}</div>
                     </div>
                 </div>
