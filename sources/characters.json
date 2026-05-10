@@ -59,12 +59,12 @@
   {
     "name": "Volgowrath",
     "rank": "Shieldbearer",
-    "points": 3
+    "points": 0
   },
   {
     "name": "Adaelina Blackheart",
     "rank": "Initiate",
-    "points": 2
+    "points": 12
   },
   {
     "name": "Amelia Lillywhite",
@@ -74,7 +74,7 @@
   {
     "name": "Digi der Greif",
     "rank": "Initiate",
-    "points": 2
+    "points": 12
   },
   {
     "name": "Ophelia Starwhisper",
@@ -84,7 +84,7 @@
   {
     "name": "Wizard Ceori",
     "rank": "Initiate",
-    "points": 2
+    "points": 12
   },
   {
     "name": "Barnabus Runeholt",
