@@ -113,7 +113,11 @@
   {
     "name": "Kjartan of Senja",
     "rank": "Sentinel",
-    "points": 0
+    "points": 0,
+    "sheet": {
+      "portrait": "characters/kjartan_miramis.png",
+      "bio": "<div><b>Occupation</b></div><div>Sentinel of the Order of the Argent Gryphon in Senja.</div><div><b>Age</b></div><div>Late 40s.</div><div><b>Faith</b></div><div>Unknown.</div><div><b>Duties</b></div><div>- Patrolling the shores of Senja.</div><div>- Guards the Order's provisions.</div><div>- Protects the lady Miramis Blackheart, Castellan of&nbsp; Senja.</div><div><br></div><h3>Background</h3><div>Little is known of Kjartan's past, except for the hardships of the Ice Islands that shaped him into a stoic man typical in that region of the world. Though he speaks little, his loyalty is beyond reproach. He is known to patrol through blizzards and darkness alike, ever watchful for raiders, quara, or anyone who might threaten the peaceful island.</div>"
+    }
   },
   {
     "name": "Sidney Beauclair",
