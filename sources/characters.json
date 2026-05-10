@@ -92,6 +92,15 @@
     "points": 2
   },
   {
+    "name": "Barnabus Runeholt",
+    "rank": "Sentinel",
+    "points": 0,
+    "sheet": {
+      "portrait": "characters/Barnabus.png",
+      "bio": "<div><span style=\"font-size: 0.95rem;\"><b>Occupation</b></span></div><div>Steward of the Order of the Argent Gryphon.</div><div><b>Age</b></div><div>Late 50s.</div><div><b>Faith</b></div><div>Banorite.</div><div><b>Duties</b></div><div>- Maintains supplies and quarters for Order members and guests.</div><div>- Handles requests for resources, provisions, or accommodations.</div><div>- Offers practical advice and guidance to new Initiates.</div><div><br></div><h3>Background</h3><div>A former Commander of the Guardian Nomads, Barnabus was appointed steward of the Argent Gryphon for his great organizational skills. Though no longer a fighter, he reveres the Order's warriors and mages and would do anything to make their lives easier.</div>"
+    }
+  },
+  {
     "name": "Allyn Lillywhite",
     "rank": "Sentinel",
     "points": 0
@@ -134,6 +143,11 @@
   {
     "name": "Renaissance artist",
     "rank": "Ward",
+    "points": 0
+  },
+  {
+    "name": "New Character",
+    "rank": "Initiate",
     "points": 0
   }
 ]
