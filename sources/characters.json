@@ -77,6 +77,15 @@
     "points": 12
   },
   {
+    "name": "Myrenthil",
+    "rank": "Oathsworn",
+    "points": 0,
+    "sheet": {
+      "portrait": "characters/myrenthil.png",
+      "bio": "<h3>Overview</h3><b>Name</b>: Myrenthil<br><b>Race</b>: Human<br><b>Gender</b>: Male<br><b>Age</b>: Unkown<br><b>Culture</b>: Primordial<br><b>Personality</b>: calm, callous, unsettling<br><div><br></div><h3>Defining traits</h3><b>Disciple of the First Night</b><br>This character belongs to one of the last surviving remnants of an ancient order dating back to the Age of Chaos.<br><b>Voice of Collapse</b><br>This character believes destruction, decay, and catastrophe are natural forces necessary for renewal and transformation.<br><b>Unnerving Presence</b><br>This character has a subtle influence on others, drawing forth hidden resentment, doubt, ambition, and suppressed desires.<br><h3><br></h3><h3>Background</h3>Myrenthil is one of the last surviving druids of the Order of the First Night, an ancient sect most believe vanished long ago. Branded heretics created by Zathroth, the Order teaches that existence became flawed when Uman forged the Spiral of Time within the Void. To them, the Void was not emptiness, but infinite possibility untouched by permanence, destiny, or decay.<br><br>Unlike most druids who seek harmony between civilization and nature, Myrenthil believes prolonged stability breeds weakness. Kingdoms, forests, and even faiths must eventually collapse so that something stronger may emerge from their remains. He does not delight in suffering, yet neither does he fear destruction. Fire clears dead forests, rot nourishes new life, and fallen empires become fertile ground for transformation.<br><br>Myrenthil rarely raises his voice or acts with cruelty. Instead, his influence is quiet and deeply unsettling. In his presence, doubts harden into conviction and buried desires rise to the surface. He does not command others toward chaos; he merely strips away restraint and watches what emerges beneath.<br><br>To Myrenthil, the First Night is not evil darkness, but the memory of the Void before existence was chained by time and certainty. In abandoned ruins reclaimed by roots and stone worn smooth by centuries, he sees sacred reminders that nothing created by mortals or gods can resist change forever.&nbsp;"
+    }
+  },
+  {
     "name": "Ophelia Starwhisper",
     "rank": "Initiate",
     "points": 0
@@ -147,14 +156,5 @@
     "name": "Renaissance artist",
     "rank": "Ward",
     "points": 0
-  },
-  {
-    "name": "Myrenthil",
-    "rank": "Oathsworn",
-    "points": 0,
-    "sheet": {
-      "portrait": "characters/myrenthil.png",
-      "bio": "<h3>Overview</h3><b>Name</b>: Myrenthil<br><b>Race</b>: Human<br><b>Gender</b>: Male<br><b>Age</b>: Unkown<br><b>Culture</b>: Primordial<br><b>Personality</b>: calm, callous, unsettling<br><div><br></div><h3>Defining traits</h3><b>Disciple of the First Night</b><br>This character belongs to one of the last surviving remnants of an ancient sect dating back to the Age of Chaos.<br><b>Voice of Collapse</b><br>This character believes destruction, decay, and catastrophe are natural forces necessary for renewal and transformation.<br><b>Unnerving Presence</b><br>This character has a subtle influence on others, drawing forth hidden resentment, doubt, ambition, and suppressed desires.<br><h3><br></h3><h3>Background</h3>Myrenthil is one of the last surviving druids of the Order of the First Night, an ancient sect most believe vanished long ago. Branded heretics corrupted by Zathroth, the Order teaches that existence became flawed when Uman forged the Spiral of Time within the Void. To them, the Void was not emptiness, but infinite possibility untouched by permanence, destiny, or decay.<br><br>Unlike most druids who seek harmony between civilization and nature, Myrenthil believes prolonged stability breeds weakness. Kingdoms, forests, and even faiths must eventually collapse so that something stronger may emerge from their remains. He does not delight in suffering, yet neither does he fear destruction. Fire clears dead forests, rot nourishes new life, and fallen empires become fertile ground for transformation.<br><br>Myrenthil rarely raises his voice or acts with cruelty. Instead, his influence is quiet and deeply unsettling. In his presence, doubts harden into conviction and buried desires rise to the surface. He does not command others toward chaos; he merely strips away restraint and watches what emerges beneath.<br><br>To Myrenthil, the First Night is not evil darkness, but the memory of the Void before existence was chained by time and certainty. In abandoned ruins reclaimed by roots and stone worn smooth by centuries, he sees sacred reminders that nothing created by mortals or gods can resist change forever.&nbsp;"
-    }
   }
 ]
