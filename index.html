@@ -152,48 +152,6 @@
 
         /* --- Homepage loader --- */
 
-        function renderHomepageBlock(block) {
-            switch (block.type) {
-
-                case 'heading':
-                    // level: 2 (default), 3, 4
-                    const tag = `h${block.level || 2}`;
-                    return `<${tag}>${block.text}</${tag}>`;
-
-                case 'paragraph':
-                    // text may contain basic HTML markup
-                    return `<p>${block.text}</p>`;
-
-                case 'image':
-                    // src, alt, caption (optional), width (optional css value e.g. "100%")
-                    const imgWidth = block.width || '100%';
-                    const caption = block.caption
-                        ? `<figcaption class="home-img-caption">${block.caption}</figcaption>`
-                        : '';
-                    return `<figure class="home-figure">
-                        <img src="${block.src}" alt="${block.alt || ''}" class="home-img" style="width:${imgWidth}">
-                        ${caption}
-                    </figure>`;
-
-                case 'quote':
-                    // text, attribution (optional)
-                    const attr = block.attribution
-                        ? `<cite>— ${block.attribution}</cite>`
-                        : '';
-                    return `<blockquote class="home-quote"><p>${block.text}</p>${attr}</blockquote>`;
-
-                case 'divider':
-                    return `<hr class="home-divider">`;
-
-                case 'html':
-                    // escape hatch: raw HTML string
-                    return block.content;
-
-                default:
-                    return '';
-            }
-        }
-
         function loadHomepage() {
             const container = document.getElementById('home-content');
             if (container.dataset.loaded) return;
@@ -204,9 +162,7 @@
                 .then(data => {
                     let html = '';
                     if (data.title) html += `<h2>${data.title}</h2>`;
-                    if (Array.isArray(data.blocks)) {
-                        html += data.blocks.map(renderHomepageBlock).join('\n');
-                    }
+                    if (data.body)  html += `<div class="home-body">${data.body}</div>`;
                     container.innerHTML = html;
                 })
                 .catch(() => {
