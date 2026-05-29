@@ -13,14 +13,12 @@
             --color-input-focus:  rgba(255, 210, 122, 0.45);
             --color-danger:       #ff6b6b;
             --color-success:      #6bff9e;
-            --color-section-bg:   rgba(255, 210, 122, 0.03);
         }
 
         body { padding-bottom: 80px; }
 
         .editor-wrap { width: 720px; max-width: 96vw; }
 
-        /* ── Panel header ── */
         .editor-header {
             display: flex;
             align-items: center;
@@ -33,7 +31,6 @@
         }
         .editor-header h2 { margin: 0; }
 
-        /* ── Buttons ── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -54,12 +51,8 @@
         .btn:active { transform: translateY(0); }
         .btn-primary { background: rgba(255,210,122,0.18); border-color: var(--color-gold-dim); }
         .btn-primary:hover { background: rgba(255,210,122,0.28); }
-        .btn-danger { border-color: rgba(255,107,107,0.4); color: var(--color-danger); background: rgba(255,107,107,0.06); }
-        .btn-danger:hover { background: rgba(255,107,107,0.14); border-color: rgba(255,107,107,0.6); }
         .btn-sm { padding: 6px 13px; font-size: 12px; }
-        .btn-xs { padding: 4px 10px; font-size: 11px; }
 
-        /* ── Instructions ── */
         .instructions {
             background: rgba(255,210,122,0.04);
             border: 1px solid rgba(255,210,122,0.12);
@@ -73,19 +66,25 @@
         }
         .instructions strong { color: var(--color-gold-light); }
 
-        /* ── Page title field ── */
-        .title-row {
+        .load-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-        .title-row label {
-            display: block;
+        .load-bar p { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
+
+        /* Title field */
+        .field-label {
             font-family: var(--font-display);
             font-size: 11px;
             letter-spacing: 0.06em;
             color: var(--color-gold-dim);
+            display: block;
             margin-bottom: 6px;
         }
-        .title-row input {
+        #page-title {
             width: 100%;
             background: var(--color-input-bg);
             border: 1px solid var(--color-input-border);
@@ -97,140 +96,16 @@
             outline: none;
             transition: border-color 0.2s;
             box-sizing: border-box;
+            margin-bottom: 20px;
         }
-        .title-row input:focus { border-color: var(--color-input-focus); }
+        #page-title:focus { border-color: var(--color-input-focus); }
 
-        /* ── Block cards ── */
-        .block-card {
-            background: var(--color-section-bg);
-            border: 1px solid rgba(255,210,122,0.1);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-        .block-card:hover { border-color: rgba(255,210,122,0.22); }
-
-        .block-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 14px;
-            cursor: pointer;
-            user-select: none;
-        }
-        .drag-handle {
-            cursor: grab;
-            color: rgba(255,210,122,0.25);
-            font-size: 1rem;
-            padding: 0 2px;
-            flex-shrink: 0;
-            user-select: none;
-        }
-        .drag-handle:hover { color: rgba(255,210,122,0.5); }
-        .block-card.dragging { opacity: 0.45; }
-        .block-card.drag-over { border-color: var(--color-gold-dim); }
-
-        .block-type-badge {
-            font-family: var(--font-display);
-            font-size: 10px;
-            letter-spacing: 0.07em;
-            padding: 2px 9px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,210,122,0.25);
-            background: rgba(255,210,122,0.07);
-            color: var(--color-gold-dim);
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-        .block-type-badge.type-heading   { border-color: rgba(200,170,255,0.3); background: rgba(200,170,255,0.06); color: #c8aaff; }
-        .block-type-badge.type-paragraph { border-color: rgba(255,210,122,0.25); color: var(--color-gold-dim); }
-        .block-type-badge.type-image     { border-color: rgba(107,255,158,0.3); background: rgba(107,255,158,0.06); color: #6bff9e; }
-        .block-type-badge.type-quote     { border-color: rgba(255,180,107,0.3); background: rgba(255,180,107,0.06); color: #ffb46b; }
-        .block-type-badge.type-divider   { border-color: rgba(180,180,180,0.3); background: rgba(180,180,180,0.05); color: #aaa; }
-        .block-type-badge.type-html      { border-color: rgba(107,200,255,0.3); background: rgba(107,200,255,0.06); color: #6bc8ff; }
-
-        .block-preview {
-            flex: 1;
-            min-width: 0;
-            font-size: 0.82rem;
-            color: var(--color-text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-style: italic;
-        }
-        .block-chevron {
-            font-size: 1.1rem;
-            color: var(--color-gold-dim);
-            transition: transform 0.2s;
-            flex-shrink: 0;
-        }
-        .block-head.open .block-chevron { transform: rotate(180deg); }
-
-        .block-body {
-            display: none;
-            padding: 0 14px 14px;
-            border-top: 1px solid rgba(255,210,122,0.08);
-        }
-        .block-body.open { display: block; }
-
-        /* ── Fields ── */
-        .field-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 13px;
-            flex-wrap: wrap;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 140px;
-        }
-        .field label {
-            font-family: var(--font-display);
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            color: var(--color-gold-dim);
-        }
-        .field input,
-        .field select,
-        .field textarea {
-            background: var(--color-input-bg);
-            border: 1px solid var(--color-input-border);
-            border-radius: 6px;
-            color: var(--color-text);
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            padding: 8px 10px;
-            outline: none;
-            transition: border-color 0.2s;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .field input:focus,
-        .field select:focus,
-        .field textarea:focus { border-color: var(--color-input-focus); }
-        .field select option { background: #1a140a; }
-        .field textarea { resize: vertical; min-height: 90px; line-height: 1.65; }
-
-        /* ── Rich text editor ── */
-        .rte-wrap { margin-top: 13px; }
-        .rte-label {
-            font-family: var(--font-display);
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            color: var(--color-gold-dim);
-            display: block;
-            margin-bottom: 7px;
-        }
+        /* RTE */
         .rte-toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
-            padding: 5px 8px;
+            padding: 6px 8px;
             background: rgba(0,0,0,0.25);
             border: 1px solid var(--color-input-border);
             border-bottom: none;
@@ -256,46 +131,34 @@
         .rte-btn:hover { background: rgba(255,210,122,0.14); color: var(--color-gold-light); border-color: rgba(255,210,122,0.4); }
         .rte-btn.active { background: rgba(255,210,122,0.2); color: var(--color-gold); border-color: var(--color-gold-dim); }
         .rte-btn-sep { width: 1px; background: rgba(255,210,122,0.15); margin: 2px; align-self: stretch; }
+
         .rte-editor {
             background: var(--color-input-bg);
             border: 1px solid var(--color-input-border);
             border-radius: 0 0 6px 6px;
             color: var(--color-text);
             font-family: var(--font-body);
-            font-size: 0.93rem;
-            padding: 11px 13px;
+            font-size: 0.95rem;
+            padding: 16px 18px;
             outline: none;
-            min-height: 110px;
+            min-height: 340px;
             line-height: 1.75;
             transition: border-color 0.2s;
         }
         .rte-editor:focus { border-color: var(--color-input-focus); }
-        .rte-editor p { margin: 0 0 6px; }
+        .rte-editor p { margin: 0 0 10px; }
+        .rte-editor h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-gold-light);
+            letter-spacing: 0.04em;
+            margin: 14px 0 4px;
+        }
         .rte-editor strong { color: var(--color-gold-light); }
         .rte-editor em { color: var(--color-text-muted); font-style: italic; }
 
-        /* ── Add block row ── */
-        .add-block-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
-        .add-block-row select {
-            background: var(--color-input-bg);
-            border: 1px solid var(--color-input-border);
-            border-radius: 6px;
-            color: var(--color-text);
-            font-family: var(--font-display);
-            font-size: 12px;
-            padding: 7px 10px;
-            outline: none;
-            cursor: pointer;
-        }
-        .add-block-row select option { background: #1a140a; }
-
-        /* ── Output ── */
+        /* Output */
         .output-section {
             margin-top: 32px;
             padding-top: 24px;
@@ -320,7 +183,7 @@
             color: var(--color-text-muted);
             white-space: pre;
             overflow-x: auto;
-            max-height: 400px;
+            max-height: 360px;
             overflow-y: auto;
             line-height: 1.6;
         }
@@ -332,24 +195,6 @@
             font-family: var(--font-body);
         }
         .copy-feedback.show { opacity: 1; }
-
-        /* ── Load bar ── */
-        .load-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .load-bar p { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
-
-        /* ── Empty state ── */
-        .empty-state {
-            text-align: center;
-            padding: 36px 20px;
-            color: var(--color-text-muted);
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
@@ -357,7 +202,6 @@
 <div class="bg-fixed"></div>
 
 <div class="container">
-
     <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
 
     <div class="editor-wrap">
@@ -365,23 +209,14 @@
 
             <div class="editor-header">
                 <h2>Homepage Editor</h2>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                    <a class="btn btn-sm" href="index.html">&#8592; Back to site</a>
-                </div>
+                <a class="btn btn-sm" href="index.html">&#8592; Back to site</a>
             </div>
 
             <div class="instructions">
-                <strong>How to use:</strong> The current <em>homepage.json</em> loads automatically. Add, edit, and reorder blocks, then click <strong>Generate JSON</strong>. Copy the result and paste it into <code>sources/homepage.json</code> — then save/commit.<br><br>
-                <strong>Block types:</strong>
-                <strong>Heading</strong> — section title (H2–H4) &nbsp;·&nbsp;
-                <strong>Paragraph</strong> — body text with bold/italic support &nbsp;·&nbsp;
-                <strong>Image</strong> — full-width image with optional caption &nbsp;·&nbsp;
-                <strong>Quote</strong> — pull quote with optional attribution &nbsp;·&nbsp;
-                <strong>Divider</strong> — horizontal rule &nbsp;·&nbsp;
-                <strong>HTML</strong> — raw HTML escape hatch
+                <strong>How to use:</strong> Edit the title and body below, then click <strong>Generate JSON</strong>.
+                Copy the result and paste it into <code>sources/homepage.json</code> — then save/commit.
             </div>
 
-            <!-- Load bar -->
             <div class="load-bar">
                 <button class="btn btn-sm" onclick="fetchLive()">&#8635; Reload from site</button>
                 <label class="btn btn-sm" style="cursor:pointer;">
@@ -391,27 +226,26 @@
                 <p id="load-status">Loading…</p>
             </div>
 
-            <!-- Page title -->
-            <div class="title-row">
-                <label>Page Title</label>
-                <input type="text" id="page-title" placeholder="e.g. Order of the Argent Gryphon" oninput="pageData.title = this.value">
-            </div>
+            <!-- Title -->
+            <label class="field-label" for="page-title">Page Title</label>
+            <input type="text" id="page-title" placeholder="e.g. Order of the Argent Gryphon">
 
-            <!-- Block list -->
-            <div id="block-list"></div>
-
-            <!-- Add block -->
-            <div class="add-block-row">
-                <select id="new-block-type">
-                    <option value="paragraph">Paragraph</option>
-                    <option value="heading">Heading</option>
-                    <option value="image">Image</option>
-                    <option value="quote">Quote</option>
-                    <option value="divider">Divider</option>
-                    <option value="html">HTML</option>
-                </select>
-                <button class="btn" onclick="addBlock()">+ Add block</button>
+            <!-- Rich text body -->
+            <label class="field-label">Body</label>
+            <div class="rte-toolbar" id="rte-toolbar">
+                <button class="rte-btn" title="Heading" onmousedown="event.preventDefault();rteCmd('heading')">
+                    <b style="font-family:var(--font-display);font-size:11px;">H</b>
+                </button>
+                <div class="rte-btn-sep"></div>
+                <button class="rte-btn" title="Bold"      onmousedown="event.preventDefault();rteCmd('bold')"><b>B</b></button>
+                <button class="rte-btn" title="Italic"    onmousedown="event.preventDefault();rteCmd('italic')"><i>I</i></button>
+                <button class="rte-btn" title="Underline" onmousedown="event.preventDefault();rteCmd('underline')"><u>U</u></button>
+                <div class="rte-btn-sep"></div>
+                <button class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd('removeFormat')" style="font-size:11px;">✕ fmt</button>
             </div>
+            <div class="rte-editor" id="rte-body" contenteditable="true"
+                onkeyup="updateToolbarState()"
+                onmouseup="updateToolbarState()"></div>
 
             <!-- Output -->
             <div class="output-section">
@@ -428,322 +262,105 @@
 
         </div>
     </div>
-
 </div>
 
 <script>
 
-let pageData = { title: '', blocks: [] };
-let dragSrc = null;
+    const editor  = document.getElementById('rte-body');
+    const titleEl = document.getElementById('page-title');
 
-/* ── Render all blocks ── */
-function renderAll() {
-    document.getElementById('page-title').value = pageData.title || '';
-    const list = document.getElementById('block-list');
-    if (!pageData.blocks.length) {
-        list.innerHTML = '<div class="empty-state">No blocks yet. Load a file or add one below.</div>';
-        return;
-    }
-    list.innerHTML = '';
-    pageData.blocks.forEach((b, i) => list.appendChild(buildCard(b, i)));
-}
-
-/* ── Build a card for one block ── */
-function buildCard(b, i) {
-    const card = document.createElement('div');
-    card.className = 'block-card';
-    card.dataset.index = i;
-    card.draggable = true;
-
-    card.addEventListener('dragstart', e => { dragSrc = i; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
-    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
-    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-    card.addEventListener('drop',      e => {
-        e.preventDefault(); card.classList.remove('drag-over');
-        if (dragSrc !== null && dragSrc !== i) {
-            const tmp = pageData.blocks[dragSrc];
-            pageData.blocks.splice(dragSrc, 1);
-            pageData.blocks.splice(i, 0, tmp);
-            renderAll();
+    /* ── RTE commands ── */
+    function rteCmd(cmd) {
+        editor.focus();
+        if (cmd === 'heading') {
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return;
+            const node = sel.getRangeAt(0).commonAncestorContainer;
+            const block = node.nodeType === 3 ? node.parentElement : node;
+            document.execCommand('formatBlock', false, block.closest('h3') ? 'p' : 'h3');
+        } else {
+            document.execCommand(cmd, false, null);
         }
-    });
-
-    card.innerHTML = `
-        <div class="block-head" onclick="toggleCard(this)">
-            <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
-            <span class="block-type-badge type-${b.type}">${b.type}</span>
-            <span class="block-preview">${blockPreview(b)}</span>
-            <span class="block-chevron">&#8964;</span>
-        </div>
-        <div class="block-body" onmouseenter="this.closest('.block-card').draggable=false" onmouseleave="this.closest('.block-card').draggable=true">
-            ${buildBody(b, i)}
-            <div style="margin-top:14px;display:flex;justify-content:flex-end;">
-                <button class="btn btn-danger btn-xs" onclick="removeBlock(${i})">Remove block</button>
-            </div>
-        </div>
-    `;
-
-    // Wire up RTE if paragraph type
-    if (b.type === 'paragraph') {
-        const rte = card.querySelector('.rte-editor');
-        if (rte) {
-            rte.innerHTML = b.text || '';
-            rte.addEventListener('input', () => { pageData.blocks[i].text = rte.innerHTML; updatePreview(i); });
-            rte.addEventListener('keyup', () => updateToolbarState(i));
-            rte.addEventListener('mouseup', () => updateToolbarState(i));
-        }
+        updateToolbarState();
     }
 
-    return card;
-}
-
-/* ── Body HTML per block type ── */
-function buildBody(b, i) {
-    switch (b.type) {
-
-        case 'heading':
-            return `
-                <div class="field-row">
-                    <div class="field" style="max-width:120px;">
-                        <label>Level</label>
-                        <select onchange="pageData.blocks[${i}].level=parseInt(this.value); updatePreview(${i})">
-                            ${[2,3,4].map(n => `<option value="${n}"${(b.level||3)===n?' selected':''}>${'H'+n}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Text</label>
-                        <input type="text" value="${esc(b.text||'')}"
-                            oninput="pageData.blocks[${i}].text=this.value; updatePreview(${i})">
-                    </div>
-                </div>`;
-
-        case 'paragraph':
-            return `
-                <div class="rte-wrap">
-                    <label class="rte-label">Text (bold / italic supported)</label>
-                    <div class="rte-toolbar" id="rte-toolbar-${i}">
-                        <button class="rte-btn" title="Bold"   onmousedown="event.preventDefault();rteCmd(${i},'bold')"><b>B</b></button>
-                        <button class="rte-btn" title="Italic" onmousedown="event.preventDefault();rteCmd(${i},'italic')"><i>I</i></button>
-                        <button class="rte-btn" title="Underline" onmousedown="event.preventDefault();rteCmd(${i},'underline')"><u>U</u></button>
-                        <div class="rte-btn-sep"></div>
-                        <button class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd(${i},'removeFormat')" style="font-size:11px;">✕ fmt</button>
-                    </div>
-                    <div class="rte-editor" id="rte-${i}" contenteditable="true"></div>
-                </div>`;
-
-        case 'image':
-            return `
-                <div class="field-row">
-                    <div class="field">
-                        <label>Image path (src)</label>
-                        <input type="text" value="${esc(b.src||'')}" placeholder="e.g. img/vanduramap.png"
-                            oninput="pageData.blocks[${i}].src=this.value; updatePreview(${i})">
-                    </div>
-                </div>
-                <div class="field-row">
-                    <div class="field">
-                        <label>Alt text</label>
-                        <input type="text" value="${esc(b.alt||'')}"
-                            oninput="pageData.blocks[${i}].alt=this.value">
-                    </div>
-                    <div class="field">
-                        <label>Caption (optional)</label>
-                        <input type="text" value="${esc(b.caption||'')}"
-                            oninput="pageData.blocks[${i}].caption=this.value; updatePreview(${i})">
-                    </div>
-                    <div class="field" style="max-width:110px;">
-                        <label>Width (optional)</label>
-                        <input type="text" value="${esc(b.width||'')}" placeholder="e.g. 100%"
-                            oninput="pageData.blocks[${i}].width=this.value">
-                    </div>
-                </div>`;
-
-        case 'quote':
-            return `
-                <div class="field-row">
-                    <div class="field">
-                        <label>Quote text</label>
-                        <textarea oninput="pageData.blocks[${i}].text=this.value; updatePreview(${i})">${esc(b.text||'')}</textarea>
-                    </div>
-                </div>
-                <div class="field-row">
-                    <div class="field">
-                        <label>Attribution (optional)</label>
-                        <input type="text" value="${esc(b.attribution||'')}" placeholder="e.g. Roderic Rivershaw"
-                            oninput="pageData.blocks[${i}].attribution=this.value">
-                    </div>
-                </div>`;
-
-        case 'divider':
-            return `<p style="margin-top:12px;font-size:0.85rem;color:var(--color-text-muted);font-style:italic;">A horizontal rule will be rendered here.</p>`;
-
-        case 'html':
-            return `
-                <div class="field-row">
-                    <div class="field">
-                        <label>Raw HTML</label>
-                        <textarea style="font-family:'Courier New',monospace;font-size:12px;min-height:120px;"
-                            oninput="pageData.blocks[${i}].content=this.value; updatePreview(${i})">${esc(b.content||'')}</textarea>
-                    </div>
-                </div>`;
-
-        default: return '';
-    }
-}
-
-/* ── Preview text shown in collapsed header ── */
-function blockPreview(b) {
-    const strip = s => (s||'').replace(/<[^>]*>/g,'').slice(0,60);
-    switch (b.type) {
-        case 'heading':   return esc(strip(b.text)) || '(empty)';
-        case 'paragraph': return esc(strip(b.text)) || '(empty)';
-        case 'image':     return esc(b.src || '(no src)');
-        case 'quote':     return esc(strip(b.text)) || '(empty)';
-        case 'divider':   return '────────────';
-        case 'html':      return esc(strip(b.content)) || '(empty)';
-        default: return '';
-    }
-}
-
-/* ── Update the collapsed preview text live ── */
-function updatePreview(i) {
-    const card = document.querySelector(`.block-card[data-index="${i}"]`);
-    if (!card) return;
-    card.querySelector('.block-preview').textContent = blockPreview(pageData.blocks[i]);
-}
-
-/* ── Toggle expand/collapse ── */
-function toggleCard(head) {
-    head.classList.toggle('open');
-    head.nextElementSibling.classList.toggle('open');
-}
-
-/* ── RTE ── */
-function rteCmd(i, cmd) {
-    const editor = document.getElementById(`rte-${i}`);
-    if (!editor) return;
-    editor.focus();
-    document.execCommand(cmd, false, null);
-    pageData.blocks[i].text = editor.innerHTML;
-    updateToolbarState(i);
-}
-
-function updateToolbarState(i) {
-    const toolbar = document.getElementById(`rte-toolbar-${i}`);
-    if (!toolbar) return;
-    ['bold','italic','underline'].forEach((cmd, idx) => {
-        toolbar.querySelectorAll('.rte-btn')[idx]?.classList.toggle('active', document.queryCommandState(cmd));
-    });
-}
-
-/* ── Add / remove blocks ── */
-function addBlock() {
-    const type = document.getElementById('new-block-type').value;
-    const defaults = {
-        paragraph: { type: 'paragraph', text: '' },
-        heading:   { type: 'heading', level: 3, text: '' },
-        image:     { type: 'image', src: '', alt: '', caption: '' },
-        quote:     { type: 'quote', text: '', attribution: '' },
-        divider:   { type: 'divider' },
-        html:      { type: 'html', content: '' },
-    };
-    pageData.blocks.push({ ...defaults[type] });
-    renderAll();
-    setTimeout(() => {
-        const cards = document.querySelectorAll('.block-card');
-        const last = cards[cards.length - 1];
-        if (last) {
-            last.querySelector('.block-head').classList.add('open');
-            last.querySelector('.block-body').classList.add('open');
-            last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    function updateToolbarState() {
+        const toolbar = document.getElementById('rte-toolbar');
+        const btns = toolbar.querySelectorAll('.rte-btn');
+        const sel = window.getSelection();
+        let inH3 = false;
+        if (sel && sel.rangeCount) {
+            const node = sel.getRangeAt(0).commonAncestorContainer;
+            const el = node.nodeType === 3 ? node.parentElement : node;
+            inH3 = !!el.closest('h3');
         }
-    }, 50);
-}
+        btns[0].classList.toggle('active', inH3);
+        btns[2].classList.toggle('active', document.queryCommandState('bold'));
+        btns[3].classList.toggle('active', document.queryCommandState('italic'));
+        btns[4].classList.toggle('active', document.queryCommandState('underline'));
+    }
 
-function removeBlock(i) {
-    pageData.blocks.splice(i, 1);
-    renderAll();
-}
+    /* ── Generate JSON ── */
+    function generateOutput() {
+        const out = {
+            title: titleEl.value.trim(),
+            body:  editor.innerHTML.trim()
+        };
+        document.getElementById('output-box').textContent = JSON.stringify(out, null, 2);
+    }
 
-/* ── Generate JSON output ── */
-function generateOutput() {
-    // Sync all open RTEs
-    document.querySelectorAll('.rte-editor').forEach(el => {
-        const i = parseInt(el.id.replace('rte-', ''));
-        if (!isNaN(i) && pageData.blocks[i]) pageData.blocks[i].text = el.innerHTML;
-    });
-
-    const out = {
-        title: pageData.title || '',
-        blocks: pageData.blocks.map(b => {
-            const clean = {};
-            // Only include non-empty optional fields
-            for (const [k, v] of Object.entries(b)) {
-                if (v === '' || v === null || v === undefined) continue;
-                clean[k] = v;
-            }
-            return clean;
-        })
-    };
-    document.getElementById('output-box').textContent = JSON.stringify(out, null, 2);
-}
-
-/* ── Copy ── */
-function copyOutput() {
-    const text = document.getElementById('output-box').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        const fb = document.getElementById('copy-feedback');
-        fb.classList.add('show');
-        setTimeout(() => fb.classList.remove('show'), 2000);
-    });
-}
-
-/* ── File loading ── */
-document.getElementById('file-input').addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-        try {
-            pageData = JSON.parse(e.target.result);
-            renderAll();
-            generateOutput();
-        } catch {
-            alert('Could not parse the file. Make sure it is a valid JSON file.');
-        }
-    };
-    reader.readAsText(file);
-    this.value = '';
-});
-
-/* ── Live fetch ── */
-function fetchLive() {
-    const status = document.getElementById('load-status');
-    status.textContent = 'Loading…';
-    status.style.color = '';
-    fetch('sources/homepage.json?nocache=' + Date.now())
-        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-        .then(data => {
-            pageData = data;
-            renderAll();
-            generateOutput();
-            status.textContent = 'Loaded from site ✓';
-            status.style.color = 'var(--color-success)';
-        })
-        .catch(() => {
-            status.textContent = 'Could not load — use "Load from file" instead.';
-            status.style.color = 'var(--color-danger)';
-            pageData = { title: '', blocks: [] };
-            renderAll();
+    /* ── Copy ── */
+    function copyOutput() {
+        const text = document.getElementById('output-box').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const fb = document.getElementById('copy-feedback');
+            fb.classList.add('show');
+            setTimeout(() => fb.classList.remove('show'), 2000);
         });
-}
+    }
 
-/* ── Helpers ── */
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    /* ── File loading ── */
+    document.getElementById('file-input').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                loadData(JSON.parse(e.target.result));
+            } catch {
+                alert('Could not parse the file. Make sure it is valid JSON.');
+            }
+        };
+        reader.readAsText(file);
+        this.value = '';
+    });
 
-/* ── Init ── */
-fetchLive();
+    /* ── Populate fields from data ── */
+    function loadData(data) {
+        titleEl.value   = data.title || '';
+        editor.innerHTML = data.body  || '';
+        generateOutput();
+    }
+
+    /* ── Live fetch ── */
+    function fetchLive() {
+        const status = document.getElementById('load-status');
+        status.textContent = 'Loading…';
+        status.style.color = '';
+        fetch('sources/homepage.json?nocache=' + Date.now())
+            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+            .then(data => {
+                loadData(data);
+                status.textContent = 'Loaded from site ✓';
+                status.style.color = 'var(--color-success)';
+            })
+            .catch(() => {
+                status.textContent = 'Could not load — use "Load from file" instead.';
+                status.style.color = 'var(--color-danger)';
+            });
+    }
+
+    fetchLive();
 
 </script>
 </body>
