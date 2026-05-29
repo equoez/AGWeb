@@ -666,6 +666,64 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .char-body p:last-child { margin-bottom: 0; }
 
 /* ============================================================
+   Homepage Blocks
+   ============================================================ */
+.home-figure {
+    margin: 16px 0;
+    text-align: center;
+    line-height: 0;
+}
+
+.home-img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 210, 122, 0.14);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+.home-img-caption {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+    text-align: center;
+    line-height: 1.4;
+}
+
+.home-quote {
+    margin: 20px 0;
+    padding: 14px 20px;
+    border-left: 3px solid var(--color-gold-dim);
+    background: rgba(255, 210, 122, 0.04);
+    border-radius: 0 8px 8px 0;
+}
+
+.home-quote p {
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+}
+
+.home-quote cite {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--color-gold-dim);
+    font-style: normal;
+}
+
+.home-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 210, 122, 0.12);
+    margin: 20px 0;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 680px) {
