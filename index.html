@@ -20,14 +20,15 @@
         <section data-page="codex"     class="page"><div id="codex-content"></div></section>
         <section data-page="enlist"    class="page"><div id="enlist-content"></div></section>
         <section data-page="journal"   class="page">
-            <div id="journal-header"></div>
+            <h2>Valkera's Journal</h2>
+            <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand, sealed within the fortress archive.</p>
             <div class="journal-nav">
-                <button class="journal-arrow" id="journal-prev" aria-label="Previous entry">&#8249;</button>
+                <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
                 <div class="journal-index-wrap">
                     <span class="journal-label">Entry</span>
                     <div id="journal-tabs" class="journal-tabs"></div>
                 </div>
-                <button class="journal-arrow" id="journal-next" aria-label="Next entry">&#8250;</button>
+                <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
             </div>
             <div id="journal-entry-title" class="journal-entry-title"></div>
             <div id="journal-entry-body"  class="journal-entry-body"></div>
@@ -37,11 +38,11 @@
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
         <section data-page="members"   class="page">
             <h2>Members</h2>
-            <p id="members-error" style="display:none;color:#ff8888;">Could not load member data.</p>
+            <p id="members-error" style="display:none;color:#ff8888;">Could not load member data. Make sure <em>sources/characters.json</em> is in place.</p>
             <div id="members-list"></div>
         </section>
         <section data-page="character" class="page">
-            <a class="char-back" id="char-back" href="#members">Return to the Order</a>
+            <a class="char-back" href="#members" onclick="showPage('members');return false;">Return to the Order</a>
             <div id="char-sheet-content"></div>
         </section>
 
@@ -49,214 +50,86 @@
 </div>
 
 <script>
-/* ============================================================
-   Constants & tiny helpers
-   ============================================================ */
-const PAGES      = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
-const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g, '');
+const PAGES = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
+const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
+const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
+const json       = (url, cb, err) => fetch(url).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(cb).catch(err||(() => {}));
 
-function fetchJSON(url) {
-    return fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+/* --- Navbar --- */
+setHTML('navbar', PAGES.map(p =>
+    `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase()+p.slice(1)}</button>`
+).join(''));
+
+/* --- Generic title+body loader (home, enlist, diplomacy, decree) --- */
+function loadSimple(page, file) {
+    const el = document.getElementById(page+'-content');
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/'+file, d => {
+        el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '') + (d.body ? d.body : '');
+    }, () => {
+        el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`;
+    });
 }
 
-function setHTML(id, html) {
-    document.getElementById(id).innerHTML = html;
-}
-
-/* ============================================================
-   Navbar — event delegation, no inline onclick
-   ============================================================ */
-const navbar = document.getElementById('navbar');
-navbar.innerHTML = PAGES.map(p =>
-    `<button class="nav-button" data-page="${p}">${p[0].toUpperCase() + p.slice(1)}</button>`
-).join('');
-navbar.addEventListener('click', e => {
-    const btn = e.target.closest('[data-page]');
-    if (btn) showPage(btn.dataset.page);
-});
-
-/* ============================================================
-   Generic structured-page renderer
-   Handles: home, enlist, diplomacy, decree (all use sections[])
-   ============================================================ */
-function renderStructured(el, d) {
-    console.log('renderStructured called, el:', el?.id, 'title:', d?.title, 'keys:', Object.keys(d||{}));
-    let html = d.title ? `<h2>${d.title}</h2>` : '';
-
-    // intro paragraph
-    if (d.intro) html += `<p class="page-intro">${d.intro}</p>`;
-
-    // narrative paragraphs (enlist / decree)
-    if (d.paragraphs) {
-        d.paragraphs.forEach(p => { html += `<p>${p}</p>`; });
-    }
-
-    // letter block (enlist)
-    if (d.letter) {
-        html += `<blockquote class="home-quote"><p>${d.letter.text}</p></blockquote>`;
-    }
-
-    // map image (home)
-    if (d.map_image) {
-        html += `<figure class="home-figure"><img src="${d.map_image}" alt="Map" class="home-img"></figure>`;
-    }
-
-    // sections (home overview / treaties in diplomacy)
-    if (d.sections) {
-        d.sections.forEach(s => {
-            const cls = s.style ? ` class="${s.style}"` : '';
-            html += `<div${cls}>`;
-            if (s.heading) html += `<h3>${s.heading}</h3>`;
-            if (s.text)    html += `<p>${s.text}</p>`;
-
-            // treaty articles
-            if (s.parties)   html += `<p><em>Between ${s.parties}</em></p>`;
-            if (s.signed)    html += `<p><em>${s.signed}</em></p>`;
-            if (s.signatory) html += `<p><em>— ${s.signatory}</em></p>`;
-            if (s.articles) {
-                s.articles.forEach(a => {
-                    html += `<p><strong>Article ${a.number}</strong> — ${a.title}: ${a.text}</p>`;
-                });
-            }
-            html += `</div>`;
-        });
-    }
-
-    // paragraphs after letter (enlist)
-    if (d.paragraphs_after) {
-        d.paragraphs_after.forEach(p => { html += `<p>${p}</p>`; });
-    }
-
-    // related items list (home)
-    if (d.related_items) {
-        html += `<p>${d.related_items.map(i => `• ${i}`).join('&nbsp;&nbsp;')}</p>`;
-    }
-
-    el.innerHTML = html;
-
-    // attach magnifier to any .home-img that was just rendered
-    el.querySelectorAll('.home-img').forEach(initMagnifier);
-}
-
-/* ============================================================
-   Page loader — one unified function for all pages
-   ============================================================ */
-const loaded = new Set();
-
-function loadPage(pageId) {
-    console.log('loadPage called:', pageId, 'already loaded:', loaded.has(pageId));
-    if (loaded.has(pageId)) return;
-    loaded.add(pageId);
-
-    if (pageId === 'codex')     { loadCodex();   return; }
-    if (pageId === 'ranks')     { loadRanks();   return; }
-    if (pageId === 'members')   { loadMembers(); return; }
-    if (pageId === 'journal')   { initJournal(); return; }
-    if (pageId === 'character') return; // loaded on demand
-
-    // Generic structured pages: home, enlist, diplomacy, decree
-    const fileMap = {
-        home:      'homepage.json',
-        enlist:    'enlist.json',
-        diplomacy: 'diplomacy.json',
-        decree:    'decree.json',
-    };
-    const file = fileMap[pageId];
-    if (!file) return;
-    const el = document.getElementById(pageId + '-content');
-    fetchJSON('sources/' + file)
-        .then(d => { console.log('JSON loaded for', file, 'data:', d); renderStructured(el, d); })
-        .catch(err => { console.error('Failed:', file, err); el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`; });
-}
-
-/* ============================================================
-   Codex
-   ============================================================ */
+/* --- Codex --- */
 function loadCodex() {
     const el = document.getElementById('codex-content');
-    fetchJSON('sources/codex.json').then(d => {
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/codex.json', d => {
         el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
             + (d.intro ? `<p>${d.intro}</p>` : '')
             + '<div class="section">'
-            + (d.items || []).map(it =>
+            + (d.items||[]).map(it =>
                 `<div class="codex-item"><img src="img/main/FWD_Fist.png" class="codex-icon" alt=""><div><strong>${it.title}</strong> ${it.text}</div></div>`
             ).join('') + '</div>';
-    }).catch(err => { console.error('Failed: codex.json', err); el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>'; });
+    }, () => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>'; });
 }
 
-/* ============================================================
-   Ranks
-   ============================================================ */
+/* --- Ranks --- */
 let RANK_MAP = new Map();
-
 function loadRanks() {
     const el = document.getElementById('ranks-content');
-    fetchJSON('sources/ranks.json').then(d => {
-        RANK_MAP = new Map((d.ranks || []).map(r => [r.name, r.key]));
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/ranks.json', d => {
+        RANK_MAP = new Map((d.ranks||[]).map(r => [r.name, r.key]));
         el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
-            + (d.ranks || []).filter(r => r.desc).map(r =>
-                `<div class="rank-item">
-                    <img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge">
-                    <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
-                </div>`
+            + (d.ranks||[]).filter(r => r.desc).map(r =>
+                `<div class="rank-item"><img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge"><div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div></div>`
             ).join('');
-    }).catch(err => { console.error('Failed: ranks.json', err); el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>'; });
+    }, () => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>'; });
 }
 
-const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.png`;
+const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)||'initiate'}_rankbadge.png`;
 
-/* Ensure ranks are loaded before we need badgeSrc (e.g. deep-link to character) */
-function ensureRanks() {
-    if (RANK_MAP.size) return Promise.resolve();
-    return fetchJSON('sources/ranks.json').then(d => {
-        RANK_MAP = new Map((d.ranks || []).map(r => [r.name, r.key]));
-    }).catch(() => {});
-}
-
-/* ============================================================
-   Members
-   ============================================================ */
+/* --- Members --- */
 let characterData = [];
-
 function loadMembers() {
     const list = document.getElementById('members-list');
-    fetchJSON('sources/characters.json').then(chars => {
+    if (list.dataset.loaded) return;
+    list.dataset.loaded = '1';
+    json('sources/characters.json', chars => {
         characterData = chars;
-        list.innerHTML = chars.map((c, i) => {
+        setHTML('members-list', chars.map((c,i) => {
             if (!c.rank) return '';
             const icon = c.sheet
-                ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" data-char="${i}" title="View character sheet">
-                       <img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet">
-                   </a>`
-                : '';
-            const pts = c.points > 0
-                ? `<div class="member-points">
-                       <span class="member-points-number">${c.points}</span>
-                       <img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points">
-                   </div>`
+                ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" onclick="showCharacterSheet(${i});return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
                 : '';
             return `<div class="member-card">
                 <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
                 <div class="member-info">
                     <div class="member-name">${c.name}${icon}</div>
                     <div class="member-rank-label">${c.rank}</div>
-                </div>${pts}
+                </div>
+                ${c.points>0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
             </div>`;
-        }).join('');
-
-        // Single delegated listener for sheet links
-        list.addEventListener('click', e => {
-            const link = e.target.closest('[data-char]');
-            if (!link) return;
-            e.preventDefault();
-            showCharacterSheet(parseInt(link.dataset.char, 10));
-        });
-    }).catch(err => { console.error('Failed: characters.json', err); document.getElementById('members-error').style.display = 'block'; });
+        }).join(''));
+    }, () => { document.getElementById('members-error').style.display = 'block'; });
 }
 
-/* ============================================================
-   Character Sheet
-   ============================================================ */
+/* --- Character Sheet --- */
 function showCharacterSheet(index) {
     const c = characterData[index];
     if (!c?.sheet) return;
@@ -272,10 +145,10 @@ function showCharacterSheet(index) {
             </div>
         </div>
         ${c.sheet.portrait ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>` : ''}
-        <div class="char-body">${typeof bio === 'string' ? bio : bio.map(p => `<p>${p}</p>`).join('')}</div>
+        <div class="char-body">${typeof bio==='string' ? bio : bio.map(p=>`<p>${p}</p>`).join('')}</div>
     `);
     showPage('character', false);
-    try { history.pushState({ page: 'character', slug: nameToSlug(c.name) }, '', '/#' + nameToSlug(c.name)); } catch(e) {}
+    try { history.pushState({page:'character',slug:nameToSlug(c.name)},'','/#'+nameToSlug(c.name)); } catch(e){}
 }
 
 function tryOpenCharacterBySlug(slug) {
@@ -283,58 +156,33 @@ function tryOpenCharacterBySlug(slug) {
         const idx = chars.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
         if (idx !== -1) showCharacterSheet(idx);
     };
-    ensureRanks().then(() => {
-        if (characterData.length) { open(characterData); return; }
-        fetchJSON('sources/characters.json').then(chars => { characterData = chars; open(chars); }).catch(() => {});
-    });
+    if (characterData.length) { open(characterData); return; }
+    json('sources/characters.json', chars => { characterData = chars; open(chars); });
 }
 
-/* ============================================================
-   Journal
-   ============================================================ */
+/* --- Journal --- */
 let jEntries = [], jIdx = 0, jReady = false;
 
 function initJournal() {
     if (jReady) return;
     jReady = true;
-    fetchJSON('sources/journal.json').then(d => {
-        // d can be an array (legacy) or object with title/intro/entries
-        const meta    = Array.isArray(d) ? {} : d;
-        jEntries      = Array.isArray(d) ? d : (d.entries || []);
-
-        // Render title/intro from JSON if present
-        const hdr = document.getElementById('journal-header');
-        hdr.innerHTML = (meta.title ? `<h2>${meta.title}</h2>` : '<h2>Valkera\'s Journal</h2>')
-            + (meta.intro ? `<p class="journal-intro">${meta.intro}</p>` : '');
-
-        setHTML('journal-tabs', jEntries.map((e, i) =>
-            `<button class="journal-tab${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="${e.title}">${i + 1}</button>`
+    json('sources/journal.json', entries => {
+        jEntries = entries;
+        setHTML('journal-tabs', entries.map((e,i) =>
+            `<button class="journal-tab${i===0?' active':''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i+1}</button>`
         ).join(''));
-
-        // Delegated listeners for journal nav
-        document.getElementById('journal-tabs').addEventListener('click', e => {
-            const btn = e.target.closest('[data-idx]');
-            if (btn) showJournalEntry(parseInt(btn.dataset.idx, 10));
-        });
-        document.getElementById('journal-prev').addEventListener('click', () => journalStep(-1));
-        document.getElementById('journal-next').addEventListener('click', () => journalStep(1));
-
         showJournalEntry(0);
-    }).catch(err => { console.error('Failed: journal.json', err); document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
+    }, () => { document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
 }
 
 function showJournalEntry(i) {
     jIdx = i;
     const e = jEntries[i];
     document.getElementById('journal-entry-title').textContent = e.title;
-    // body can be plain text (newline-separated) or HTML string
-    const isHTML = /<[a-z][\s\S]*>/i.test(e.body);
-    document.getElementById('journal-entry-body').innerHTML = isHTML
-        ? e.body
-        : e.body.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('');
-    document.querySelectorAll('.journal-tab').forEach((b, j) => b.classList.toggle('active', j === i));
-    document.getElementById('journal-prev').disabled = i === 0;
-    document.getElementById('journal-next').disabled = i === jEntries.length - 1;
+    setHTML('journal-entry-body', e.body.split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join(''));
+    document.querySelectorAll('.journal-tab').forEach((b,j) => b.classList.toggle('active', j===i));
+    document.getElementById('journal-prev').disabled = i===0;
+    document.getElementById('journal-next').disabled = i===jEntries.length-1;
 }
 
 function journalStep(dir) {
@@ -342,27 +190,28 @@ function journalStep(dir) {
     if (n >= 0 && n < jEntries.length) showJournalEntry(n);
 }
 
-/* ============================================================
-   Page switching
-   ============================================================ */
-function showPage(pageId, pushHistory = true) {
+/* --- Page switching --- */
+function showPage(pageId, pushHistory=true) {
     document.querySelector('.page.active')?.classList.remove('active');
-    document.querySelector(`section[data-page="${pageId}"]`).classList.add('active');
-    loadPage(pageId);
-    if (pushHistory) {
-        try { history.pushState({ page: pageId }, '', '/#' + pageId); } catch(e) {}
-    }
+    document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+    if (pageId==='home')      loadSimple('home','homepage.json');
+    if (pageId==='enlist')    loadSimple('enlist','enlist.json');
+    if (pageId==='diplomacy') loadSimple('diplomacy','diplomacy.json');
+    if (pageId==='decree')    loadSimple('decree','decree.json');
+    if (pageId==='codex')     loadCodex();
+    if (pageId==='ranks')     loadRanks();
+    if (pageId==='members')   loadMembers();
+    if (pageId==='journal')   initJournal();
+    if (pushHistory) try { history.pushState({page:pageId},'','/#'+pageId); } catch(e){}
 }
 
-/* ============================================================
-   Dark-magic easter egg
-   ============================================================ */
+/* --- Dark magic easter egg --- */
 const bgEl = document.querySelector('.bg-fixed');
 let dmTimer;
 document.addEventListener('mouseover', e => {
     if (!e.target.classList.contains('member-points-icon')) return;
     clearTimeout(dmTimer);
-    bgEl.classList.add('dark-magic', 'dark-magic-anim');
+    bgEl.classList.add('dark-magic','dark-magic-anim');
     document.body.classList.add('dark-magic-active');
 });
 document.addEventListener('mouseout', e => {
@@ -372,57 +221,53 @@ document.addEventListener('mouseout', e => {
     dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
 });
 
-/* ============================================================
-   Map magnifier
-   ============================================================ */
-const ZOOM = 3, LENS_SIZE = 220, HALF = LENS_SIZE / 2;
-const lens = Object.assign(document.createElement('div'), { className: 'map-magnifier' });
-document.body.appendChild(lens);
-
-function renderMagnifier(clientX, clientY, img, isTouch) {
-    const r  = img.getBoundingClientRect();
-    const cx = Math.max(0, Math.min(clientX - r.left, r.width));
-    const cy = Math.max(0, Math.min(clientY - r.top,  r.height));
-    lens.style.backgroundImage    = `url('${img.src}')`;
-    lens.style.backgroundSize     = `${r.width * ZOOM}px ${r.height * ZOOM}px`;
-    lens.style.backgroundPosition = `${HALF - cx * ZOOM}px ${HALF - cy * ZOOM}px`;
-    lens.style.display = 'block';
-    lens.style.left    = (clientX - HALF) + 'px';
-    lens.style.top     = (isTouch ? clientY - LENS_SIZE - 40 : clientY - HALF) + 'px';
-}
-
-function initMagnifier(img) {
-    img.addEventListener('mouseenter', () => lens.style.display = 'block');
-    img.addEventListener('mouseleave', () => lens.style.display = 'none');
-    img.addEventListener('mousemove',  e => renderMagnifier(e.clientX, e.clientY, img, false));
-    img.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; renderMagnifier(t.clientX, t.clientY, img, true); }, { passive: false });
-    img.addEventListener('touchmove',  e => { e.preventDefault(); const t = e.touches[0]; renderMagnifier(t.clientX, t.clientY, img, true); }, { passive: false });
-    img.addEventListener('touchend',    () => lens.style.display = 'none');
-    img.addEventListener('touchcancel', () => lens.style.display = 'none');
-}
-
-/* ============================================================
-   Back / forward & hash routing
-   ============================================================ */
-document.getElementById('char-back').addEventListener('click', e => {
-    e.preventDefault();
-    showPage('members');
-});
-
+/* --- Back/forward & hash routing --- */
 window.addEventListener('popstate', () => {
     const h = location.hash.slice(1);
     if (PAGES.includes(h)) showPage(h, false);
     else if (h)            tryOpenCharacterBySlug(h);
     else                   showPage('home', false);
-    window.scrollTo(0, 0);
+    window.scrollTo(0,0);
 });
 
-/* ── Initial load ── */
 const hash = location.hash.slice(1);
-if (PAGES.includes(hash))  { history.replaceState({ page: hash }, '', '/#' + hash); showPage(hash, false); }
-else if (hash)              { ensureRanks().then(() => tryOpenCharacterBySlug(hash)); }
-else                        { history.replaceState({ page: 'home' }, '', '/#home'); showPage('home', false); }
-window.scrollTo(0, 0);
+if (PAGES.includes(hash))      { history.replaceState({page:hash},'','/#'+hash); showPage(hash,false); }
+else if (hash)                  { tryOpenCharacterBySlug(hash); }
+else                            { history.replaceState({page:'home'},'','/#home'); showPage('home',false); }
+window.scrollTo(0,0);
+
+/* --- Map magnifier --- */
+const ZOOM=3, LENS_SIZE=220, HALF=LENS_SIZE/2;
+const lens = Object.assign(document.createElement('div'), {className:'map-magnifier'});
+document.body.appendChild(lens);
+
+function renderMagnifier(clientX, clientY, img, isTouch) {
+    const r  = img.getBoundingClientRect();
+    const cx = Math.max(0, Math.min(clientX-r.left, r.width));
+    const cy = Math.max(0, Math.min(clientY-r.top,  r.height));
+    lens.style.backgroundImage    = `url('${img.src}')`;
+    lens.style.backgroundSize     = `${r.width*ZOOM}px ${r.height*ZOOM}px`;
+    lens.style.backgroundPosition = `${HALF-cx*ZOOM}px ${HALF-cy*ZOOM}px`;
+    lens.style.display = 'block';
+    lens.style.left    = (clientX-HALF)+'px';
+    lens.style.top     = (isTouch ? clientY-LENS_SIZE-40 : clientY-HALF)+'px';
+}
+
+function initMagnifier(img) {
+    img.addEventListener('mouseenter', () => lens.style.display='block');
+    img.addEventListener('mouseleave', () => lens.style.display='none');
+    img.addEventListener('mousemove',  e => renderMagnifier(e.clientX, e.clientY, img, false));
+    img.addEventListener('touchstart', e => { e.preventDefault(); const t=e.touches[0]; renderMagnifier(t.clientX,t.clientY,img,true); }, {passive:false});
+    img.addEventListener('touchmove',  e => { e.preventDefault(); const t=e.touches[0]; renderMagnifier(t.clientX,t.clientY,img,true); }, {passive:false});
+    img.addEventListener('touchend',    () => lens.style.display='none');
+    img.addEventListener('touchcancel', () => lens.style.display='none');
+}
+
+new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
+    if (n.nodeType!==1) return;
+    (n.matches?.('.home-img') ? [n] : [...n.querySelectorAll('.home-img')]).forEach(initMagnifier);
+}))).observe(document.getElementById('home-content'), {childList:true, subtree:true});
+
 </script>
 </body>
 </html>
