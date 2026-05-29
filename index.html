@@ -36,6 +36,13 @@
                 <div class="section" id="codex-list"></div>
             </section>
 
+
+            <section data-page="enlist" class="page">
+                <div id="enlist-content">
+                    <!-- Loaded from sources/enlist.json -->
+                </div>
+            </section>
+
             <section data-page="diplomacy" class="page">
                 <h2>Diplomacy</h2>
                 <p>The Argent Gryphon has formalised diplomatic ties other guilds.</p>
@@ -107,7 +114,7 @@
 
     <script>
 
-        const PAGES = ['home','codex','journal','diplomacy','decree','ranks','members'];
+        const PAGES = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
 
         const CODEX_ITEMS = [
             ['Exhort Supremacy',      "Let thy steel and magic bolster the Gryphon's superiority."],
@@ -170,12 +177,34 @@
                 });
         }
 
+
+        /* --- Enlist loader --- */
+
+        function loadEnlist() {
+            const container = document.getElementById('enlist-content');
+            if (container.dataset.loaded) return;
+            container.dataset.loaded = 'true';
+
+            fetch('sources/enlist.json')
+                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+                .then(data => {
+                    let html = '';
+                    if (data.title) html += `<h2>${data.title}</h2>`;
+                    if (data.body)  html += `<div class="enlist-body">${data.body}</div>`;
+                    container.innerHTML = html;
+                })
+                .catch(() => {
+                    container.innerHTML = '<p style="color:#ff8888;">Could not load enlist page. Make sure <em>sources/enlist.json</em> is in place.</p>';
+                });
+        }
+
         /* --- Page switching --- */
 
         function showPage(pageId, pushHistory = true) {
             document.querySelector('.page.active')?.classList.remove('active');
             document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
             if (pageId === 'home')    loadHomepage();
+            if (pageId === 'enlist')  loadEnlist();
             if (pageId === 'members') loadMembers();
             if (pageId === 'journal') initJournal();
             if (pushHistory) try { history.pushState({ page: pageId }, '', '/#' + pageId); } catch(e) {}
