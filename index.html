@@ -164,7 +164,7 @@ function loadPage(pageId) {
     const el = document.getElementById(pageId + '-content');
     fetchJSON('sources/' + file)
         .then(d => renderStructured(el, d))
-        .catch(() => { el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`; });
+        .catch(err => { console.error('Failed:', file, err); el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`; });
 }
 
 /* ============================================================
@@ -179,7 +179,7 @@ function loadCodex() {
             + (d.items || []).map(it =>
                 `<div class="codex-item"><img src="img/main/FWD_Fist.png" class="codex-icon" alt=""><div><strong>${it.title}</strong> ${it.text}</div></div>`
             ).join('') + '</div>';
-    }).catch(() => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>'; });
+    }).catch(err => { console.error('Failed: codex.json', err); el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>'; });
 }
 
 /* ============================================================
@@ -198,7 +198,7 @@ function loadRanks() {
                     <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
                 </div>`
             ).join('');
-    }).catch(() => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>'; });
+    }).catch(err => { console.error('Failed: ranks.json', err); el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>'; });
 }
 
 const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.png`;
@@ -249,7 +249,7 @@ function loadMembers() {
             e.preventDefault();
             showCharacterSheet(parseInt(link.dataset.char, 10));
         });
-    }).catch(() => { document.getElementById('members-error').style.display = 'block'; });
+    }).catch(err => { console.error('Failed: characters.json', err); document.getElementById('members-error').style.display = 'block'; });
 }
 
 /* ============================================================
@@ -318,7 +318,7 @@ function initJournal() {
         document.getElementById('journal-next').addEventListener('click', () => journalStep(1));
 
         showJournalEntry(0);
-    }).catch(() => { document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
+    }).catch(err => { console.error('Failed: journal.json', err); document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
 }
 
 function showJournalEntry(i) {
