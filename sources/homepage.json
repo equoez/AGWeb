@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "image",
-      "src": "img/main/vanduramap.png",
+      "src": "img/main/vanduramap.png"
     },
     {
       "type": "heading",
