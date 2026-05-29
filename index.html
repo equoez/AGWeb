@@ -347,7 +347,7 @@ function journalStep(dir) {
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
     document.querySelector('.page.active')?.classList.remove('active');
-    document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+    document.querySelector(`section[data-page="${pageId}"]`).classList.add('active');
     loadPage(pageId);
     if (pushHistory) {
         try { history.pushState({ page: pageId }, '', '/#' + pageId); } catch(e) {}
