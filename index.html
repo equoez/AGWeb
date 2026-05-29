@@ -250,7 +250,7 @@ function renderMagnifier(clientX, clientY, img, isTouch) {
     lens.style.backgroundPosition = `${HALF-cx*ZOOM}px ${HALF-cy*ZOOM}px`;
     lens.style.display = 'block';
     lens.style.left    = (clientX-HALF)+'px';
-    lens.style.top     = (isTouch ? clientY-LENS_SIZE-260 : clientY-HALF)+'px';
+    lens.style.top     = (isTouch ? clientY-LENS_SIZE-40 : clientY-HALF)+'px';
 }
 
 function initMagnifier(img) {
