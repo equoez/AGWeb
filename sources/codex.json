@@ -1,0 +1,13 @@
+{
+  "title": "Argent Codex",
+  "intro": "The Argent Gryphon adheres to a codex — a set of regulations for daily life, behaviour, and values — emphasising chivalry, piety, and a strict moral code. Written by Roderic Rivershaw, it outlines the ideal conduct for a Gryphon, encompassing both monastic life and military service.",
+  "items": [
+    { "title": "Exhort Supremacy",      "text": "Let thy steel and magic bolster the Gryphon's superiority." },
+    { "title": "Secure the Advantage",  "text": "Strike swiftly, audaciously and without warning." },
+    { "title": "Serve Dauntlessly",     "text": "Let humility be cast aside, and boldness be thy crown." },
+    { "title": "Seek Wisdom",           "text": "Knowledge is the flame by which decadence is purged." },
+    { "title": "Show No Mercy",         "text": "Unsheathe thy weapons without pity, for mercy prolongs suffering." },
+    { "title": "Keep the Vigil",        "text": "Wherever the Gryphon flies, let no infamy go unchallenged." },
+    { "title": "Unyielding Reputation", "text": "Should thy end come, let them pay the highest toll." }
+  ]
+}
