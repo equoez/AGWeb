@@ -8,427 +8,266 @@
     <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-    <div class="bg-fixed"></div>
+<div class="bg-fixed"></div>
+<div class="container">
+    <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
+    <nav class="navbar" id="navbar"></nav>
+    <main class="content-box">
 
-    <div class="container">
-
-        <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
-
-        <nav class="navbar" id="navbar"></nav>
-
-        <main class="content-box">
-
-            <section data-page="home" class="page active">
-                <div id="home-content">
-                    <!-- Loaded from sources/homepage.json -->
+        <section data-page="home"      class="page active"><div id="home-content"></div></section>
+        <section data-page="codex"     class="page"><div id="codex-content"></div></section>
+        <section data-page="enlist"    class="page"><div id="enlist-content"></div></section>
+        <section data-page="journal"   class="page">
+            <h2>Valkera's Journal</h2>
+            <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand, sealed within the fortress archive.</p>
+            <div class="journal-nav">
+                <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
+                <div class="journal-index-wrap">
+                    <span class="journal-label">Entry</span>
+                    <div id="journal-tabs" class="journal-tabs"></div>
                 </div>
-            </section>
+                <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
+            </div>
+            <div id="journal-entry-title" class="journal-entry-title"></div>
+            <div id="journal-entry-body"  class="journal-entry-body"></div>
+        </section>
+        <section data-page="diplomacy" class="page"><div id="diplomacy-content"></div></section>
+        <section data-page="decree"    class="page"><div id="decree-content"></div></section>
+        <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
+        <section data-page="members"   class="page">
+            <h2>Members</h2>
+            <p id="members-error" style="display:none;color:#ff8888;">Could not load member data. Make sure <em>sources/characters.json</em> is in place.</p>
+            <div id="members-list"></div>
+        </section>
+        <section data-page="character" class="page">
+            <a class="char-back" href="#members" onclick="showPage('members');return false;">Return to the Order</a>
+            <div id="char-sheet-content"></div>
+        </section>
 
-            <section data-page="codex" class="page">
-                <h2>Argent Codex</h2>
-                <p>The Argent Gryphon adheres to a codex — a set of regulations for daily life,
-                behaviour, and values — emphasising chivalry, piety, and a strict moral code.
-                Written by Roderic Rivershaw, it outlines the ideal conduct for a Gryphon,
-                encompassing both monastic life and military service.</p>
-                <div class="section" id="codex-list"></div>
-            </section>
+    </main>
+</div>
 
+<script>
+const PAGES = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
+const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
+const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
+const json       = (url, cb, err) => fetch(url).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(cb).catch(err||(() => {}));
 
-            <section data-page="enlist" class="page">
-                <div id="enlist-content">
-                    <!-- Loaded from sources/enlist.json -->
+/* --- Navbar --- */
+setHTML('navbar', PAGES.map(p =>
+    `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase()+p.slice(1)}</button>`
+).join(''));
+
+/* --- Generic title+body loader (home, enlist, diplomacy, decree) --- */
+function loadSimple(page, file) {
+    const el = document.getElementById(page+'-content');
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/'+file, d => {
+        el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '') + (d.body ? d.body : '');
+    }, () => {
+        el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`;
+    });
+}
+
+/* --- Codex --- */
+function loadCodex() {
+    const el = document.getElementById('codex-content');
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/codex.json', d => {
+        el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
+            + (d.intro ? `<p>${d.intro}</p>` : '')
+            + '<div class="section">'
+            + (d.items||[]).map(it =>
+                `<div class="codex-item"><img src="img/main/FWD_Fist.png" class="codex-icon" alt=""><div><strong>${it.title}</strong> ${it.text}</div></div>`
+            ).join('') + '</div>';
+    }, () => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>'; });
+}
+
+/* --- Ranks --- */
+let RANK_MAP = new Map();
+function loadRanks() {
+    const el = document.getElementById('ranks-content');
+    if (el.dataset.loaded) return;
+    el.dataset.loaded = '1';
+    json('sources/ranks.json', d => {
+        RANK_MAP = new Map((d.ranks||[]).map(r => [r.name, r.key]));
+        el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
+            + (d.ranks||[]).filter(r => r.desc).map(r =>
+                `<div class="rank-item"><img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge"><div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div></div>`
+            ).join('');
+    }, () => { el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>'; });
+}
+
+const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)||'initiate'}_rankbadge.png`;
+
+/* --- Members --- */
+let characterData = [];
+function loadMembers() {
+    const list = document.getElementById('members-list');
+    if (list.dataset.loaded) return;
+    list.dataset.loaded = '1';
+    json('sources/characters.json', chars => {
+        characterData = chars;
+        setHTML('members-list', chars.map((c,i) => {
+            if (!c.rank) return '';
+            const icon = c.sheet
+                ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" onclick="showCharacterSheet(${i});return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
+                : '';
+            return `<div class="member-card">
+                <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
+                <div class="member-info">
+                    <div class="member-name">${c.name}${icon}</div>
+                    <div class="member-rank-label">${c.rank}</div>
                 </div>
-            </section>
+                ${c.points>0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
+            </div>`;
+        }).join(''));
+    }, () => { document.getElementById('members-error').style.display = 'block'; });
+}
 
-            <section data-page="diplomacy" class="page">
-                <h2>Diplomacy</h2>
-                <p>The Argent Gryphon has formalised diplomatic ties other guilds.</p>
-                <div class="section treaty">
-                    <h3>Treaty of Alliance</h3>
-                    <p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p>
-                    <p>We agree with the articles written below. May this alliance be blessed by Banor!<br>
-                    <em>— Nezel Stonehaze, 9 March 2026</em></p>
-                    <p>
-                        <strong>Article I</strong> — Purpose: Establishes the alliance.<br>
-                        <strong>Article II</strong> — Alliance in Arms: Mutual defence against evil.<br>
-                        <strong>Article III</strong> — Mutual Aid: Assistance when needed.<br>
-                        <strong>Article IV</strong> — Exchange of Knowledge: Shared intelligence.<br>
-                        <strong>Article V</strong> — Hospitality: Open guildhalls to one another.<br>
-                        <strong>Article VI</strong> — Fellowship: Regular meetings between members.
-                    </p>
-                </div>
-            </section>
+/* --- Character Sheet --- */
+function showCharacterSheet(index) {
+    const c = characterData[index];
+    if (!c?.sheet) return;
+    const bio = c.sheet.bio || '';
+    setHTML('char-sheet-content', `
+        <div class="char-header">
+            <div class="char-name">${c.name}</div>
+            <div class="char-meta">
+                <img class="char-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
+                <span class="char-rank">${c.rank}</span>
+                <span class="char-separator">·</span>
+                <span class="char-order">Order of the Argent Gryphon</span>
+            </div>
+        </div>
+        ${c.sheet.portrait ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>` : ''}
+        <div class="char-body">${typeof bio==='string' ? bio : bio.map(p=>`<p>${p}</p>`).join('')}</div>
+    `);
+    showPage('character', false);
+    try { history.pushState({page:'character',slug:nameToSlug(c.name)},'','/#'+nameToSlug(c.name)); } catch(e){}
+}
 
-            <section data-page="decree" class="page">
-                <h2>Silverhand Decree</h2>
-                <p>Let it be known throughout Vandura that Governor Percy Silverhand,
-                by royal right, hereby grants full sovereignty to the chivalric Order
-                of the Argent Gryphon.</p>
-                <p>The Silverhands of Liberty Bay reaffirm the old oath, empowering the Warden's
-                Council with the charge of vigilance in the Vandura Mountains. They are free to
-                anoint warriors of the true Gods, and to arm each with the Griffin Shield - a
-                symbol of strength and courage.</p>
-                <p>May the Argent Gryphon bring order to chaos, whatever the cost may be.</p>
-            </section>
+function tryOpenCharacterBySlug(slug) {
+    const open = chars => {
+        const idx = chars.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
+        if (idx !== -1) showCharacterSheet(idx);
+    };
+    if (characterData.length) { open(characterData); return; }
+    json('sources/characters.json', chars => { characterData = chars; open(chars); });
+}
 
-            <section data-page="ranks" class="page">
-                <h2>Ranks</h2>
-                <div id="ranks-list"></div>
-            </section>
+/* --- Journal --- */
+let jEntries = [], jIdx = 0, jReady = false;
 
-            <section data-page="members" class="page">
-                <h2>Members</h2>
-                <p id="members-error" style="display:none; color:#ff8888;">
-                    Could not load member data. Make sure <em>sources/characters.json</em> is in place.
-                </p>
-                <div id="members-list"></div>
-            </section>
-
-            <section data-page="journal" class="page">
-                <h2>Valkera's Journal</h2>
-                <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand,
-                sealed within the fortress archive.</p>
-                <div class="journal-nav">
-                    <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
-                    <div class="journal-index-wrap">
-                        <span class="journal-label">Entry</span>
-                        <div id="journal-tabs" class="journal-tabs"></div>
-                    </div>
-                    <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
-                </div>
-                <div id="journal-entry-title" class="journal-entry-title"></div>
-                <div id="journal-entry-body" class="journal-entry-body"></div>
-            </section>
-
-            <section data-page="character" class="page">
-                <a class="char-back" href="#members" onclick="showPage('members'); return false;">Return to the Order</a>
-                <div id="char-sheet-content"></div>
-            </section>
-
-        </main>
-
-    </div>
-
-    <script>
-
-        const PAGES = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
-
-        const CODEX_ITEMS = [
-            ['Exhort Supremacy',      "Let thy steel and magic bolster the Gryphon's superiority."],
-            ['Secure the Advantage',  'Strike swiftly, audaciously and without warning.'],
-            ['Serve Dauntlessly',     'Let humility be cast aside, and boldness be thy crown.'],
-            ['Seek Wisdom',           'Knowledge is the flame by which decadence is purged.'],
-            ['Show No Mercy',         'Unsheathe thy weapons without pity, for mercy prolongs suffering.'],
-            ['Keep the Vigil',        'Wherever the Gryphon flies, let no infamy go unchallenged.'],
-            ['Unyielding Reputation', 'Should thy end come, let them pay the highest toll.'],
-        ];
-
-        const RANKS = [
-            ['Lord Warden',  'wardens',     "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals."],
-            ['Lady Warden',  'wardens',     ''],
-            ['Warden',       'wardens',     'Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose.'],
-            ['Oathsworn',    'oathsworn',   "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril."],
-            ['Enlightened',  'enlightened', "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."],
-            ['Shieldbearer', 'shieldbearer','Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties.'],
-            ['Initiate',     'initiate',    'Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order.'],
-            ['Sentinel',     'sentinel',    'Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay.'],
-            ['Ward',         'ward',        'Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay.'],
-        ];
-
-        const RANK_MAP = new Map(RANKS.map(([name, key]) => [name, key]));
-        const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank)}_rankbadge.png`;
-        const setHTML  = (id, html) => document.getElementById(id).innerHTML = html;
-        const nameToSlug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-        /* --- Build static HTML --- */
-
-        setHTML('navbar', PAGES.map(p =>
-            `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase()}${p.slice(1)}</button>`
+function initJournal() {
+    if (jReady) return;
+    jReady = true;
+    json('sources/journal.json', entries => {
+        jEntries = entries;
+        setHTML('journal-tabs', entries.map((e,i) =>
+            `<button class="journal-tab${i===0?' active':''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i+1}</button>`
         ).join(''));
+        showJournalEntry(0);
+    }, () => { document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
+}
 
-        setHTML('codex-list', CODEX_ITEMS.map(([title, text]) =>
-            `<div class="codex-item"><img src="img/main/FWD_Fist.png" class="codex-icon" alt=""><div><strong>${title}</strong> ${text}</div></div>`
-        ).join(''));
+function showJournalEntry(i) {
+    jIdx = i;
+    const e = jEntries[i];
+    document.getElementById('journal-entry-title').textContent = e.title;
+    setHTML('journal-entry-body', e.body.split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join(''));
+    document.querySelectorAll('.journal-tab').forEach((b,j) => b.classList.toggle('active', j===i));
+    document.getElementById('journal-prev').disabled = i===0;
+    document.getElementById('journal-next').disabled = i===jEntries.length-1;
+}
 
-        setHTML('ranks-list', RANKS.filter(([,, desc]) => desc).map(([name, key, desc]) =>
-            `<div class="rank-item"><img src="img/ranks/ranks_${key}_rankbadge.png" class="rank-icon" alt="${name} badge"><div class="rank-text"><strong>${name}</strong><span>${desc}</span></div></div>`
-        ).join(''));
+function journalStep(dir) {
+    const n = jIdx + dir;
+    if (n >= 0 && n < jEntries.length) showJournalEntry(n);
+}
 
-        /* --- Homepage loader --- */
+/* --- Page switching --- */
+function showPage(pageId, pushHistory=true) {
+    document.querySelector('.page.active')?.classList.remove('active');
+    document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+    if (pageId==='home')      loadSimple('home','homepage.json');
+    if (pageId==='enlist')    loadSimple('enlist','enlist.json');
+    if (pageId==='diplomacy') loadSimple('diplomacy','diplomacy.json');
+    if (pageId==='decree')    loadSimple('decree','decree.json');
+    if (pageId==='codex')     loadCodex();
+    if (pageId==='ranks')     loadRanks();
+    if (pageId==='members')   loadMembers();
+    if (pageId==='journal')   initJournal();
+    if (pushHistory) try { history.pushState({page:pageId},'','/#'+pageId); } catch(e){}
+}
 
-        function loadHomepage() {
-            const container = document.getElementById('home-content');
-            if (container.dataset.loaded) return;
-            container.dataset.loaded = 'true';
+/* --- Dark magic easter egg --- */
+const bgEl = document.querySelector('.bg-fixed');
+let dmTimer;
+document.addEventListener('mouseover', e => {
+    if (!e.target.classList.contains('member-points-icon')) return;
+    clearTimeout(dmTimer);
+    bgEl.classList.add('dark-magic','dark-magic-anim');
+    document.body.classList.add('dark-magic-active');
+});
+document.addEventListener('mouseout', e => {
+    if (!e.target.classList.contains('member-points-icon')) return;
+    bgEl.classList.remove('dark-magic-anim');
+    document.body.classList.remove('dark-magic-active');
+    dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
+});
 
-            fetch('sources/homepage.json')
-                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-                .then(data => {
-                    let html = '';
-                    if (data.title) html += `<h2>${data.title}</h2>`;
-                    if (data.body)  html += `<div class="home-body">${data.body}</div>`;
-                    container.innerHTML = html;
-                })
-                .catch(() => {
-                    container.innerHTML = '<p style="color:#ff8888;">Could not load homepage. Make sure <em>sources/homepage.json</em> is in place.</p>';
-                });
-        }
+/* --- Back/forward & hash routing --- */
+window.addEventListener('popstate', () => {
+    const h = location.hash.slice(1);
+    if (PAGES.includes(h)) showPage(h, false);
+    else if (h)            tryOpenCharacterBySlug(h);
+    else                   showPage('home', false);
+    window.scrollTo(0,0);
+});
 
+const hash = location.hash.slice(1);
+if (PAGES.includes(hash))      { history.replaceState({page:hash},'','/#'+hash); showPage(hash,false); }
+else if (hash)                  { tryOpenCharacterBySlug(hash); }
+else                            { history.replaceState({page:'home'},'','/#home'); showPage('home',false); }
+window.scrollTo(0,0);
 
-        /* --- Enlist loader --- */
+/* --- Map magnifier --- */
+const ZOOM=3, LENS_SIZE=220, HALF=LENS_SIZE/2;
+const lens = Object.assign(document.createElement('div'), {className:'map-magnifier'});
+document.body.appendChild(lens);
 
-        function loadEnlist() {
-            const container = document.getElementById('enlist-content');
-            if (container.dataset.loaded) return;
-            container.dataset.loaded = 'true';
+function renderMagnifier(clientX, clientY, img, isTouch) {
+    const r  = img.getBoundingClientRect();
+    const cx = Math.max(0, Math.min(clientX-r.left, r.width));
+    const cy = Math.max(0, Math.min(clientY-r.top,  r.height));
+    lens.style.backgroundImage    = `url('${img.src}')`;
+    lens.style.backgroundSize     = `${r.width*ZOOM}px ${r.height*ZOOM}px`;
+    lens.style.backgroundPosition = `${HALF-cx*ZOOM}px ${HALF-cy*ZOOM}px`;
+    lens.style.display = 'block';
+    lens.style.left    = (clientX-HALF)+'px';
+    lens.style.top     = (isTouch ? clientY-LENS_SIZE-260 : clientY-HALF)+'px';
+}
 
-            fetch('sources/enlist.json')
-                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-                .then(data => {
-                    let html = '';
-                    if (data.title) html += `<h2>${data.title}</h2>`;
-                    if (data.body)  html += `<div class="enlist-body">${data.body}</div>`;
-                    container.innerHTML = html;
-                })
-                .catch(() => {
-                    container.innerHTML = '<p style="color:#ff8888;">Could not load enlist page. Make sure <em>sources/enlist.json</em> is in place.</p>';
-                });
-        }
+function initMagnifier(img) {
+    img.addEventListener('mouseenter', () => lens.style.display='block');
+    img.addEventListener('mouseleave', () => lens.style.display='none');
+    img.addEventListener('mousemove',  e => renderMagnifier(e.clientX, e.clientY, img, false));
+    img.addEventListener('touchstart', e => { e.preventDefault(); const t=e.touches[0]; renderMagnifier(t.clientX,t.clientY,img,true); }, {passive:false});
+    img.addEventListener('touchmove',  e => { e.preventDefault(); const t=e.touches[0]; renderMagnifier(t.clientX,t.clientY,img,true); }, {passive:false});
+    img.addEventListener('touchend',    () => lens.style.display='none');
+    img.addEventListener('touchcancel', () => lens.style.display='none');
+}
 
-        /* --- Page switching --- */
+new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
+    if (n.nodeType!==1) return;
+    (n.matches?.('.home-img') ? [n] : [...n.querySelectorAll('.home-img')]).forEach(initMagnifier);
+}))).observe(document.getElementById('home-content'), {childList:true, subtree:true});
 
-        function showPage(pageId, pushHistory = true) {
-            document.querySelector('.page.active')?.classList.remove('active');
-            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
-            if (pageId === 'home')    loadHomepage();
-            if (pageId === 'enlist')  loadEnlist();
-            if (pageId === 'members') loadMembers();
-            if (pageId === 'journal') initJournal();
-            if (pushHistory) try { history.pushState({ page: pageId }, '', '/#' + pageId); } catch(e) {}
-        }
-
-        /* --- Members --- */
-
-        let characterData = [];
-
-        function loadMembers() {
-            const list = document.getElementById('members-list');
-            if (list.dataset.loaded) return;
-            list.dataset.loaded = 'true';
-            fetch('sources/characters.json')
-                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-                .then(characters => {
-                    characterData = characters;
-                    setHTML('members-list', characters.map((c, i) => {
-                        if (!c.rank) return '';
-                        const icon = c.sheet
-                            ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" onclick="showCharacterSheet(${i}); return false;" title="View character sheet"><img class="sheet-icon" src="img/icons/journal_history_binder.png" alt="Character sheet"></a>`
-                            : '';
-                        return `<div class="member-card">
-                            <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
-                            <div class="member-info">
-                                <div class="member-name">${c.name}${icon}</div>
-                                <div class="member-rank-label">${c.rank}</div>
-                            </div>
-                            ${c.points > 0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
-                        </div>`;
-                    }).join(''));
-                })
-                .catch(() => { document.getElementById('members-error').style.display = 'block'; });
-        }
-
-        /* --- Character Sheet --- */
-
-        function showCharacterSheet(index) {
-            const c = characterData[index];
-            if (!c?.sheet) return;
-            const bio = c.sheet.bio || '';
-            setHTML('char-sheet-content', `
-                <div class="char-header">
-                    <div class="char-name">${c.name}</div>
-                    <div class="char-meta">
-                        <img class="char-badge" src="img/ranks/ranks_${RANK_MAP.get(c.rank) || 'initiate'}_rankbadge.png" alt="${c.rank} badge">
-                        <span class="char-rank">${c.rank}</span>
-                        <span class="char-separator">·</span>
-                        <span class="char-order">Order of the Argent Gryphon</span>
-                    </div>
-                </div>
-                ${c.sheet.portrait ? `<div class="char-portrait-wrap"><img class="char-portrait" src="${c.sheet.portrait}" alt="Portrait of ${c.name}"></div><div class="char-rule"></div>` : ''}
-                <div class="char-body">${typeof bio === 'string' ? bio : bio.map(p => `<p>${p}</p>`).join('')}</div>
-            `);
-            showPage('character', false);
-            try { history.pushState({ page: 'character', slug: nameToSlug(c.name) }, '', '/#' + nameToSlug(c.name)); } catch(e) {}
-        }
-
-        function tryOpenCharacterBySlug(slug) {
-            const open = chars => {
-                const idx = chars.findIndex(c => c.sheet && nameToSlug(c.name) === slug);
-                if (idx !== -1) showCharacterSheet(idx);
-            };
-            if (characterData.length) { open(characterData); return; }
-            fetch('sources/characters.json').then(r => r.json()).then(chars => {
-                characterData = chars; open(chars);
-            }).catch(() => {});
-        }
-
-        /* --- Journal --- */
-
-        let jEntries = [], jIdx = 0, jReady = false;
-
-        function initJournal() {
-            if (jReady) return;
-            jReady = true;
-            fetch('sources/journal.json')
-                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-                .then(entries => {
-                    jEntries = entries;
-                    setHTML('journal-tabs', entries.map((e, i) =>
-                        `<button class="journal-tab${i === 0 ? ' active' : ''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i + 1}</button>`
-                    ).join(''));
-                    showJournalEntry(0);
-                })
-                .catch(() => {
-                    document.getElementById('journal-entry-body').textContent = 'Could not load journal entries. Make sure sources/journal.json is in place.';
-                });
-        }
-
-        function showJournalEntry(i) {
-            jIdx = i;
-            const e = jEntries[i];
-            document.getElementById('journal-entry-title').textContent = e.title;
-            setHTML('journal-entry-body', e.body.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join(''));
-            document.querySelectorAll('.journal-tab').forEach((btn, j) => btn.classList.toggle('active', j === i));
-            document.getElementById('journal-prev').disabled = i === 0;
-            document.getElementById('journal-next').disabled = i === jEntries.length - 1;
-        }
-
-        function journalStep(dir) {
-            const next = jIdx + dir;
-            if (next >= 0 && next < jEntries.length) showJournalEntry(next);
-        }
-
-        /* --- Dark magic easter egg --- */
-
-        const bgEl = document.querySelector('.bg-fixed');
-        let dmTimer;
-
-        document.addEventListener('mouseover', e => {
-            if (!e.target.classList.contains('member-points-icon')) return;
-            clearTimeout(dmTimer);
-            bgEl.classList.add('dark-magic', 'dark-magic-anim');
-            document.body.classList.add('dark-magic-active');
-        });
-
-        document.addEventListener('mouseout', e => {
-            if (!e.target.classList.contains('member-points-icon')) return;
-            bgEl.classList.remove('dark-magic-anim');
-            document.body.classList.remove('dark-magic-active');
-            dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
-        });
-
-        /* --- Back/forward button support --- */
-
-        window.addEventListener('popstate', e => {
-            const h = location.hash.slice(1);
-            if (PAGES.includes(h))      showPage(h, false);
-            else if (h)                 tryOpenCharacterBySlug(h);
-            else                        showPage('home', false);
-            window.scrollTo(0, 0);
-        });
-
-        /* --- Hash routing (initial load) --- */
-
-        const hash = location.hash.slice(1);
-        if (PAGES.includes(hash)) {
-            history.replaceState({ page: hash }, '', '/#' + hash);
-            showPage(hash, false);
-        } else if (hash) {
-            tryOpenCharacterBySlug(hash);
-        } else {
-            history.replaceState({ page: 'home' }, '', '/#home');
-            showPage('home', false);
-        }
-
-        // Always load the homepage on initial render
-        loadHomepage();
-        window.scrollTo(0, 0);
-
-        /* --- Map magnifier --- */
-
-        const ZOOM      = 3;    // magnification level
-        const LENS_SIZE = 220;  // must match CSS width/height
-        const HALF      = LENS_SIZE / 2;
-
-        const lens = document.createElement('div');
-        lens.className = 'map-magnifier';
-        document.body.appendChild(lens);
-
-        // Shared render logic — isTouch offsets the lens above the finger
-        function renderMagnifier(clientX, clientY, img, isTouch) {
-            const rect = img.getBoundingClientRect();
-            const cx   = clientX - rect.left;
-            const cy   = clientY - rect.top;
-
-            const cxC  = Math.max(0, Math.min(cx, rect.width));
-            const cyC  = Math.max(0, Math.min(cy, rect.height));
-
-            const bgW  = rect.width  * ZOOM;
-            const bgH  = rect.height * ZOOM;
-            const bgX  = HALF - cxC * ZOOM;
-            const bgY  = HALF - cyC * ZOOM;
-
-            lens.style.backgroundImage    = `url('${img.src}')`;
-            lens.style.backgroundSize     = `${bgW}px ${bgH}px`;
-            lens.style.backgroundPosition = `${bgX}px ${bgY}px`;
-            lens.style.display            = 'block';
-
-            // On touch: lift the lens above the finger so it isn't obscured
-            const touchLift = 40; // px above the finger tip
-            const lx = clientX - HALF;
-            const ly = isTouch ? clientY - LENS_SIZE - touchLift : clientY - HALF;
-
-            lens.style.left = lx + 'px';
-            lens.style.top  = ly + 'px';
-        }
-
-        function initMagnifier(img) {
-            // ── Mouse ──
-            img.addEventListener('mouseenter', () => { lens.style.display = 'block'; });
-            img.addEventListener('mouseleave', () => { lens.style.display = 'none';  });
-            img.addEventListener('mousemove',  e => renderMagnifier(e.clientX, e.clientY, img, false));
-
-            // ── Touch ──
-            img.addEventListener('touchstart', e => {
-                e.preventDefault();
-                const t = e.touches[0];
-                renderMagnifier(t.clientX, t.clientY, img, true);
-            }, { passive: false });
-
-            img.addEventListener('touchmove', e => {
-                e.preventDefault();
-                const t = e.touches[0];
-                renderMagnifier(t.clientX, t.clientY, img, true);
-            }, { passive: false });
-
-            img.addEventListener('touchend',   () => { lens.style.display = 'none'; });
-            img.addEventListener('touchcancel',() => { lens.style.display = 'none'; });
-        }
-
-        // Pick up .home-img elements injected by loadHomepage()
-        new MutationObserver(mutations => {
-            mutations.forEach(m => m.addedNodes.forEach(node => {
-                if (node.nodeType !== 1) return;
-                const imgs = node.matches && node.matches('.home-img')
-                    ? [node]
-                    : [...node.querySelectorAll('.home-img')];
-                imgs.forEach(initMagnifier);
-            }));
-        }).observe(document.getElementById('home-content'), { childList: true, subtree: true });
-
-    </script>
-
+</script>
 </body>
 </html>
