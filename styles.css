@@ -163,6 +163,8 @@ body {
     width: var(--panel-width);
     max-width: 96vw;
     box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    overflow: visible;
+    height: auto;
 }
 
 /* --- Pages --- */
