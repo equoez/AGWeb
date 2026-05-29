@@ -1,0 +1,15 @@
+{
+  "title": "Order of the Argent Gryphon",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice. From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith, strength, wisdom, and the old oaths of their predecessors."
+    },
+    {
+      "type": "image",
+      "src": "img/vanduramap.png",
+      "alt": "Map of the Shattered Isles — Vandura",
+      "caption": "The Shattered Isles of Vandura"
+    }
+  ]
+}
