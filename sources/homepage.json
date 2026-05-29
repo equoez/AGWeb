@@ -3,9 +3,7 @@
   "blocks": [
     {
       "type": "image",
-      "src": "img/vanduramap.png",
-      "alt": "Map of the Shattered Isles — Vandura",
-      "caption": "The Shattered Isles of Vandura"
+      "src": "img/main/vanduramap.png",
     },
     {
       "type": "heading",
