@@ -162,51 +162,21 @@
                 <p id="load-status"></p>
             </div>
 
-            <!-- ── Homepage ── -->
-            <div class="editor-panel" id="panel-homepage">
-                <label class="field-label" for="homepage-title">Page Title</label>
-                <input class="field-input" type="text" id="homepage-title">
-                <label class="field-label" for="homepage-map">Map image path (optional)</label>
-                <input class="field-input" type="text" id="homepage-map" placeholder="e.g. img/main/vanduramap.png">
-                <label class="field-label">Sections</label>
-                <div id="homepage-sections-list"></div>
-                <div class="add-row"><button class="btn btn-sm" onclick="addHomepageSection()">+ Add section</button></div>
-                <label class="field-label" style="margin-top:20px;" for="homepage-related">Related items (comma-separated)</label>
-                <input class="field-input" type="text" id="homepage-related" placeholder="Griffin Shield, War Horn">
-            </div>
-
-            <!-- ── Enlist ── -->
-            <div class="editor-panel" id="panel-enlist">
-                <label class="field-label" for="enlist-title">Page Title</label>
-                <input class="field-input" type="text" id="enlist-title">
-                <label class="field-label">Paragraphs (before the letter)</label>
-                <div id="enlist-paras-list"></div>
-                <div class="add-row"><button class="btn btn-sm" onclick="addEnlistPara('before')">+ Add paragraph</button></div>
-                <label class="field-label" style="margin-top:20px;">Letter text</label>
-                <textarea class="field-input" id="enlist-letter" style="min-height:100px;resize:vertical;font-family:var(--font-body);font-size:0.9rem;" placeholder="Text inside the blockquote letter..."></textarea>
-                <label class="field-label">Paragraphs (after the letter)</label>
-                <div id="enlist-paras-after-list"></div>
-                <div class="add-row"><button class="btn btn-sm" onclick="addEnlistPara('after')">+ Add paragraph</button></div>
-            </div>
-
-            <!-- ── Diplomacy ── -->
-            <div class="editor-panel" id="panel-diplomacy">
-                <label class="field-label" for="diplomacy-title">Page Title</label>
-                <input class="field-input" type="text" id="diplomacy-title">
-                <label class="field-label" for="diplomacy-intro">Intro</label>
-                <input class="field-input" type="text" id="diplomacy-intro">
-                <label class="field-label">Treaties / Sections</label>
-                <div id="diplomacy-sections-list"></div>
-                <div class="add-row"><button class="btn btn-sm" onclick="addDiplomacySection()">+ Add treaty</button></div>
-            </div>
-
-            <!-- ── Decree ── -->
-            <div class="editor-panel" id="panel-decree">
-                <label class="field-label" for="decree-title">Page Title</label>
-                <input class="field-input" type="text" id="decree-title">
-                <label class="field-label">Paragraphs</label>
-                <div id="decree-paras-list"></div>
-                <div class="add-row"><button class="btn btn-sm" onclick="addDecreePara()">+ Add paragraph</button></div>
+            <!-- ── Simple: title + body RTE ── -->
+            <div class="editor-panel" id="panel-simple">
+                <label class="field-label" for="simple-title">Page Title</label>
+                <input class="field-input" type="text" id="simple-title">
+                <label class="field-label">Body</label>
+                <div class="rte-toolbar" id="simple-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','heading')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                    <div class="rte-btn-sep"></div>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','underline')"><u>U</u></button>
+                    <div class="rte-btn-sep"></div>
+                    <button class="rte-btn" style="font-size:11px;" onmousedown="event.preventDefault();rteCmd('simple','removeFormat')">✕ fmt</button>
+                </div>
+                <div class="rte-editor" id="simple-body" contenteditable="true" onkeyup="updateToolbar('simple')" onmouseup="updateToolbar('simple')"></div>
             </div>
 
             <!-- ── Codex ── -->
@@ -263,10 +233,10 @@
    CONFIG
 ═══════════════════════════════════════════ */
 const PAGES_CONFIG = [
-    { id:'homepage',   file:'homepage.json',   label:'Home',       mode:'homepage'   },
-    { id:'enlist',     file:'enlist.json',      label:'Enlist',     mode:'enlist'     },
-    { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'diplomacy'  },
-    { id:'decree',     file:'decree.json',      label:'Decree',     mode:'decree'     },
+    { id:'homepage',   file:'homepage.json',   label:'Home',       mode:'simple'     },
+    { id:'enlist',     file:'enlist.json',      label:'Enlist',     mode:'simple'     },
+    { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'simple'     },
+    { id:'decree',     file:'decree.json',      label:'Decree',     mode:'simple'     },
     { id:'codex',      file:'codex.json',       label:'Codex',      mode:'codex'      },
     { id:'ranks',      file:'ranks.json',       label:'Ranks',      mode:'ranks'      },
     { id:'characters', file:'characters.json',  label:'Characters', mode:'characters' },
@@ -364,27 +334,9 @@ function updateToolbarById(toolbarId) {
 ═══════════════════════════════════════════ */
 function loadData(data) {
     const m = currentPage.mode;
-    if (m==='homepage') {
-        document.getElementById('homepage-title').value = data.title||'';
-        document.getElementById('homepage-map').value   = data.map_image||'';
-        homepageSections = (data.sections||[]).map(s=>({...s}));
-        renderHomepageSections();
-        document.getElementById('homepage-related').value = (data.related_items||[]).join(', ');
-    } else if (m==='enlist') {
-        document.getElementById('enlist-title').value  = data.title||'';
-        document.getElementById('enlist-letter').value = data.letter?.text||'';
-        enlistParasBefore = (data.paragraphs||[]).slice();
-        enlistParasAfter  = (data.paragraphs_after||[]).slice();
-        renderEnlistParas();
-    } else if (m==='diplomacy') {
-        document.getElementById('diplomacy-title').value = data.title||'';
-        document.getElementById('diplomacy-intro').value = data.intro||'';
-        diplomacySections = (data.sections||[]).map(s=>({...s, articles:(s.articles||[]).map(a=>({...a}))}));
-        renderDiplomacySections();
-    } else if (m==='decree') {
-        document.getElementById('decree-title').value = data.title||'';
-        decreeParas = (data.paragraphs||[]).slice();
-        renderDecreeParas();
+    if (m==='simple') {
+        document.getElementById('simple-title').value    = data.title||'';
+        document.getElementById('simple-body').innerHTML = data.body||'';
     } else if (m==='codex') {
         document.getElementById('codex-title').value = data.title||'';
         document.getElementById('codex-intro').value = data.intro||'';
@@ -398,12 +350,7 @@ function loadData(data) {
         characters = data.map ? data.map(c=>({...c})) : [];
         renderCharacters();
     } else if (m==='journal') {
-        const arr = Array.isArray(data) ? data : (data.entries||[]);
-        if (!Array.isArray(data)) {
-            document.getElementById('journal-meta-title') && (document.getElementById('journal-meta-title').value = data.title||'');
-            document.getElementById('journal-meta-intro') && (document.getElementById('journal-meta-intro').value = data.intro||'');
-        }
-        entries = arr.map(e=>({...e}));
+        entries = data.map ? data.map(e=>({...e})) : [];
         renderEntries();
     }
     generateOutput();
@@ -415,32 +362,8 @@ function loadData(data) {
 function generateOutput() {
     let out;
     const m = currentPage.mode;
-    if (m==='homepage') {
-        out = {
-            title: document.getElementById('homepage-title').value.trim(),
-            map_image: document.getElementById('homepage-map').value.trim()||undefined,
-            sections: homepageSections,
-            related_items: document.getElementById('homepage-related').value.split(',').map(s=>s.trim()).filter(Boolean)
-        };
-        if (!out.map_image) delete out.map_image;
-    } else if (m==='enlist') {
-        out = {
-            title: document.getElementById('enlist-title').value.trim(),
-            paragraphs: enlistParasBefore,
-            letter: { text: document.getElementById('enlist-letter').value.trim() },
-            paragraphs_after: enlistParasAfter
-        };
-    } else if (m==='diplomacy') {
-        out = {
-            title: document.getElementById('diplomacy-title').value.trim(),
-            intro: document.getElementById('diplomacy-intro').value.trim(),
-            sections: diplomacySections
-        };
-    } else if (m==='decree') {
-        out = {
-            title: document.getElementById('decree-title').value.trim(),
-            paragraphs: decreeParas
-        };
+    if (m==='simple') {
+        out = { title:document.getElementById('simple-title').value.trim(), body:document.getElementById('simple-body').innerHTML.trim() };
     } else if (m==='codex') {
         out = { title:document.getElementById('codex-title').value.trim(), intro:document.getElementById('codex-intro').value.trim(), items:codexItems };
     } else if (m==='ranks') {
@@ -454,11 +377,7 @@ function generateOutput() {
         });
     } else if (m==='journal') {
         entries.forEach((e,i)=>{ const el=document.getElementById('rte-journal-'+i); if(el) e.body=el.innerHTML; });
-        out = {
-            title: (document.getElementById('journal-meta-title')||{}).value||'Valkera\'s Journal',
-            intro: (document.getElementById('journal-meta-intro')||{}).value||'',
-            entries: entries.map(e => ({ title:e.title||'', body:e.body||'' }))
-        };
+        out = entries.map(e => ({ title:e.title||'', body:e.body||'' }));
     }
     document.getElementById('output-box').textContent = JSON.stringify(out,null,2);
 }
@@ -717,160 +636,6 @@ function fetchLive() {
         .then(data=>{loadData(data);status.textContent='Loaded ✓';status.style.color='var(--color-success)';})
         .catch(()=>{status.textContent='Could not load — use "Load from file".';status.style.color='var(--color-danger)';});
 }
-
-
-/* ═══════════════════════════════════════════
-   HOMEPAGE EDITOR
-═══════════════════════════════════════════ */
-let homepageSections = [];
-
-function renderHomepageSections() {
-    const list = document.getElementById('homepage-sections-list');
-    list.innerHTML = '';
-    homepageSections.forEach((s,i) => {
-        const card = document.createElement('div');
-        card.className = 'flat-card';
-        card.innerHTML = `
-            <div class="flat-fields" style="flex-direction:column;gap:8px;">
-                <div class="flat-field"><label>Heading</label><input type="text" value="${esc(s.heading||'')}" oninput="homepageSections[${i}].heading=this.value"></div>
-                <div class="flat-field"><label>Text</label><textarea oninput="homepageSections[${i}].text=this.value">${esc(s.text||'')}</textarea></div>
-            </div>
-            <button class="btn btn-danger btn-xs" style="flex-shrink:0;align-self:flex-start;" onclick="homepageSections.splice(${i},1);renderHomepageSections()">✕</button>`;
-        list.appendChild(card);
-    });
-}
-function addHomepageSection() { homepageSections.push({heading:'',text:''}); renderHomepageSections(); }
-
-/* ═══════════════════════════════════════════
-   ENLIST EDITOR
-═══════════════════════════════════════════ */
-let enlistParasBefore = [], enlistParasAfter = [];
-
-function renderEnlistParas() {
-    renderParaList('enlist-paras-list',      enlistParasBefore, 'before');
-    renderParaList('enlist-paras-after-list', enlistParasAfter,  'after');
-}
-
-function renderParaList(containerId, arr, tag) {
-    const list = document.getElementById(containerId);
-    list.innerHTML = '';
-    arr.forEach((p,i) => {
-        const card = document.createElement('div');
-        card.className = 'flat-card';
-        card.innerHTML = `
-            <div class="flat-fields"><div class="flat-field" style="flex:1;"><label>Paragraph ${i+1}</label>
-                <textarea oninput="enlistParas${tag==='before'?'Before':'After'}[${i}]=this.value">${esc(p)}</textarea>
-            </div></div>
-            <button class="btn btn-danger btn-xs" style="flex-shrink:0;align-self:flex-start;" onclick="enlistParas${tag==='before'?'Before':'After'}.splice(${i},1);renderEnlistParas()">✕</button>`;
-        list.appendChild(card);
-    });
-}
-function addEnlistPara(tag) {
-    if (tag==='before') enlistParasBefore.push('');
-    else                enlistParasAfter.push('');
-    renderEnlistParas();
-}
-
-/* ═══════════════════════════════════════════
-   DIPLOMACY EDITOR
-═══════════════════════════════════════════ */
-let diplomacySections = [];
-
-function renderDiplomacySections() {
-    const list = document.getElementById('diplomacy-sections-list');
-    list.innerHTML = '';
-    diplomacySections.forEach((s,i) => {
-        const card = document.createElement('div');
-        card.className = 'exp-card';
-        card.innerHTML = `
-            <div class="card-head" onclick="toggleCard(this)">
-                <div class="card-head-title">${esc(s.heading)||'<em style="opacity:0.4">Untitled treaty</em>'}</div>
-                <span class="card-chevron">&#8964;</span>
-            </div>
-            <div class="card-body">
-                <div class="field-row">
-                    <div class="field"><label>Heading</label><input type="text" value="${esc(s.heading||'')}" oninput="diplomacySections[${i}].heading=this.value"></div>
-                    <div class="field"><label>Parties</label><input type="text" value="${esc(s.parties||'')}" placeholder="Guild A and Guild B" oninput="diplomacySections[${i}].parties=this.value"></div>
-                </div>
-                <div class="field-row">
-                    <div class="field"><label>Signatory</label><input type="text" value="${esc(s.signatory||'')}" oninput="diplomacySections[${i}].signatory=this.value"></div>
-                    <div class="field"><label>Date signed</label><input type="text" value="${esc(s.signed||'')}" oninput="diplomacySections[${i}].signed=this.value"></div>
-                </div>
-                <label class="field-label" style="margin-top:14px;">Articles</label>
-                <div id="diplomacy-articles-${i}"></div>
-                <div style="margin-top:8px;"><button class="btn btn-sm" onclick="addDiplomacyArticle(${i})">+ Add article</button></div>
-                <div style="margin-top:14px;display:flex;justify-content:flex-end;">
-                    <button class="btn btn-danger btn-xs" onclick="if(confirm('Remove?')){diplomacySections.splice(${i},1);renderDiplomacySections();}">Remove treaty</button>
-                </div>
-            </div>`;
-        list.appendChild(card);
-        renderDiplomacyArticles(i);
-    });
-}
-
-function renderDiplomacyArticles(si) {
-    const list = document.getElementById('diplomacy-articles-'+si);
-    if (!list) return;
-    const articles = diplomacySections[si].articles||[];
-    list.innerHTML = '';
-    articles.forEach((a,ai) => {
-        const card = document.createElement('div');
-        card.className = 'flat-card';
-        card.innerHTML = `
-            <div class="flat-fields">
-                <div class="flat-field" style="flex:0 0 60px;"><label>Number</label><input type="text" value="${esc(a.number||'')}" oninput="diplomacySections[${si}].articles[${ai}].number=this.value"></div>
-                <div class="flat-field" style="flex:0 0 140px;"><label>Title</label><input type="text" value="${esc(a.title||'')}" oninput="diplomacySections[${si}].articles[${ai}].title=this.value"></div>
-                <div class="flat-field" style="flex:1;"><label>Text</label><input type="text" value="${esc(a.text||'')}" oninput="diplomacySections[${si}].articles[${ai}].text=this.value"></div>
-            </div>
-            <button class="btn btn-danger btn-xs" style="flex-shrink:0;" onclick="diplomacySections[${si}].articles.splice(${ai},1);renderDiplomacyArticles(${si})">✕</button>`;
-        list.appendChild(card);
-    });
-}
-
-function addDiplomacySection() {
-    diplomacySections.push({style:'section treaty',heading:'',parties:'',signatory:'',signed:'',articles:[]});
-    renderDiplomacySections();
-}
-function addDiplomacyArticle(si) {
-    if (!diplomacySections[si].articles) diplomacySections[si].articles=[];
-    diplomacySections[si].articles.push({number:'',title:'',text:''});
-    renderDiplomacyArticles(si);
-}
-
-/* ═══════════════════════════════════════════
-   DECREE EDITOR
-═══════════════════════════════════════════ */
-let decreeParas = [];
-
-function renderDecreeParas() {
-    const list = document.getElementById('decree-paras-list');
-    list.innerHTML = '';
-    decreeParas.forEach((p,i) => {
-        const card = document.createElement('div');
-        card.className = 'flat-card';
-        card.innerHTML = `
-            <div class="flat-fields"><div class="flat-field" style="flex:1;"><label>Paragraph ${i+1}</label>
-                <textarea oninput="decreeParas[${i}]=this.value">${esc(p)}</textarea>
-            </div></div>
-            <button class="btn btn-danger btn-xs" style="flex-shrink:0;align-self:flex-start;" onclick="decreeParas.splice(${i},1);renderDecreeParas()">✕</button>`;
-        list.appendChild(card);
-    });
-}
-function addDecreePara() { decreeParas.push(''); renderDecreeParas(); }
-
-/* ═══════════════════════════════════════════
-   JOURNAL META FIELDS — inject above entry list
-═══════════════════════════════════════════ */
-(function injectJournalMeta() {
-    const panel = document.getElementById('panel-journal');
-    const metaHTML = `
-        <label class="field-label" for="journal-meta-title">Journal Title</label>
-        <input class="field-input" type="text" id="journal-meta-title" value="Valkera's Journal">
-        <label class="field-label" for="journal-meta-intro">Intro text</label>
-        <input class="field-input" type="text" id="journal-meta-intro" value="">
-        <label class="field-label" style="margin-top:4px;">Entries</label>`;
-    panel.insertAdjacentHTML('afterbegin', metaHTML);
-})();
 
 /* ── Init ── */
 switchPage(currentPage);
