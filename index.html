@@ -366,36 +366,52 @@
         lens.className = 'map-magnifier';
         document.body.appendChild(lens);
 
-        function initMagnifier(img) {
-            img.addEventListener('mouseenter', () => { lens.style.display = 'block'; });
-            img.addEventListener('mouseleave', () => { lens.style.display = 'none';  });
-            img.addEventListener('mousemove',  e  => moveMagnifier(e, img));
-        }
-
-        function moveMagnifier(e, img) {
+        // Shared render logic for both mouse and touch
+        function renderMagnifier(clientX, clientY, img) {
             const rect = img.getBoundingClientRect();
-            const cx   = e.clientX - rect.left;
-            const cy   = e.clientY - rect.top;
+            const cx   = clientX - rect.left;
+            const cy   = clientY - rect.top;
+
+            // Clamp so lens stays within image content
+            const cxC  = Math.max(0, Math.min(cx, rect.width));
+            const cyC  = Math.max(0, Math.min(cy, rect.height));
 
             const bgW  = rect.width  * ZOOM;
             const bgH  = rect.height * ZOOM;
-            const bgX  = HALF - cx * ZOOM;
-            const bgY  = HALF - cy * ZOOM;
+            const bgX  = HALF - cxC * ZOOM;
+            const bgY  = HALF - cyC * ZOOM;
 
             lens.style.backgroundImage    = `url('${img.src}')`;
             lens.style.backgroundSize     = `${bgW}px ${bgH}px`;
             lens.style.backgroundPosition = `${bgX}px ${bgY}px`;
+            lens.style.display            = 'block';
 
-            const offset = 18;
-            let lx = e.clientX + offset;
-            let ly = e.clientY - HALF;
+            // Centre the lens on the pointer/finger
+            lens.style.left = (clientX - HALF) + 'px';
+            lens.style.top  = (clientY - HALF) + 'px';
+        }
 
-            if (lx + LENS_SIZE > window.innerWidth)  lx = e.clientX - LENS_SIZE - offset;
-            if (ly < 0)                               ly = 0;
-            if (ly + LENS_SIZE > window.innerHeight)  ly = window.innerHeight - LENS_SIZE;
+        function initMagnifier(img) {
+            // ── Mouse ──
+            img.addEventListener('mouseenter', () => { lens.style.display = 'block'; });
+            img.addEventListener('mouseleave', () => { lens.style.display = 'none';  });
+            img.addEventListener('mousemove',  e => renderMagnifier(e.clientX, e.clientY, img));
 
-            lens.style.left = lx + 'px';
-            lens.style.top  = ly + 'px';
+            // ── Touch ──
+            img.addEventListener('touchstart', e => {
+                e.preventDefault(); // stop page scroll while using magnifier
+                const t = e.touches[0];
+                renderMagnifier(t.clientX, t.clientY, img);
+            }, { passive: false });
+
+            img.addEventListener('touchmove', e => {
+                e.preventDefault();
+                const t = e.touches[0];
+                renderMagnifier(t.clientX, t.clientY, img);
+            }, { passive: false });
+
+            img.addEventListener('touchend',   () => { lens.style.display = 'none'; });
+            img.addEventListener('touchcancel',() => { lens.style.display = 'none'; });
         }
 
         // Pick up .home-img elements injected by loadHomepage()
