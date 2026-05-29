@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argent Gryphon — Editor</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --color-input-bg:     rgba(255,255,255,0.05);
+            --color-input-border: rgba(255,210,122,0.2);
+            --color-input-focus:  rgba(255,210,122,0.45);
+            --color-danger:       #ff6b6b;
+            --color-success:      #6bff9e;
+            --color-section-bg:   rgba(255,210,122,0.03);
+        }
+        body { padding-bottom: 80px; }
+        .editor-wrap { width: 720px; max-width: 96vw; }
+
+        /* ── Header ── */
+        .editor-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid rgba(255,210,122,0.15); }
+        .editor-header h2 { margin:0; }
+
+        /* ── Tab picker ── */
+        .page-picker { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+        .page-tab { padding:7px 16px; border:1px solid rgba(255,210,122,0.25); border-radius:var(--radius-btn); background:rgba(255,210,122,0.05); color:var(--color-text-muted); font-family:var(--font-display); font-size:12px; letter-spacing:0.05em; cursor:pointer; transition:background 0.2s,color 0.2s,border-color 0.2s; }
+        .page-tab:hover  { background:rgba(255,210,122,0.12); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
+        .page-tab.active { background:rgba(255,210,122,0.18); color:var(--color-gold); border-color:var(--color-gold-dim); }
+
+        /* ── Buttons ── */
+        .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius-btn); border:1px solid rgba(255,210,122,0.3); background:rgba(255,210,122,0.08); color:var(--color-gold); font-family:var(--font-display); font-size:13px; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:background 0.2s,border-color 0.2s,transform 0.15s; }
+        .btn:hover   { background:rgba(255,210,122,0.15); border-color:rgba(255,210,122,0.5); transform:translateY(-1px); }
+        .btn:active  { transform:translateY(0); }
+        .btn-primary { background:rgba(255,210,122,0.18); border-color:var(--color-gold-dim); }
+        .btn-primary:hover { background:rgba(255,210,122,0.28); }
+        .btn-danger  { border-color:rgba(255,107,107,0.4); color:var(--color-danger); background:rgba(255,107,107,0.06); }
+        .btn-danger:hover { background:rgba(255,107,107,0.14); border-color:rgba(255,107,107,0.6); }
+        .btn-sm { padding:6px 13px; font-size:12px; }
+        .btn-xs { padding:4px 10px; font-size:11px; }
+
+        /* ── Instructions ── */
+        .instructions { background:rgba(255,210,122,0.04); border:1px solid rgba(255,210,122,0.12); border-left:3px solid var(--color-gold-dim); border-radius:0 8px 8px 0; padding:14px 18px; margin-bottom:24px; font-size:0.9rem; color:var(--color-text-muted); line-height:1.6; }
+        .instructions strong { color:var(--color-gold-light); }
+
+        /* ── Load bar ── */
+        .load-bar { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+        .load-bar p { margin:0; font-size:0.88rem; color:var(--color-text-muted); }
+
+        /* ── Field helpers ── */
+        .field-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); display:block; margin-bottom:6px; }
+        .field-input { width:100%; background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:6px; color:var(--color-text); font-family:var(--font-display); font-size:1rem; padding:9px 12px; outline:none; transition:border-color 0.2s; box-sizing:border-box; margin-bottom:20px; }
+        .field-input:focus { border-color:var(--color-input-focus); }
+        .field-row { display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
+        .field { display:flex; flex-direction:column; gap:5px; flex:1; min-width:160px; }
+        .field label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); }
+        .field input,.field select,.field textarea { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:6px; color:var(--color-text); font-family:var(--font-body); font-size:0.9rem; padding:8px 10px; outline:none; transition:border-color 0.2s; width:100%; }
+        .field input:focus,.field select:focus,.field textarea:focus { border-color:var(--color-input-focus); }
+        .field select option { background:#1a140a; }
+        .field textarea { resize:vertical; min-height:80px; line-height:1.6; }
+
+        /* ── RTE ── */
+        .rte-toolbar { display:flex; flex-wrap:wrap; gap:4px; padding:6px 8px; background:rgba(0,0,0,0.25); border:1px solid var(--color-input-border); border-bottom:none; border-radius:6px 6px 0 0; }
+        .rte-btn { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:26px; padding:0 7px; border:1px solid rgba(255,210,122,0.2); border-radius:4px; background:rgba(255,210,122,0.05); color:var(--color-text-muted); font-size:13px; cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s; line-height:1; }
+        .rte-btn:hover  { background:rgba(255,210,122,0.14); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
+        .rte-btn.active { background:rgba(255,210,122,0.2); color:var(--color-gold); border-color:var(--color-gold-dim); }
+        .rte-btn-sep { width:1px; background:rgba(255,210,122,0.15); margin:2px; align-self:stretch; }
+        .rte-editor { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:0 0 6px 6px; color:var(--color-text); font-family:var(--font-body); font-size:0.95rem; padding:14px 16px; outline:none; min-height:200px; line-height:1.75; transition:border-color 0.2s; }
+        .rte-editor:focus { border-color:var(--color-input-focus); }
+        .rte-editor p { margin:0 0 8px; }
+        .rte-editor h3 { font-family:var(--font-display); font-size:1rem; font-weight:600; color:var(--color-gold-light); letter-spacing:0.04em; margin:10px 0 4px; }
+        .rte-editor blockquote { margin:10px 0; padding:10px 16px; border-left:3px solid var(--color-gold-dim); background:rgba(255,210,122,0.04); border-radius:0 6px 6px 0; font-style:italic; color:var(--color-text-muted); }
+        .rte-editor strong { color:var(--color-gold-light); }
+        .rte-editor em { color:var(--color-text-muted); font-style:italic; }
+        .rte-wrap { margin-top:14px; }
+        .rte-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); display:block; margin-bottom:8px; }
+
+        /* ── Expandable cards (characters, journal) ── */
+        .exp-card { background:var(--color-section-bg); border:1px solid rgba(255,210,122,0.1); border-radius:10px; margin-bottom:12px; overflow:hidden; transition:border-color 0.2s; }
+        .exp-card:hover { border-color:rgba(255,210,122,0.2); }
+        .exp-card.dragging  { opacity:0.5; }
+        .exp-card.drag-over { border-color:var(--color-gold-dim); }
+        .card-head { display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; user-select:none; }
+        .card-head-badge { width:36px; height:36px; min-width:36px; object-fit:contain; filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5)); }
+        .card-head-info { flex:1; min-width:0; }
+        .card-head-name { font-family:var(--font-display); font-size:0.88rem; color:var(--color-gold-light); font-weight:600; }
+        .card-head-rank { font-size:0.78rem; color:var(--color-gold-dim); }
+        .card-head-title { font-family:var(--font-display); font-size:0.88rem; color:var(--color-gold-light); font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .card-head-tags { display:flex; gap:6px; align-items:center; }
+        .entry-number { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); min-width:24px; flex-shrink:0; }
+        .tag { font-family:var(--font-display); font-size:10px; letter-spacing:0.05em; padding:2px 8px; border-radius:4px; border:1px solid rgba(255,210,122,0.2); background:rgba(255,210,122,0.06); color:var(--color-gold-dim); }
+        .tag-sheet { border-color:rgba(107,255,158,0.3); background:rgba(107,255,158,0.06); color:#6bff9e; }
+        .card-chevron { font-size:1.2rem; color:var(--color-gold-dim); transition:transform 0.2s; flex-shrink:0; }
+        .card-head.open .card-chevron { transform:rotate(180deg); }
+        .card-body { display:none; padding:0 16px 16px; border-top:1px solid rgba(255,210,122,0.08); }
+        .card-body.open { display:block; }
+
+        /* ── Toggle switch ── */
+        .sheet-section { margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,210,122,0.08); }
+        .sheet-toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+        .sheet-toggle-label { font-family:var(--font-display); font-size:12px; letter-spacing:0.05em; color:var(--color-gold-dim); }
+        .toggle { position:relative; display:inline-block; width:38px; height:22px; }
+        .toggle input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; inset:0; background:rgba(255,210,122,0.1); border:1px solid rgba(255,210,122,0.2); border-radius:22px; cursor:pointer; transition:background 0.2s; }
+        .toggle-slider::before { content:''; position:absolute; width:16px; height:16px; left:2px; top:2px; background:var(--color-gold-dim); border-radius:50%; transition:transform 0.2s; }
+        .toggle input:checked + .toggle-slider { background:rgba(107,255,158,0.15); border-color:rgba(107,255,158,0.35); }
+        .toggle input:checked + .toggle-slider::before { transform:translateX(16px); background:#6bff9e; }
+        .sheet-fields { display:none; }
+        .sheet-fields.open { display:block; }
+
+        /* ── Flat item cards (codex, ranks) ── */
+        .flat-card { background:var(--color-section-bg); border:1px solid rgba(255,210,122,0.1); border-radius:8px; padding:12px 14px; margin-bottom:10px; display:flex; gap:10px; align-items:flex-start; }
+        .flat-card:hover { border-color:rgba(255,210,122,0.2); }
+        .flat-card.dragging  { opacity:0.45; }
+        .flat-card.drag-over { border-color:var(--color-gold-dim); }
+        .flat-fields { flex:1; display:flex; gap:10px; flex-wrap:wrap; }
+        .flat-field { display:flex; flex-direction:column; gap:4px; }
+        .flat-field label { font-family:var(--font-display); font-size:10px; letter-spacing:0.06em; color:var(--color-gold-dim); }
+        .flat-field input,.flat-field textarea { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:5px; color:var(--color-text); font-family:var(--font-body); font-size:0.88rem; padding:6px 9px; outline:none; transition:border-color 0.2s; }
+        .flat-field input:focus,.flat-field textarea:focus { border-color:var(--color-input-focus); }
+        .flat-field textarea { resize:vertical; min-height:60px; }
+
+        /* ── Drag handle ── */
+        .drag-handle { cursor:grab; color:rgba(255,210,122,0.25); font-size:1rem; padding:0 4px; flex-shrink:0; user-select:none; }
+        .drag-handle:hover { color:rgba(255,210,122,0.5); }
+
+        /* ── Output ── */
+        .output-section { margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,210,122,0.15); }
+        .output-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
+        .output-header h3 { margin:0; }
+        #output-box { background:rgba(0,0,0,0.35); border:1px solid rgba(255,210,122,0.15); border-radius:8px; padding:16px; font-family:'Courier New',monospace; font-size:12px; color:var(--color-text-muted); white-space:pre; overflow-x:auto; max-height:400px; overflow-y:auto; line-height:1.6; }
+        .copy-feedback { font-size:12px; color:var(--color-success); opacity:0; transition:opacity 0.3s; }
+        .copy-feedback.show { opacity:1; }
+
+        .add-row { margin-top:16px; display:flex; justify-content:center; }
+        .empty-state { text-align:center; padding:40px 20px; color:var(--color-text-muted); font-style:italic; }
+        .editor-panel { display:none; }
+        .editor-panel.active { display:block; }
+    </style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+<div class="container">
+    <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
+    <div class="editor-wrap">
+        <div class="content-box">
+
+            <div class="editor-header">
+                <h2>Content Editor</h2>
+                <a class="btn btn-sm" href="index.html">&#8592; Back to site</a>
+            </div>
+
+            <div class="instructions">
+                <strong>How to use:</strong> Pick a tab, edit the content, click <strong>Generate JSON</strong>, copy and paste into the matching file in <code>sources/</code>.
+            </div>
+
+            <div class="page-picker" id="page-picker"></div>
+
+            <div class="load-bar">
+                <button class="btn btn-sm" onclick="fetchLive()">&#8635; Reload from site</button>
+                <label class="btn btn-sm" style="cursor:pointer;">&#8599; Load from file<input type="file" id="file-input" accept=".json" style="display:none"></label>
+                <p id="load-status"></p>
+            </div>
+
+            <!-- ── Simple: title + body RTE ── -->
+            <div class="editor-panel" id="panel-simple">
+                <label class="field-label" for="simple-title">Page Title</label>
+                <input class="field-input" type="text" id="simple-title">
+                <label class="field-label">Body</label>
+                <div class="rte-toolbar" id="simple-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','heading')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                    <div class="rte-btn-sep"></div>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();rteCmd('simple','underline')"><u>U</u></button>
+                    <div class="rte-btn-sep"></div>
+                    <button class="rte-btn" style="font-size:11px;" onmousedown="event.preventDefault();rteCmd('simple','removeFormat')">✕ fmt</button>
+                </div>
+                <div class="rte-editor" id="simple-body" contenteditable="true" onkeyup="updateToolbar('simple')" onmouseup="updateToolbar('simple')"></div>
+            </div>
+
+            <!-- ── Codex ── -->
+            <div class="editor-panel" id="panel-codex">
+                <label class="field-label" for="codex-title">Page Title</label>
+                <input class="field-input" type="text" id="codex-title">
+                <label class="field-label" for="codex-intro">Intro Paragraph</label>
+                <textarea class="field-input" id="codex-intro" style="min-height:80px;resize:vertical;font-family:var(--font-body);font-size:0.9rem;"></textarea>
+                <label class="field-label">Items</label>
+                <div id="codex-items-list"></div>
+                <div class="add-row"><button class="btn btn-sm" onclick="addCodexItem()">+ Add item</button></div>
+            </div>
+
+            <!-- ── Ranks ── -->
+            <div class="editor-panel" id="panel-ranks">
+                <label class="field-label" for="ranks-title">Page Title</label>
+                <input class="field-input" type="text" id="ranks-title">
+                <label class="field-label">Ranks</label>
+                <div id="ranks-items-list"></div>
+                <div class="add-row"><button class="btn btn-sm" onclick="addRankItem()">+ Add rank</button></div>
+            </div>
+
+            <!-- ── Characters ── -->
+            <div class="editor-panel" id="panel-characters">
+                <div id="char-list"></div>
+                <div class="add-row"><button class="btn" onclick="addCharacter()">+ Add character</button></div>
+            </div>
+
+            <!-- ── Journal ── -->
+            <div class="editor-panel" id="panel-journal">
+                <div id="entry-list"></div>
+                <div class="add-row"><button class="btn" onclick="addEntry()">+ Add entry</button></div>
+            </div>
+
+            <!-- ── Output ── -->
+            <div class="output-section">
+                <div class="output-header">
+                    <h3>Generated JSON</h3>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span class="copy-feedback" id="copy-feedback">Copied!</span>
+                        <button class="btn btn-sm" onclick="copyOutput()">&#9647; Copy</button>
+                        <button class="btn btn-primary btn-sm" onclick="generateOutput()">&#8635; Generate JSON</button>
+                    </div>
+                </div>
+                <div id="output-box">Click "Generate JSON" to preview the output.</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════ */
+const PAGES_CONFIG = [
+    { id:'homepage',   file:'homepage.json',   label:'Home',       mode:'simple'     },
+    { id:'enlist',     file:'enlist.json',      label:'Enlist',     mode:'simple'     },
+    { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'simple'     },
+    { id:'decree',     file:'decree.json',      label:'Decree',     mode:'simple'     },
+    { id:'codex',      file:'codex.json',       label:'Codex',      mode:'codex'      },
+    { id:'ranks',      file:'ranks.json',       label:'Ranks',      mode:'ranks'      },
+    { id:'characters', file:'characters.json',  label:'Characters', mode:'characters' },
+    { id:'journal',    file:'journal.json',     label:'Journal',    mode:'journal'    },
+];
+
+const CHAR_RANKS = [
+    ['Lord Warden','wardens'],['Lady Warden','wardens'],['Warden','wardens'],
+    ['Oathsworn','oathsworn'],['Enlightened','enlightened'],['Shieldbearer','shieldbearer'],
+    ['Initiate','initiate'],['Sentinel','sentinel'],['Ward','ward'],
+];
+const RANK_MAP  = new Map(CHAR_RANKS.map(([n,k])=>[n,k]));
+const badgeSrc  = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge.png`;
+const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let currentPage  = PAGES_CONFIG[0];
+let codexItems   = [], rankItems = [], characters = [], entries = [];
+let codexDrag    = null, rankDrag = null, charDrag = null, journalDrag = null;
+
+/* ═══════════════════════════════════════════
+   TAB PICKER
+═══════════════════════════════════════════ */
+const picker = document.getElementById('page-picker');
+PAGES_CONFIG.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'page-tab' + (p===currentPage?' active':'');
+    b.textContent = p.label;
+    b.onclick = () => switchPage(p);
+    picker.appendChild(b);
+});
+
+function switchPage(p) {
+    currentPage = p;
+    picker.querySelectorAll('.page-tab').forEach((b,i)=>b.classList.toggle('active',PAGES_CONFIG[i]===p));
+    document.querySelectorAll('.editor-panel').forEach(el=>el.classList.remove('active'));
+    document.getElementById('panel-'+p.mode).classList.add('active');
+    document.getElementById('output-box').textContent = 'Click "Generate JSON" to preview the output.';
+    fetchLive();
+}
+
+/* ═══════════════════════════════════════════
+   RTE — shared for simple pages
+═══════════════════════════════════════════ */
+function rteCmd(editorId, cmd) {
+    const el = document.getElementById(editorId==='simple'?'simple-body':editorId);
+    el.focus();
+    if (cmd==='heading') {
+        const sel=window.getSelection(); if(!sel.rangeCount) return;
+        const n=sel.getRangeAt(0).commonAncestorContainer;
+        const b=n.nodeType===3?n.parentElement:n;
+        document.execCommand('formatBlock',false,b.closest('h3')?'p':'h3');
+    } else { document.execCommand(cmd,false,null); }
+    updateToolbar(editorId);
+}
+
+function updateToolbar(editorId) {
+    const tb = document.getElementById(editorId+'-toolbar'); if(!tb) return;
+    const btns = tb.querySelectorAll('.rte-btn');
+    const sel  = window.getSelection();
+    let inH3 = false;
+    if (sel&&sel.rangeCount) { const n=sel.getRangeAt(0).commonAncestorContainer; inH3=!!(n.nodeType===3?n.parentElement:n).closest('h3'); }
+    btns[0].classList.toggle('active',inH3);
+    btns[2].classList.toggle('active',document.queryCommandState('bold'));
+    btns[3].classList.toggle('active',document.queryCommandState('italic'));
+    btns[4].classList.toggle('active',document.queryCommandState('underline'));
+}
+
+/* Per-card RTE for characters/journal */
+function rteFormat(editorId, cmd) {
+    const el = document.getElementById(editorId); if(!el) return;
+    el.focus();
+    if (cmd==='header') {
+        const sel=window.getSelection(); if(!sel.rangeCount) return;
+        const n=sel.getRangeAt(0).commonAncestorContainer;
+        const b=n.nodeType===3?n.parentElement:n;
+        document.execCommand('formatBlock',false,b.closest('h3')?'p':'h3');
+    } else { document.execCommand(cmd,false,null); }
+    updateToolbarById(editorId+'-toolbar');
+}
+
+function updateToolbarById(toolbarId) {
+    const tb=document.getElementById(toolbarId); if(!tb) return;
+    const btns=tb.querySelectorAll('.rte-btn');
+    const sel=window.getSelection();
+    let inH3=false;
+    if(sel&&sel.rangeCount){const n=sel.getRangeAt(0).commonAncestorContainer;inH3=!!(n.nodeType===3?n.parentElement:n).closest('h3');}
+    if(btns[0]) btns[0].classList.toggle('active',inH3);
+    if(btns[2]) btns[2].classList.toggle('active',document.queryCommandState('bold'));
+    if(btns[3]) btns[3].classList.toggle('active',document.queryCommandState('italic'));
+    if(btns[4]) btns[4].classList.toggle('active',document.queryCommandState('underline'));
+}
+
+/* ═══════════════════════════════════════════
+   LOAD DATA (dispatch by mode)
+═══════════════════════════════════════════ */
+function loadData(data) {
+    const m = currentPage.mode;
+    if (m==='simple') {
+        document.getElementById('simple-title').value    = data.title||'';
+        document.getElementById('simple-body').innerHTML = data.body||'';
+    } else if (m==='codex') {
+        document.getElementById('codex-title').value = data.title||'';
+        document.getElementById('codex-intro').value = data.intro||'';
+        codexItems = (data.items||[]).map(i=>({...i}));
+        renderCodexItems();
+    } else if (m==='ranks') {
+        document.getElementById('ranks-title').value = data.title||'';
+        rankItems = (data.ranks||[]).map(r=>({...r}));
+        renderRankItems();
+    } else if (m==='characters') {
+        characters = data.map ? data.map(c=>({...c})) : [];
+        renderCharacters();
+    } else if (m==='journal') {
+        entries = data.map ? data.map(e=>({...e})) : [];
+        renderEntries();
+    }
+    generateOutput();
+}
+
+/* ═══════════════════════════════════════════
+   GENERATE JSON (dispatch by mode)
+═══════════════════════════════════════════ */
+function generateOutput() {
+    let out;
+    const m = currentPage.mode;
+    if (m==='simple') {
+        out = { title:document.getElementById('simple-title').value.trim(), body:document.getElementById('simple-body').innerHTML.trim() };
+    } else if (m==='codex') {
+        out = { title:document.getElementById('codex-title').value.trim(), intro:document.getElementById('codex-intro').value.trim(), items:codexItems };
+    } else if (m==='ranks') {
+        out = { title:document.getElementById('ranks-title').value.trim(), ranks:rankItems };
+    } else if (m==='characters') {
+        characters.forEach((c,i)=>{ const e=document.getElementById('rte-char-'+i); if(e&&c.sheet) c.sheet.bio=e.innerHTML; });
+        out = characters.map(c => {
+            const obj = { name:c.name||'', rank:c.rank||'', points:c.points||0 };
+            if (c.sheet) { obj.sheet={}; if(c.sheet.portrait) obj.sheet.portrait=c.sheet.portrait; if((c.sheet.bio||'').trim()) obj.sheet.bio=c.sheet.bio; }
+            return obj;
+        });
+    } else if (m==='journal') {
+        entries.forEach((e,i)=>{ const el=document.getElementById('rte-journal-'+i); if(el) e.body=el.innerHTML; });
+        out = entries.map(e => ({ title:e.title||'', body:e.body||'' }));
+    }
+    document.getElementById('output-box').textContent = JSON.stringify(out,null,2);
+}
+
+/* ═══════════════════════════════════════════
+   CODEX ITEMS
+═══════════════════════════════════════════ */
+function renderCodexItems() {
+    const list = document.getElementById('codex-items-list');
+    list.innerHTML = '';
+    codexItems.forEach((item,i) => {
+        const card = mkFlatCard(i,'codex',codexItems,codexDrag,v=>{codexDrag=v;},renderCodexItems);
+        card.querySelector('.flat-fields').innerHTML = `
+            <div class="flat-field" style="flex:0 0 180px;"><label>Title</label><input type="text" value="${esc(item.title||'')}" oninput="codexItems[${i}].title=this.value"></div>
+            <div class="flat-field" style="flex:1;min-width:200px;"><label>Text</label><textarea oninput="codexItems[${i}].text=this.value">${esc(item.text||'')}</textarea></div>
+        `;
+        card.querySelector('.remove-btn').onclick = () => { codexItems.splice(i,1); renderCodexItems(); };
+        list.appendChild(card);
+    });
+}
+function addCodexItem() { codexItems.push({title:'',text:''}); renderCodexItems(); }
+
+/* ═══════════════════════════════════════════
+   RANK ITEMS
+═══════════════════════════════════════════ */
+function renderRankItems() {
+    const list = document.getElementById('ranks-items-list');
+    list.innerHTML = '';
+    rankItems.forEach((r,i) => {
+        const card = mkFlatCard(i,'rank',rankItems,rankDrag,v=>{rankDrag=v;},renderRankItems);
+        card.querySelector('.flat-fields').innerHTML = `
+            <div class="flat-field" style="flex:0 0 150px;"><label>Name</label><input type="text" value="${esc(r.name||'')}" oninput="rankItems[${i}].name=this.value"></div>
+            <div class="flat-field" style="flex:0 0 130px;"><label>Badge key</label><input type="text" value="${esc(r.key||'')}" placeholder="e.g. wardens" oninput="rankItems[${i}].key=this.value"></div>
+            <div class="flat-field" style="flex:1;min-width:180px;"><label>Description</label><textarea oninput="rankItems[${i}].desc=this.value">${esc(r.desc||'')}</textarea></div>
+        `;
+        card.querySelector('.remove-btn').onclick = () => { rankItems.splice(i,1); renderRankItems(); };
+        list.appendChild(card);
+    });
+}
+function addRankItem() { rankItems.push({name:'',key:'',desc:''}); renderRankItems(); }
+
+/* ── Shared flat card factory ── */
+function mkFlatCard(i, prefix, arr, dragRef, setDrag, rerender) {
+    const card = document.createElement('div');
+    card.className = 'flat-card';
+    card.draggable = true;
+    card.innerHTML = `<span class="drag-handle">&#8942;&#8942;</span><div class="flat-fields"></div><button class="btn btn-danger btn-xs remove-btn" style="flex-shrink:0;">✕</button>`;
+    card.addEventListener('dragstart', e=>{setDrag(i);card.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    card.addEventListener('dragend',   ()=>card.classList.remove('dragging'));
+    card.addEventListener('dragover',  e=>{e.preventDefault();card.classList.add('drag-over');});
+    card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
+    card.addEventListener('drop',      e=>{e.preventDefault();card.classList.remove('drag-over');if(dragRef!==null&&dragRef!==i){const t=arr[dragRef];arr.splice(dragRef,1);arr.splice(i,0,t);rerender();}});
+    return card;
+}
+
+/* ═══════════════════════════════════════════
+   CHARACTERS
+═══════════════════════════════════════════ */
+function renderCharacters() {
+    const list = document.getElementById('char-list');
+    if (!characters.length) { list.innerHTML='<div class="empty-state">No characters yet.</div>'; return; }
+    list.innerHTML='';
+    characters.forEach((c,i) => list.appendChild(buildCharCard(c,i)));
+}
+
+function buildCharCard(c,i) {
+    const card = document.createElement('div');
+    card.className='exp-card'; card.dataset.index=i; card.draggable=true;
+    card.addEventListener('dragstart', e=>{charDrag=i;card.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    card.addEventListener('dragend',   ()=>card.classList.remove('dragging'));
+    card.addEventListener('dragover',  e=>{e.preventDefault();card.classList.add('drag-over');});
+    card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
+    card.addEventListener('drop',      e=>{e.preventDefault();card.classList.remove('drag-over');if(charDrag!==null&&charDrag!==i){const t=characters[charDrag];characters.splice(charDrag,1);characters.splice(i,0,t);renderCharacters();}});
+    const hasSheet=!!c.sheet;
+    card.innerHTML=`
+        <div class="card-head" onclick="toggleCard(this)">
+            <span class="drag-handle">&#8942;&#8942;</span>
+            <img class="card-head-badge" src="${badgeSrc(c.rank)}" alt="">
+            <div class="card-head-info">
+                <div class="card-head-name">${esc(c.name)||'<em>Unnamed</em>'}</div>
+                <div class="card-head-rank">${esc(c.rank)||'—'}</div>
+            </div>
+            <div class="card-head-tags">
+                ${c.points>0?`<span class="tag">${c.points} pts</span>`:''}
+                ${hasSheet?`<span class="tag tag-sheet">Sheet</span>`:''}
+            </div>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+        <div class="card-body" onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true">
+            <div class="field-row">
+                <div class="field"><label>Name</label><input type="text" value="${esc(c.name)}" oninput="characters[${i}].name=this.value;refreshCharHead(${i})"></div>
+                <div class="field" style="max-width:180px;"><label>Rank</label>
+                    <select onchange="characters[${i}].rank=this.value;refreshCharHead(${i})">
+                        ${CHAR_RANKS.map(([r])=>`<option value="${r}"${c.rank===r?' selected':''}>${r}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="field" style="max-width:80px;"><label>Points</label><input type="number" min="0" value="${c.points||0}" oninput="characters[${i}].points=parseInt(this.value)||0"></div>
+            </div>
+            <div class="sheet-section">
+                <div class="sheet-toggle-row">
+                    <label class="toggle"><input type="checkbox" ${hasSheet?'checked':''} onchange="toggleSheet(${i},this.checked)"><span class="toggle-slider"></span></label>
+                    <span class="sheet-toggle-label">Has character sheet</span>
+                </div>
+                <div class="sheet-fields ${hasSheet?'open':''}">
+                    <div class="field-row"><div class="field"><label>Portrait image path</label><input type="text" placeholder="e.g. characters/valarya.png" value="${esc(c.sheet?.portrait||'')}" oninput="if(!characters[${i}].sheet)characters[${i}].sheet={};characters[${i}].sheet.portrait=this.value"></div></div>
+                    <div class="rte-wrap">
+                        <label class="rte-label">Biography</label>
+                        <div class="rte-toolbar" id="rte-char-${i}-toolbar">
+                            <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-char-${i}','header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                            <div class="rte-btn-sep"></div>
+                            <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-char-${i}','bold')"><b>B</b></button>
+                            <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-char-${i}','italic')"><i>I</i></button>
+                            <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-char-${i}','underline')"><u>U</u></button>
+                        </div>
+                        <div class="rte-editor" id="rte-char-${i}" contenteditable="true"
+                            oninput="if(!characters[${i}].sheet)characters[${i}].sheet={};characters[${i}].sheet.bio=this.innerHTML"
+                            onkeyup="updateToolbarById('rte-char-${i}-toolbar')" onmouseup="updateToolbarById('rte-char-${i}-toolbar')"
+                            onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true"
+                        >${bioToHtml(c.sheet?.bio)}</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger btn-xs" onclick="if(confirm('Remove?')){characters.splice(${i},1);renderCharacters();}">Remove character</button>
+            </div>
+        </div>`;
+    return card;
+}
+
+function bioToHtml(bio) {
+    if (!bio) return '';
+    if (typeof bio==='string') return bio;
+    return bio.map(p=>`<p>${p}</p>`).join('');
+}
+
+function refreshCharHead(i) {
+    const c=characters[i], card=document.querySelector(`#char-list [data-index="${i}"]`); if(!card) return;
+    card.querySelector('.card-head-name').textContent=c.name||'';
+    card.querySelector('.card-head-rank').textContent=c.rank||'—';
+    card.querySelector('.card-head-badge').src=badgeSrc(c.rank);
+}
+
+function toggleSheet(i,on) {
+    if(on) { characters[i].sheet=characters[i].sheet||{portrait:'',bio:''}; }
+    else   { delete characters[i].sheet; }
+    const card=document.querySelector(`#char-list [data-index="${i}"]`); if(!card) return;
+    card.querySelector('.sheet-fields').classList.toggle('open',on);
+    const tag=card.querySelector('.tag-sheet');
+    if(on&&!tag){const t=document.createElement('span');t.className='tag tag-sheet';t.textContent='Sheet';card.querySelector('.card-head-tags').appendChild(t);}
+    else if(!on&&tag) tag.remove();
+}
+
+function addCharacter() {
+    characters.push({name:'New Character',rank:'Initiate',points:0});
+    renderCharacters();
+    setTimeout(()=>{const cards=document.querySelectorAll('#char-list .exp-card');const last=cards[cards.length-1];if(last){toggleCard(last.querySelector('.card-head'));last.scrollIntoView({behavior:'smooth',block:'start'});}},50);
+}
+
+/* ═══════════════════════════════════════════
+   JOURNAL
+═══════════════════════════════════════════ */
+function renderEntries() {
+    const list=document.getElementById('entry-list');
+    if(!entries.length){list.innerHTML='<div class="empty-state">No entries yet.</div>';return;}
+    list.innerHTML='';
+    entries.forEach((e,i)=>list.appendChild(buildEntryCard(e,i)));
+}
+
+function buildEntryCard(e,i) {
+    const card=document.createElement('div');
+    card.className='exp-card'; card.dataset.index=i; card.draggable=true;
+    card.addEventListener('dragstart', ev=>{journalDrag=i;card.classList.add('dragging');ev.dataTransfer.effectAllowed='move';});
+    card.addEventListener('dragend',   ()=>card.classList.remove('dragging'));
+    card.addEventListener('dragover',  ev=>{ev.preventDefault();card.classList.add('drag-over');});
+    card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
+    card.addEventListener('drop',      ev=>{ev.preventDefault();card.classList.remove('drag-over');if(journalDrag!==null&&journalDrag!==i){const t=entries[journalDrag];entries.splice(journalDrag,1);entries.splice(i,0,t);renderEntries();}});
+    const bodyHtml = bodyToHtml(e.body);
+    card.innerHTML=`
+        <div class="card-head" onclick="toggleCard(this)">
+            <span class="drag-handle">&#8942;&#8942;</span>
+            <span class="entry-number">#${i+1}</span>
+            <div class="card-head-title">${esc(e.title)||'<em style="opacity:0.4">Untitled</em>'}</div>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+        <div class="card-body" onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true">
+            <div class="field" style="margin-top:14px;">
+                <label style="font-family:var(--font-display);font-size:11px;letter-spacing:0.06em;color:var(--color-gold-dim);">Entry title</label>
+                <input type="text" style="background:var(--color-input-bg);border:1px solid var(--color-input-border);border-radius:6px;color:var(--color-text);font-family:var(--font-body);font-size:0.9rem;padding:8px 10px;outline:none;width:100%;"
+                    value="${esc(e.title)}" oninput="entries[${i}].title=this.value;refreshEntryHead(${i})">
+            </div>
+            <div class="rte-wrap">
+                <label class="rte-label">Body</label>
+                <div class="rte-toolbar" id="rte-journal-${i}-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','underline')"><u>U</u></button>
+                </div>
+                <div class="rte-editor" id="rte-journal-${i}" contenteditable="true"
+                    oninput="entries[${i}].body=this.innerHTML"
+                    onkeyup="updateToolbarById('rte-journal-${i}-toolbar')" onmouseup="updateToolbarById('rte-journal-${i}-toolbar')"
+                    onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true"
+                >${bodyHtml}</div>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger btn-xs" onclick="if(confirm('Remove?')){entries.splice(${i},1);renderEntries();}">Remove entry</button>
+            </div>
+        </div>`;
+    return card;
+}
+
+function bodyToHtml(body) {
+    if (!body) return '';
+    if (/<[a-z][\s\S]*>/i.test(body)) return body;
+    return body.split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join('');
+}
+
+function refreshEntryHead(i) {
+    const card=document.querySelector(`#entry-list [data-index="${i}"]`); if(!card) return;
+    const t=entries[i].title;
+    card.querySelector('.card-head-title').innerHTML=t?esc(t):'<em style="opacity:0.4">Untitled</em>';
+}
+
+function addEntry() {
+    entries.push({title:'',body:''});
+    renderEntries();
+    setTimeout(()=>{const cards=document.querySelectorAll('#entry-list .exp-card');const last=cards[cards.length-1];if(last){toggleCard(last.querySelector('.card-head'));last.scrollIntoView({behavior:'smooth',block:'start'});}},50);
+}
+
+/* ═══════════════════════════════════════════
+   SHARED HELPERS
+═══════════════════════════════════════════ */
+function toggleCard(head) {
+    head.classList.toggle('open');
+    head.nextElementSibling.classList.toggle('open');
+}
+
+function copyOutput() {
+    navigator.clipboard.writeText(document.getElementById('output-box').textContent).then(()=>{
+        const fb=document.getElementById('copy-feedback');
+        fb.classList.add('show'); setTimeout(()=>fb.classList.remove('show'),2000);
+    });
+}
+
+document.getElementById('file-input').addEventListener('change', function() {
+    const file=this.files[0]; if(!file) return;
+    const r=new FileReader();
+    r.onload=e=>{try{loadData(JSON.parse(e.target.result));}catch{alert('Invalid JSON file.');}};
+    r.readAsText(file); this.value='';
+});
+
+function fetchLive() {
+    const status=document.getElementById('load-status');
+    status.textContent='Loading…'; status.style.color='';
+    fetch('sources/'+currentPage.file+'?nocache='+Date.now())
+        .then(r=>{if(!r.ok) throw 0; return r.json();})
+        .then(data=>{loadData(data);status.textContent='Loaded ✓';status.style.color='var(--color-success)';})
+        .catch(()=>{status.textContent='Could not load — use "Load from file".';status.style.color='var(--color-danger)';});
+}
+
+/* ── Init ── */
+switchPage(currentPage);
+</script>
+</body>
+</html>
