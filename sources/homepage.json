@@ -2,14 +2,46 @@
   "title": "Order of the Argent Gryphon",
   "blocks": [
     {
-      "type": "paragraph",
-      "text": "Formally known as the Order of the Argent Gryphon, they are a chivalric order devoted to honour and justice. From their mountain hideout, they watch and defend the lands against corruption and evil, guided by faith, strength, wisdom, and the old oaths of their predecessors."
-    },
-    {
       "type": "image",
-      "src": "img/main/vanduramap.png",
+      "src": "img/vanduramap.png",
       "alt": "Map of the Shattered Isles — Vandura",
       "caption": "The Shattered Isles of Vandura"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Overview"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Order of the Argent Gryphon is a militaristic and esoteric order guarding its lands in the mountains of Vandura. The Order is known for its discipline, martial culture, and unyielding nature. Depending on who you ask, the Gryphon is either a steadfast warden or a ravenous tyrant."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Notable Battles"
+    },
+    {
+      "type": "paragraph",
+      "text": "What began as a campaign against the uprising of Meriana escalated into a brutal bloodbath, though accounts differ wildly depending on the witness. The incident left behind tales of overwhelming violence, executions, and blood-stained warriors cutting through their enemies without hesitation. Survivors carried the stories across the island, and soon taverns whispered of the <em>\"Gray Butchers\"</em> of Vandura."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Ethos"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Gryphon believes mercy has limits, and that peace is secured not through passivity, but through strength, preparedness, and fearlessness. Among its members, there exists a strong belief that history remembers the bold, not the meek."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Related Items"
+    },
+    {
+      "type": "paragraph",
+      "text": "&#x2022; Griffin Shield &nbsp;&nbsp;&#x2022; War Horn &nbsp;&nbsp;&#x2022; Scroll of Heroic Deeds"
     }
   ]
 }
