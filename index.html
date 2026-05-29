@@ -166,12 +166,12 @@
 
                 case 'image':
                     // src, alt, caption (optional), width (optional css value e.g. "100%")
-                    const style = block.width ? ` style="width:${block.width}"` : '';
+                    const imgWidth = block.width || '100%';
                     const caption = block.caption
                         ? `<figcaption class="home-img-caption">${block.caption}</figcaption>`
                         : '';
-                    return `<figure class="home-figure"${style}>
-                        <img src="${block.src}" alt="${block.alt || ''}" class="home-img">
+                    return `<figure class="home-figure">
+                        <img src="${block.src}" alt="${block.alt || ''}" class="home-img" style="width:${imgWidth}">
                         ${caption}
                     </figure>`;
 
