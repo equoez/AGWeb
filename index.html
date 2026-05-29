@@ -80,6 +80,7 @@ navbar.addEventListener('click', e => {
    Handles: home, enlist, diplomacy, decree (all use sections[])
    ============================================================ */
 function renderStructured(el, d) {
+    console.log('renderStructured called, el:', el?.id, 'title:', d?.title, 'keys:', Object.keys(d||{}));
     let html = d.title ? `<h2>${d.title}</h2>` : '';
 
     // intro paragraph
@@ -143,6 +144,7 @@ function renderStructured(el, d) {
 const loaded = new Set();
 
 function loadPage(pageId) {
+    console.log('loadPage called:', pageId, 'already loaded:', loaded.has(pageId));
     if (loaded.has(pageId)) return;
     loaded.add(pageId);
 
@@ -163,7 +165,7 @@ function loadPage(pageId) {
     if (!file) return;
     const el = document.getElementById(pageId + '-content');
     fetchJSON('sources/' + file)
-        .then(d => renderStructured(el, d))
+        .then(d => { console.log('JSON loaded for', file, 'data:', d); renderStructured(el, d); })
         .catch(err => { console.error('Failed:', file, err); el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`; });
 }
 
