@@ -1,4 +1,21 @@
 {
   "title": "Diplomacy",
-  "body": "<p>The Argent Gryphon has formalised diplomatic ties with other guilds.</p><div class=\"section treaty\"><h3>Treaty of Alliance</h3><p><em>Between the Argent Gryphon and the Circle of Stonehaze</em></p><p>We agree with the articles written below. May this alliance be blessed by Banor!<br><em>— Nezel Stonehaze, 9 March 2026</em></p><p><strong>Article I</strong> — Purpose: Establishes the alliance.<br><strong>Article II</strong> — Alliance in Arms: Mutual defence against evil.<br><strong>Article III</strong> — Mutual Aid: Assistance when needed.<br><strong>Article IV</strong> — Exchange of Knowledge: Shared intelligence.<br><strong>Article V</strong> — Hospitality: Open guildhalls to one another.<br><strong>Article VI</strong> — Fellowship: Regular meetings between members.</p></div>"
+  "intro": "The Argent Gryphon has formalised diplomatic ties with other guilds.",
+  "sections": [
+    {
+      "style": "section treaty",
+      "heading": "Treaty of Alliance",
+      "parties": "the Argent Gryphon and the Circle of Stonehaze",
+      "signatory": "Nezel Stonehaze",
+      "signed": "9 March 2026",
+      "articles": [
+        { "number": "I",    "title": "Purpose",              "text": "Establishes the alliance." },
+        { "number": "II",   "title": "Alliance in Arms",     "text": "Mutual defence against evil." },
+        { "number": "III",  "title": "Mutual Aid",           "text": "Assistance when needed." },
+        { "number": "IV",   "title": "Exchange of Knowledge","text": "Shared intelligence." },
+        { "number": "V",    "title": "Hospitality",          "text": "Open guildhalls to one another." },
+        { "number": "VI",   "title": "Fellowship",           "text": "Regular meetings between members." }
+      ]
+    }
+  ]
 }
