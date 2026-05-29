@@ -327,6 +327,59 @@
         loadHomepage();
         window.scrollTo(0, 0);
 
+        /* --- Map magnifier --- */
+
+        const ZOOM      = 3;    // magnification level
+        const LENS_SIZE = 220;  // must match CSS width/height
+        const HALF      = LENS_SIZE / 2;
+
+        const lens = document.createElement('div');
+        lens.className = 'map-magnifier';
+        document.body.appendChild(lens);
+
+        function initMagnifier(img) {
+            img.addEventListener('mouseenter', () => { lens.style.display = 'block'; });
+            img.addEventListener('mouseleave', () => { lens.style.display = 'none';  });
+            img.addEventListener('mousemove',  e  => moveMagnifier(e, img));
+        }
+
+        function moveMagnifier(e, img) {
+            const rect = img.getBoundingClientRect();
+            const cx   = e.clientX - rect.left;
+            const cy   = e.clientY - rect.top;
+
+            const bgW  = rect.width  * ZOOM;
+            const bgH  = rect.height * ZOOM;
+            const bgX  = HALF - cx * ZOOM;
+            const bgY  = HALF - cy * ZOOM;
+
+            lens.style.backgroundImage    = `url('${img.src}')`;
+            lens.style.backgroundSize     = `${bgW}px ${bgH}px`;
+            lens.style.backgroundPosition = `${bgX}px ${bgY}px`;
+
+            const offset = 18;
+            let lx = e.clientX + offset;
+            let ly = e.clientY - HALF;
+
+            if (lx + LENS_SIZE > window.innerWidth)  lx = e.clientX - LENS_SIZE - offset;
+            if (ly < 0)                               ly = 0;
+            if (ly + LENS_SIZE > window.innerHeight)  ly = window.innerHeight - LENS_SIZE;
+
+            lens.style.left = lx + 'px';
+            lens.style.top  = ly + 'px';
+        }
+
+        // Pick up .home-img elements injected by loadHomepage()
+        new MutationObserver(mutations => {
+            mutations.forEach(m => m.addedNodes.forEach(node => {
+                if (node.nodeType !== 1) return;
+                const imgs = node.matches && node.matches('.home-img')
+                    ? [node]
+                    : [...node.querySelectorAll('.home-img')];
+                imgs.forEach(initMagnifier);
+            }));
+        }).observe(document.getElementById('home-content'), { childList: true, subtree: true });
+
     </script>
 
 </body>
