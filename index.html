@@ -89,6 +89,13 @@ function loadCodex() {
 
 /* --- Ranks --- */
 let RANK_MAP = new Map();
+
+// Pre-load rank map at startup so badges are always correct
+// regardless of whether the Ranks page has been visited first
+json('sources/ranks.json', d => {
+    RANK_MAP = new Map((d.ranks||[]).map(r => [r.name, r.key]));
+});
+
 function loadRanks() {
     const el = document.getElementById('ranks-content');
     if (el.dataset.loaded) return;
