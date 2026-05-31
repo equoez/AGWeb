@@ -71,14 +71,19 @@
     "points": 12
   },
   {
-    "name": "Amelia Lillywhite",
+    "name": "Wizard Ceori",
     "rank": "Initiate",
-    "points": 0
+    "points": 12
   },
   {
     "name": "Digi der Greif",
     "rank": "Initiate",
     "points": 12
+  },
+  {
+    "name": "Amelia Lillywhite",
+    "rank": "Initiate",
+    "points": 0
   },
   {
     "name": "Myrenthil",
@@ -95,9 +100,9 @@
     "points": 0
   },
   {
-    "name": "Wizard Ceori",
+    "name": "Renai Thunderstrike",
     "rank": "Initiate",
-    "points": 12
+    "points": 3
   },
   {
     "name": "Barnabus Runeholt",
@@ -155,10 +160,5 @@
     "name": "Outlaw Mike",
     "rank": "Ward",
     "points": 0
-  },
-  {
-    "name": "Renai Thunderstrike",
-    "rank": "Initiate",
-    "points": 3
   }
 ]
