@@ -124,6 +124,24 @@
         .drag-handle { cursor:grab; color:rgba(255,210,122,0.25); font-size:1rem; padding:0 4px; flex-shrink:0; user-select:none; }
         .drag-handle:hover { color:rgba(255,210,122,0.5); }
 
+        /* ── Library: series outer card ── */
+        .series-card { background:rgba(255,210,122,0.04); border:1px solid rgba(255,210,122,0.15); border-radius:12px; margin-bottom:18px; overflow:hidden; }
+        .series-card:hover { border-color:rgba(255,210,122,0.25); }
+        .series-card.dragging  { opacity:0.5; }
+        .series-card.drag-over { border-color:var(--color-gold-dim); }
+        .series-head { display:flex; align-items:center; gap:12px; padding:13px 16px; cursor:pointer; user-select:none; background:rgba(255,210,122,0.04); }
+        .series-head.open .card-chevron { transform:rotate(180deg); }
+        .series-head-title { font-family:var(--font-display); font-size:0.95rem; color:var(--color-gold); font-weight:700; letter-spacing:0.04em; flex:1; min-width:0; }
+        .series-head-count { font-family:var(--font-display); font-size:11px; color:var(--color-gold-dim); }
+        .series-body { display:none; padding:14px 16px 18px; border-top:1px solid rgba(255,210,122,0.1); }
+        .series-body.open { display:block; }
+        .series-name-row { display:flex; gap:10px; align-items:center; margin-bottom:16px; }
+        .series-name-row label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); white-space:nowrap; }
+        .series-name-input { flex:1; background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:6px; color:var(--color-text); font-family:var(--font-display); font-size:0.95rem; padding:8px 12px; outline:none; transition:border-color 0.2s; }
+        .series-name-input:focus { border-color:var(--color-input-focus); }
+        .entries-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); margin-bottom:10px; display:block; }
+        .entries-sublist { padding-left:4px; }
+
         /* ── Output ── */
         .output-section { margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,210,122,0.15); }
         .output-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
@@ -205,10 +223,10 @@
                 <div class="add-row"><button class="btn" onclick="addCharacter()">+ Add character</button></div>
             </div>
 
-            <!-- ── Journal ── -->
+            <!-- ── Library / Journal ── -->
             <div class="editor-panel" id="panel-journal">
-                <div id="entry-list"></div>
-                <div class="add-row"><button class="btn" onclick="addEntry()">+ Add entry</button></div>
+                <div id="series-list"></div>
+                <div class="add-row"><button class="btn" onclick="addSeries()">+ Add series</button></div>
             </div>
 
             <!-- ── Output ── -->
@@ -240,7 +258,7 @@ const PAGES_CONFIG = [
     { id:'codex',      file:'codex.json',       label:'Codex',      mode:'codex'      },
     { id:'ranks',      file:'ranks.json',       label:'Ranks',      mode:'ranks'      },
     { id:'characters', file:'characters.json',  label:'Characters', mode:'characters' },
-    { id:'journal',    file:'journal.json',     label:'Journal',    mode:'journal'    },
+    { id:'library',    file:'journal.json',     label:'Library',    mode:'journal'    },
 ];
 
 const CHAR_RANKS = [
@@ -253,8 +271,8 @@ const badgeSrc  = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge
 const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 let currentPage  = PAGES_CONFIG[0];
-let codexItems   = [], rankItems = [], characters = [], entries = [];
-let codexDrag    = null, rankDrag = null, charDrag = null, journalDrag = null;
+let codexItems   = [], rankItems = [], characters = [], libSeries = [];
+let codexDrag    = null, rankDrag = null, charDrag = null;
 
 /* ═══════════════════════════════════════════
    TAB PICKER
@@ -350,8 +368,11 @@ function loadData(data) {
         characters = data.map ? data.map(c=>({...c})) : [];
         renderCharacters();
     } else if (m==='journal') {
-        entries = data.map ? data.map(e=>({...e})) : [];
-        renderEntries();
+        /* New format: array of { name, entries[] } */
+        libSeries = Array.isArray(data)
+            ? data.map(s => ({ name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) }))
+            : [];
+        renderSeries();
     }
     generateOutput();
 }
@@ -376,8 +397,17 @@ function generateOutput() {
             return obj;
         });
     } else if (m==='journal') {
-        entries.forEach((e,i)=>{ const el=document.getElementById('rte-journal-'+i); if(el) e.body=el.innerHTML; });
-        out = entries.map(e => ({ title:e.title||'', body:e.body||'' }));
+        /* Harvest any open RTE bodies before serialising */
+        libSeries.forEach((s, si) => {
+            (s.entries||[]).forEach((e, ei) => {
+                const el = document.getElementById(`rte-entry-${si}-${ei}`);
+                if (el) e.body = el.innerHTML;
+            });
+        });
+        out = libSeries.map(s => ({
+            name: s.name || '',
+            entries: (s.entries||[]).map(e => ({ title: e.title||'', body: e.body||'' }))
+        }));
     }
     document.getElementById('output-box').textContent = JSON.stringify(out,null,2);
 }
@@ -537,78 +567,194 @@ function addCharacter() {
 }
 
 /* ═══════════════════════════════════════════
-   JOURNAL
+   LIBRARY — SERIES + ENTRIES
 ═══════════════════════════════════════════ */
-function renderEntries() {
-    const list=document.getElementById('entry-list');
-    if(!entries.length){list.innerHTML='<div class="empty-state">No entries yet.</div>';return;}
-    list.innerHTML='';
-    entries.forEach((e,i)=>list.appendChild(buildEntryCard(e,i)));
+let seriesDragIdx = null;
+
+function renderSeries() {
+    const list = document.getElementById('series-list');
+    if (!libSeries.length) { list.innerHTML = '<div class="empty-state">No series yet.</div>'; return; }
+    list.innerHTML = '';
+    libSeries.forEach((s, si) => list.appendChild(buildSeriesCard(s, si)));
 }
 
-function buildEntryCard(e,i) {
-    const card=document.createElement('div');
-    card.className='exp-card'; card.dataset.index=i; card.draggable=true;
-    card.addEventListener('dragstart', ev=>{journalDrag=i;card.classList.add('dragging');ev.dataTransfer.effectAllowed='move';});
-    card.addEventListener('dragend',   ()=>card.classList.remove('dragging'));
-    card.addEventListener('dragover',  ev=>{ev.preventDefault();card.classList.add('drag-over');});
-    card.addEventListener('dragleave', ()=>card.classList.remove('drag-over'));
-    card.addEventListener('drop',      ev=>{ev.preventDefault();card.classList.remove('drag-over');if(journalDrag!==null&&journalDrag!==i){const t=entries[journalDrag];entries.splice(journalDrag,1);entries.splice(i,0,t);renderEntries();}});
+function buildSeriesCard(s, si) {
+    const card = document.createElement('div');
+    card.className = 'series-card';
+    card.dataset.si = si;
+    card.draggable = true;
+    card.addEventListener('dragstart', e => { seriesDragIdx = si; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+        e.preventDefault(); card.classList.remove('drag-over');
+        if (seriesDragIdx !== null && seriesDragIdx !== si) {
+            const t = libSeries[seriesDragIdx]; libSeries.splice(seriesDragIdx,1); libSeries.splice(si,0,t);
+            renderSeries();
+        }
+    });
+
+    const count = (s.entries||[]).length;
+    card.innerHTML = `
+        <div class="series-head" onclick="toggleSeriesCard(this)">
+            <span class="drag-handle" onmouseenter="this.closest('.series-card').draggable=true">&#8942;&#8942;</span>
+            <div class="series-head-title">${esc(s.name) || '<em style="opacity:0.4">Unnamed Series</em>'}</div>
+            <span class="series-head-count">${count} ${count===1?'entry':'entries'}</span>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+        <div class="series-body">
+            <div class="series-name-row">
+                <label>Series name</label>
+                <input class="series-name-input" type="text" value="${esc(s.name)}"
+                    oninput="libSeries[${si}].name=this.value;refreshSeriesHead(${si})"
+                    onmouseenter="this.closest('.series-card').draggable=false"
+                    onmouseleave="this.closest('.series-card').draggable=true">
+            </div>
+            <span class="entries-label">Entries</span>
+            <div class="entries-sublist" id="entries-sublist-${si}"></div>
+            <div class="add-row" style="justify-content:flex-start;gap:10px;margin-top:12px;">
+                <button class="btn btn-sm" onclick="addEntry(${si})">+ Add entry</button>
+                <button class="btn btn-danger btn-sm" onclick="if(confirm('Remove this entire series?')){libSeries.splice(${si},1);renderSeries();}">Remove series</button>
+            </div>
+        </div>
+    `;
+
+    /* Render entries into the sublist */
+    renderEntries(si, card.querySelector(`#entries-sublist-${si}`));
+    return card;
+}
+
+function refreshSeriesHead(si) {
+    const card = document.querySelector(`.series-card[data-si="${si}"]`); if (!card) return;
+    const t = libSeries[si].name;
+    card.querySelector('.series-head-title').innerHTML = t ? esc(t) : '<em style="opacity:0.4">Unnamed Series</em>';
+}
+
+function toggleSeriesCard(head) {
+    head.classList.toggle('open');
+    head.nextElementSibling.classList.toggle('open');
+}
+
+function addSeries() {
+    libSeries.push({ name: 'New Series', entries: [] });
+    renderSeries();
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.series-card');
+        const last = cards[cards.length - 1];
+        if (last) { toggleSeriesCard(last.querySelector('.series-head')); last.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    }, 50);
+}
+
+/* ── Entries within a series ── */
+function renderEntries(si, container) {
+    if (!container) container = document.getElementById(`entries-sublist-${si}`);
+    if (!container) return;
+    const entries = libSeries[si].entries || [];
+    if (!entries.length) { container.innerHTML = '<div class="empty-state" style="padding:20px 0 10px;">No entries yet.</div>'; return; }
+    container.innerHTML = '';
+    entries.forEach((e, ei) => container.appendChild(buildEntryCard(si, ei)));
+}
+
+let entryDragSi = null, entryDragEi = null;
+
+function buildEntryCard(si, ei) {
+    const e = libSeries[si].entries[ei];
+    const card = document.createElement('div');
+    card.className = 'exp-card';
+    card.dataset.ei = ei;
+    card.draggable = true;
+    card.addEventListener('dragstart', ev => { entryDragSi = si; entryDragEi = ei; card.classList.add('dragging'); ev.dataTransfer.effectAllowed = 'move'; ev.stopPropagation(); });
+    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+    card.addEventListener('dragover',  ev => { ev.preventDefault(); ev.stopPropagation(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', ev => {
+        ev.preventDefault(); ev.stopPropagation(); card.classList.remove('drag-over');
+        if (entryDragSi === si && entryDragEi !== null && entryDragEi !== ei) {
+            const t = libSeries[si].entries[entryDragEi];
+            libSeries[si].entries.splice(entryDragEi, 1);
+            libSeries[si].entries.splice(ei, 0, t);
+            renderEntries(si);
+        }
+    });
+
     const bodyHtml = bodyToHtml(e.body);
-    card.innerHTML=`
+    card.innerHTML = `
         <div class="card-head" onclick="toggleCard(this)">
             <span class="drag-handle">&#8942;&#8942;</span>
-            <span class="entry-number">#${i+1}</span>
+            <span class="entry-number">#${ei+1}</span>
             <div class="card-head-title">${esc(e.title)||'<em style="opacity:0.4">Untitled</em>'}</div>
             <span class="card-chevron">&#8964;</span>
         </div>
         <div class="card-body" onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true">
             <div class="field" style="margin-top:14px;">
                 <label style="font-family:var(--font-display);font-size:11px;letter-spacing:0.06em;color:var(--color-gold-dim);">Entry title</label>
-                <input type="text" style="background:var(--color-input-bg);border:1px solid var(--color-input-border);border-radius:6px;color:var(--color-text);font-family:var(--font-body);font-size:0.9rem;padding:8px 10px;outline:none;width:100%;"
-                    value="${esc(e.title)}" oninput="entries[${i}].title=this.value;refreshEntryHead(${i})">
+                <input type="text"
+                    style="background:var(--color-input-bg);border:1px solid var(--color-input-border);border-radius:6px;color:var(--color-text);font-family:var(--font-body);font-size:0.9rem;padding:8px 10px;outline:none;width:100%;"
+                    value="${esc(e.title)}"
+                    oninput="libSeries[${si}].entries[${ei}].title=this.value;refreshEntryHead(${si},${ei})">
             </div>
             <div class="rte-wrap">
                 <label class="rte-label">Body</label>
-                <div class="rte-toolbar" id="rte-journal-${i}-toolbar">
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','bold')"><b>B</b></button>
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','italic')"><i>I</i></button>
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-journal-${i}','underline')"><u>U</u></button>
+                <div class="rte-toolbar" id="rte-entry-${si}-${ei}-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-entry-${si}-${ei}','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-entry-${si}-${ei}','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-entry-${si}-${ei}','underline')"><u>U</u></button>
                 </div>
-                <div class="rte-editor" id="rte-journal-${i}" contenteditable="true"
-                    oninput="entries[${i}].body=this.innerHTML"
-                    onkeyup="updateToolbarById('rte-journal-${i}-toolbar')" onmouseup="updateToolbarById('rte-journal-${i}-toolbar')"
-                    onmouseenter="this.closest('.exp-card').draggable=false" onmouseleave="this.closest('.exp-card').draggable=true"
+                <div class="rte-editor" id="rte-entry-${si}-${ei}" contenteditable="true"
+                    oninput="libSeries[${si}].entries[${ei}].body=this.innerHTML"
+                    onkeyup="updateToolbarById('rte-entry-${si}-${ei}-toolbar')"
+                    onmouseup="updateToolbarById('rte-entry-${si}-${ei}-toolbar')"
+                    onmouseenter="this.closest('.exp-card').draggable=false"
+                    onmouseleave="this.closest('.exp-card').draggable=true"
                 >${bodyHtml}</div>
             </div>
             <div style="margin-top:16px;display:flex;justify-content:flex-end;">
-                <button class="btn btn-danger btn-xs" onclick="if(confirm('Remove?')){entries.splice(${i},1);renderEntries();}">Remove entry</button>
+                <button class="btn btn-danger btn-xs"
+                    onclick="if(confirm('Remove this entry?')){libSeries[${si}].entries.splice(${ei},1);renderEntries(${si});}">
+                    Remove entry
+                </button>
             </div>
         </div>`;
     return card;
 }
 
+function refreshEntryHead(si, ei) {
+    const container = document.getElementById(`entries-sublist-${si}`); if (!container) return;
+    const card = container.querySelector(`[data-ei="${ei}"]`); if (!card) return;
+    const t = libSeries[si].entries[ei].title;
+    card.querySelector('.card-head-title').innerHTML = t ? esc(t) : '<em style="opacity:0.4">Untitled</em>';
+}
+
+function addEntry(si) {
+    libSeries[si].entries.push({ title: '', body: '' });
+    renderEntries(si);
+    /* Update count badge */
+    refreshSeriesCount(si);
+    setTimeout(() => {
+        const sub = document.getElementById(`entries-sublist-${si}`);
+        if (!sub) return;
+        const cards = sub.querySelectorAll('.exp-card');
+        const last = cards[cards.length - 1];
+        if (last) { toggleCard(last.querySelector('.card-head')); last.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    }, 50);
+}
+
+function refreshSeriesCount(si) {
+    const card = document.querySelector(`.series-card[data-si="${si}"]`); if (!card) return;
+    const count = libSeries[si].entries.length;
+    card.querySelector('.series-head-count').textContent = `${count} ${count===1?'entry':'entries'}`;
+}
+
+/* ═══════════════════════════════════════════
+   SHARED HELPERS
+═══════════════════════════════════════════ */
 function bodyToHtml(body) {
     if (!body) return '';
     if (/<[a-z][\s\S]*>/i.test(body)) return body;
     return body.split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join('');
 }
 
-function refreshEntryHead(i) {
-    const card=document.querySelector(`#entry-list [data-index="${i}"]`); if(!card) return;
-    const t=entries[i].title;
-    card.querySelector('.card-head-title').innerHTML=t?esc(t):'<em style="opacity:0.4">Untitled</em>';
-}
-
-function addEntry() {
-    entries.push({title:'',body:''});
-    renderEntries();
-    setTimeout(()=>{const cards=document.querySelectorAll('#entry-list .exp-card');const last=cards[cards.length-1];if(last){toggleCard(last.querySelector('.card-head'));last.scrollIntoView({behavior:'smooth',block:'start'});}},50);
-}
-
-/* ═══════════════════════════════════════════
-   SHARED HELPERS
-═══════════════════════════════════════════ */
 function toggleCard(head) {
     head.classList.toggle('open');
     head.nextElementSibling.classList.toggle('open');
