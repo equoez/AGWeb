@@ -461,7 +461,14 @@ function showPage(pageId, pushHistory=true) {
     if (pageId==='codex')     loadCodex();
     if (pageId==='ranks')     loadRanks();
     if (pageId==='members')   loadMembers();
-    if (pageId==='library')   initLibrary();
+    if (pageId==='library') {
+        initLibrary();
+        /* If the reader is open, drop back to the shelf instead */
+        if (document.getElementById('lib-reader-view')?.style.display !== 'none') {
+            libShowShelf();
+            return;
+        }
+    }
     if (pushHistory) try { history.pushState({page:pageId},'','/#'+pageId); } catch(e){}
 }
 
