@@ -63,40 +63,50 @@
         /* ── Library: series reader ── */
         .lib-reader { display: flex; flex-direction: column; gap: 1.1em; }
 
-        .lib-reader-header {
-            display: flex;
-            align-items: center;
-            gap: .9em;
-            padding-bottom: .9em;
-            border-bottom: 1px solid rgba(255,255,255,.15);
-        }
-        .lib-reader-bigbook {
-            width: 52px;
-            height: 52px;
-            object-fit: contain;
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-        .lib-reader-series-name {
-            font-size: 1.25em;
-            font-weight: bold;
-            letter-spacing: .03em;
-        }
-
-        /* back link */
+        /* back link — mirrors .char-back */
         .lib-back {
             display: inline-block;
             font-size: .85em;
             opacity: .7;
             cursor: pointer;
             text-decoration: underline;
-            margin-bottom: .1em;
+            margin-bottom: .6em;
             background: none;
             border: none;
             color: inherit;
             padding: 0;
         }
         .lib-back:hover { opacity: 1; }
+
+        /* big title — mirrors .char-name */
+        .lib-series-name-big {
+            font-size: 1.6em;
+            font-weight: bold;
+            letter-spacing: .04em;
+            margin-bottom: .3em;
+        }
+
+        /* meta row — mirrors .char-meta */
+        .lib-reader-meta {
+            display: flex;
+            align-items: center;
+            gap: .55em;
+            padding-bottom: .9em;
+            border-bottom: 1px solid rgba(255,255,255,.15);
+            margin-bottom: .2em;
+        }
+        .lib-reader-bigbook {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 1px 4px rgba(0,0,0,.5));
+        }
+        .lib-reader-meta-name {
+            font-size: .9em;
+            opacity: .75;
+        }
 
         /* book shelf row */
         .lib-shelf {
@@ -207,10 +217,14 @@
 
             <!-- Series reader view (hidden until a series is chosen) -->
             <div id="lib-reader-view" style="display:none;">
+                <a class="lib-back" onclick="libShowShelf()">&#8592; Return to the Library</a>
                 <div class="lib-reader">
-                    <div class="lib-reader-header">
-                        <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
-                        <h2 id="lib-series-title" style="margin:0;"></h2>
+                    <div>
+                        <div class="lib-series-name-big" id="lib-series-title"></div>
+                        <div class="lib-reader-meta">
+                            <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
+                            <span class="lib-reader-meta-name" id="lib-series-meta-name"></span>
+                        </div>
                     </div>
                     <div class="lib-nav">
                         <button class="lib-arrow-btn" id="lib-prev" aria-label="Previous chapter">
@@ -415,6 +429,7 @@ function libOpenSeries(si, pushHistory=true) {
 
     /* Header */
     document.getElementById('lib-series-title').textContent = LIB_SERIES[si].name;
+    document.getElementById('lib-series-meta-name').textContent = LIB_SERIES[si].name;
 
     /* Build book shelf */
     const shelf = document.getElementById('lib-book-shelf');
