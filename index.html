@@ -384,7 +384,7 @@ function initLibrary() {
     });
 }
 
-function libOpenSeries(si) {
+function libOpenSeries(si, pushHistory=true) {
     libCurrentSeries = si;
     const entries = LIB_SERIES[si].entries || [];
 
@@ -408,6 +408,7 @@ function libOpenSeries(si) {
 
     libCurrentIdx = 0;
     libShowChapter(0);
+    if (pushHistory) try { history.pushState({page:'library',series:si,chapter:0},'','/#library'); } catch(e){}
 }
 
 function libShowChapter(i) {
@@ -441,9 +442,10 @@ document.getElementById('lib-next').addEventListener('click', () => {
     if (n < entries.length) libShowChapter(n);
 });
 
-function libShowShelf() {
+function libShowShelf(pushHistory=true) {
     document.getElementById('lib-shelf-view').style.display  = 'block';
     document.getElementById('lib-reader-view').style.display = 'none';
+    if (pushHistory) try { history.pushState({page:'library'},'','/#library'); } catch(e){}
 }
 
 /* ════════════════════════════════════════
@@ -480,12 +482,46 @@ document.addEventListener('mouseout', e => {
 });
 
 /* --- Back/forward & hash routing --- */
-window.addEventListener('popstate', () => {
-    const h = location.hash.slice(1);
+window.addEventListener('popstate', e => {
+    const st = e.state;
+    const h  = location.hash.slice(1);
+    /* Restore library sub-states */
+    if (st?.page === 'library' && st.series != null) {
+        /* navigated back into a series reader */
+        showPage('library', false);
+        libOpenSeries(st.series, false);
+        return;
+    }
+    if (st?.page === 'library') {
+        showPage('library', false);
+        libShowShelf(false);
+        return;
+    }
     if (PAGES.includes(h)) showPage(h, false);
     else if (h)            tryOpenCharacterBySlug(h);
     else                   showPage('home', false);
     window.scrollTo(0,0);
+});
+
+/* Mouse back/forward buttons (buttons 3 & 4) */
+window.addEventListener('mousedown', e => {
+    if (e.button === 3) { e.preventDefault(); history.back(); }
+    if (e.button === 4) { e.preventDefault(); history.forward(); }
+});
+
+/* Keyboard arrow navigation for library reader */
+document.addEventListener('keydown', e => {
+    const readerVisible = document.getElementById('lib-reader-view')?.style.display !== 'none'
+        && document.querySelector('[data-page="library"]')?.classList.contains('active');
+    if (!readerVisible) return;
+    if (e.key === 'ArrowLeft'  && !document.getElementById('lib-prev').disabled) {
+        e.preventDefault();
+        libShowChapter(libCurrentIdx - 1);
+    }
+    if (e.key === 'ArrowRight' && !document.getElementById('lib-next').disabled) {
+        e.preventDefault();
+        libShowChapter(libCurrentIdx + 1);
+    }
 });
 
 const hash = location.hash.slice(1);
