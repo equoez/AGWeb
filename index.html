@@ -7,6 +7,168 @@
     <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Library: series grid ── */
+        .library-intro {
+            margin: 0 0 1.4em;
+            font-style: italic;
+            opacity: .8;
+        }
+
+        .library-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Mirrors .codex-item from the rest of the site */
+        .library-series-item {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            padding: .75em 0;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            cursor: pointer;
+            transition: background .15s;
+            border-radius: 4px;
+            padding-left: .5em;
+            padding-right: .5em;
+        }
+        .library-series-item:last-child { border-bottom: none; }
+        .library-series-item:hover { background: rgba(255,255,255,.06); }
+
+        .library-series-icon {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+        }
+
+        .library-series-info {
+            display: flex;
+            flex-direction: column;
+            gap: .2em;
+        }
+        .library-series-name {
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+        .library-series-count {
+            font-size: .82em;
+            opacity: .65;
+            font-style: italic;
+        }
+
+        /* ── Library: series reader ── */
+        .lib-reader { display: flex; flex-direction: column; gap: 1.1em; }
+
+        .lib-reader-header {
+            display: flex;
+            align-items: center;
+            gap: .9em;
+            padding-bottom: .9em;
+            border-bottom: 1px solid rgba(255,255,255,.15);
+        }
+        .lib-reader-bigbook {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            flex-shrink: 0;
+            image-rendering: pixelated;
+        }
+        .lib-reader-series-name {
+            font-size: 1.25em;
+            font-weight: bold;
+            letter-spacing: .03em;
+        }
+
+        /* back link */
+        .lib-back {
+            display: inline-block;
+            font-size: .85em;
+            opacity: .7;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-bottom: .1em;
+            background: none;
+            border: none;
+            color: inherit;
+            padding: 0;
+        }
+        .lib-back:hover { opacity: 1; }
+
+        /* book shelf row */
+        .lib-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .55em;
+            align-items: flex-end;
+            padding: .6em 0;
+        }
+
+        .lib-book-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 4px;
+            transition: transform .15s, filter .15s;
+            position: relative;
+        }
+        .lib-book-btn img {
+            width: 32px;
+            height: auto;
+            display: block;
+            image-rendering: pixelated;
+            filter: brightness(.75);
+            transition: filter .15s;
+        }
+        .lib-book-btn:hover img { filter: brightness(1); }
+        .lib-book-btn.active img {
+            filter: brightness(1.15) drop-shadow(0 0 5px rgba(255,215,100,.7));
+        }
+        .lib-book-btn:hover { transform: translateY(-3px); }
+        .lib-book-btn.active { transform: translateY(-4px); }
+
+        /* arrows + shelf row */
+        .lib-nav {
+            display: flex;
+            align-items: center;
+            gap: .5em;
+        }
+        .lib-arrow-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            flex-shrink: 0;
+            transition: transform .1s, opacity .1s;
+        }
+        .lib-arrow-btn img {
+            width: 36px;
+            height: auto;
+            display: block;
+            image-rendering: pixelated;
+        }
+        .lib-arrow-btn:disabled { opacity: .25; cursor: default; }
+        .lib-arrow-btn:not(:disabled):hover { transform: scale(1.12); }
+        .lib-arrow-btn:not(:disabled):active { transform: scale(.95); }
+
+        /* chapter display */
+        .lib-chapter-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            letter-spacing: .02em;
+            padding-bottom: .35em;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+        }
+        .lib-chapter-body p {
+            margin: 0 0 .9em;
+            line-height: 1.7;
+        }
+        .lib-chapter-body p:last-child { margin-bottom: 0; }
+    </style>
 </head>
 <body>
 
@@ -19,20 +181,40 @@
         <section data-page="home"      class="page active"><div id="home-content"></div></section>
         <section data-page="codex"     class="page"><div id="codex-content"></div></section>
         <section data-page="enlist"    class="page"><div id="enlist-content"></div></section>
-        <section data-page="journal"   class="page">
-            <h2>Valkera's Journal</h2>
-            <p class="journal-intro">Personal chronicles of Lady Warden Valkera — kept in her own hand, sealed within the fortress archive.</p>
-            <div class="journal-nav">
-                <button class="journal-arrow" id="journal-prev" onclick="journalStep(-1)" aria-label="Previous entry">&#8249;</button>
-                <div class="journal-index-wrap">
-                    <span class="journal-label">Entry</span>
-                    <div id="journal-tabs" class="journal-tabs"></div>
-                </div>
-                <button class="journal-arrow" id="journal-next" onclick="journalStep(1)" aria-label="Next entry">&#8250;</button>
+
+        <!-- ══ LIBRARY ══ -->
+        <section data-page="library" class="page">
+            <!-- Library shelf view (series list) -->
+            <div id="lib-shelf-view">
+                <h2>The Library</h2>
+                <p class="library-intro">Tomes, chronicles and records kept within the fortress archive.</p>
+                <div class="library-grid" id="lib-series-grid"></div>
             </div>
-            <div id="journal-entry-title" class="journal-entry-title"></div>
-            <div id="journal-entry-body"  class="journal-entry-body"></div>
+
+            <!-- Series reader view (hidden until a series is chosen) -->
+            <div id="lib-reader-view" style="display:none;">
+                <button class="lib-back" id="lib-back-btn" onclick="libShowShelf()">&#8592; Back to the Library</button>
+                <div class="lib-reader">
+                    <div class="lib-reader-header">
+                        <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
+                        <div class="lib-reader-series-name" id="lib-series-title"></div>
+                    </div>
+                    <div class="lib-nav">
+                        <button class="lib-arrow-btn" id="lib-prev" aria-label="Previous chapter">
+                            <img src="img/main/arrowleft.png" alt="Previous">
+                        </button>
+                        <div class="lib-shelf" id="lib-book-shelf"></div>
+                        <button class="lib-arrow-btn" id="lib-next" aria-label="Next chapter">
+                            <img src="img/main/arrowright.png" alt="Next">
+                        </button>
+                    </div>
+                    <div class="lib-chapter-title" id="lib-chapter-title"></div>
+                    <div class="lib-chapter-body"  id="lib-chapter-body"></div>
+                </div>
+            </div>
         </section>
+        <!-- ══ /LIBRARY ══ -->
+
         <section data-page="diplomacy" class="page"><div id="diplomacy-content"></div></section>
         <section data-page="decree"    class="page"><div id="decree-content"></div></section>
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
@@ -50,7 +232,7 @@
 </div>
 
 <script>
-const PAGES = ['home','codex','enlist','journal','diplomacy','decree','ranks','members'];
+const PAGES = ['home','codex','enlist','library','diplomacy','decree','ranks','members'];
 const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
 const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
 const json       = (url, cb, err) => fetch(url).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(cb).catch(err||(() => {}));
@@ -89,9 +271,6 @@ function loadCodex() {
 
 /* --- Ranks --- */
 let RANK_MAP = new Map();
-
-// Pre-load rank map at startup so badges are always correct
-// regardless of whether the Ranks page has been visited first
 json('sources/ranks.json', d => {
     RANK_MAP = new Map((d.ranks||[]).map(r => [r.name, r.key]));
 });
@@ -167,37 +346,109 @@ function tryOpenCharacterBySlug(slug) {
     json('sources/characters.json', chars => { characterData = chars; open(chars); });
 }
 
-/* --- Journal --- */
-let jEntries = [], jIdx = 0, jReady = false;
+/* ════════════════════════════════════════
+   LIBRARY
+   ════════════════════════════════════════ */
 
-function initJournal() {
-    if (jReady) return;
-    jReady = true;
-    json('sources/journal.json', entries => {
-        jEntries = entries;
-        setHTML('journal-tabs', entries.map((e,i) =>
-            `<button class="journal-tab${i===0?' active':''}" aria-label="${e.title}" onclick="showJournalEntry(${i})">${i+1}</button>`
-        ).join(''));
-        showJournalEntry(0);
-    }, () => { document.getElementById('journal-entry-body').textContent = 'Could not load journal entries.'; });
+/*
+  All library data lives in sources/journal.json.
+  That file is a JSON array of series objects:
+    [ { name, entries: [ { title, body }, … ] }, … ]
+
+  To add a new series, add another object to that array.
+*/
+let LIB_SERIES   = [];   /* populated on first load */
+let libCurrentSeries = null;
+let libCurrentIdx    = 0;
+let libReady         = false;
+
+function initLibrary() {
+    if (libReady) return;
+    libReady = true;
+    json('sources/journal.json', data => {
+        LIB_SERIES = data;
+        const grid = document.getElementById('lib-series-grid');
+        grid.innerHTML = LIB_SERIES.map((s, si) => {
+            const count = s.entries.length;
+            return `<div class="library-series-item" onclick="libOpenSeries(${si})">
+                <img class="library-series-icon" src="img/main/bigbook.png" alt="">
+                <div class="library-series-info">
+                    <div class="library-series-name">${s.name}</div>
+                    <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }, () => {
+        document.getElementById('lib-series-grid').innerHTML =
+            '<p style="color:#ff8888;">Could not load <em>sources/journal.json</em>.</p>';
+    });
 }
 
-function showJournalEntry(i) {
-    jIdx = i;
-    const e = jEntries[i];
-    document.getElementById('journal-entry-title').textContent = e.title;
-    setHTML('journal-entry-body', e.body.split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join(''));
-    document.querySelectorAll('.journal-tab').forEach((b,j) => b.classList.toggle('active', j===i));
-    document.getElementById('journal-prev').disabled = i===0;
-    document.getElementById('journal-next').disabled = i===jEntries.length-1;
+function libOpenSeries(si) {
+    libCurrentSeries = si;
+    const entries = LIB_SERIES[si].entries || [];
+
+    /* Switch to reader view */
+    document.getElementById('lib-shelf-view').style.display  = 'none';
+    document.getElementById('lib-reader-view').style.display = 'block';
+
+    /* Header */
+    document.getElementById('lib-series-title').textContent = LIB_SERIES[si].name;
+
+    /* Build book shelf */
+    const shelf = document.getElementById('lib-book-shelf');
+    shelf.innerHTML = entries.map((e, i) =>
+        `<button class="lib-book-btn${i===0?' active':''}"
+                 title="${e.title}"
+                 onclick="libShowChapter(${i})"
+                 id="lib-book-${i}">
+            <img src="img/main/book.png" alt="Chapter ${i+1}">
+         </button>`
+    ).join('');
+
+    libCurrentIdx = 0;
+    libShowChapter(0);
 }
 
-function journalStep(dir) {
-    const n = jIdx + dir;
-    if (n >= 0 && n < jEntries.length) showJournalEntry(n);
+function libShowChapter(i) {
+    const entries = LIB_SERIES[libCurrentSeries]?.entries || [];
+    if (!entries.length) return;
+    libCurrentIdx = i;
+    const e = entries[i];
+
+    document.getElementById('lib-chapter-title').textContent = e.title;
+    setHTML('lib-chapter-body',
+        e.body.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join('')
+    );
+
+    /* Highlight active book */
+    document.querySelectorAll('.lib-book-btn').forEach((b, j) =>
+        b.classList.toggle('active', j === i)
+    );
+
+    /* Arrow state */
+    document.getElementById('lib-prev').disabled = i === 0;
+    document.getElementById('lib-next').disabled = i === entries.length - 1;
 }
 
-/* --- Page switching --- */
+document.getElementById('lib-prev').addEventListener('click', () => {
+    const n = libCurrentIdx - 1;
+    if (n >= 0) libShowChapter(n);
+});
+document.getElementById('lib-next').addEventListener('click', () => {
+    const entries = LIB_SERIES[libCurrentSeries]?.entries || [];
+    const n = libCurrentIdx + 1;
+    if (n < entries.length) libShowChapter(n);
+});
+
+function libShowShelf() {
+    document.getElementById('lib-shelf-view').style.display  = 'block';
+    document.getElementById('lib-reader-view').style.display = 'none';
+}
+
+/* ════════════════════════════════════════
+   Page switching
+   ════════════════════════════════════════ */
 function showPage(pageId, pushHistory=true) {
     document.querySelector('.page.active')?.classList.remove('active');
     document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
@@ -208,7 +459,7 @@ function showPage(pageId, pushHistory=true) {
     if (pageId==='codex')     loadCodex();
     if (pageId==='ranks')     loadRanks();
     if (pageId==='members')   loadMembers();
-    if (pageId==='journal')   initJournal();
+    if (pageId==='library')   initLibrary();
     if (pushHistory) try { history.pushState({page:pageId},'','/#'+pageId); } catch(e){}
 }
 
