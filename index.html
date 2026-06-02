@@ -31,14 +31,12 @@
 
             <!-- Series reader view (hidden until a series is chosen) -->
             <div id="lib-reader-view" style="display:none;">
-                <a class="char-back" onclick="libShowShelf(); return false;">&#8592; Return to the Library</a>
+                <a class="char-back" onclick="libShowShelf(); return false;">Return to the Library</a>
                 <div class="lib-reader">
                     <div>
                         <div class="char-name" id="lib-series-title"></div>
                         <div class="char-meta" style="padding-bottom:.9em;border-bottom:1px solid rgba(255,255,255,.15);">
                             <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
-                            <span class="char-rank" id="lib-series-meta-name"></span>
-                            <span class="char-separator">·</span>
                             <span class="char-order">The Library</span>
                         </div>
                     </div>
@@ -239,7 +237,6 @@ function libOpenSeries(si, pushHistory=true) {
 
     /* Header */
     document.getElementById('lib-series-title').textContent = LIB_SERIES[si].name;
-    document.getElementById('lib-series-meta-name').textContent = LIB_SERIES[si].name;
 
     /* Build book shelf */
     const shelf = document.getElementById('lib-book-shelf');
