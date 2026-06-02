@@ -850,7 +850,8 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     gap: 1.1em;
 }
 
-.lib-reader-bigbook {
+.lib-reader-bigbook,
+.lib-series-bigbook {
     width: 109px;
     height: auto;
     flex-shrink: 0;
