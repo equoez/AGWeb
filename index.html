@@ -322,27 +322,17 @@ function libOpenSeries(si, pushHistory=true) {
 
     /* Build book shelf */
     const shelf = document.getElementById('lib-book-shelf');
-    const BOOK_IMGS = [
-        'img/main/book_black.png',
-        'img/main/book_brown.png',
-        'img/main/book_dark_brown.png',
-        'img/main/book_green.png',
-        'img/main/book_red.png',
-    ];
-    /* Shuffle a fixed sequence per series so it looks varied but stays stable */
-    const bookSeq = entries.map((_, i) => BOOK_IMGS[i % BOOK_IMGS.length]);
-    for (let i = bookSeq.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [bookSeq[i], bookSeq[j]] = [bookSeq[j], bookSeq[i]];
-    }
-    shelf.innerHTML = entries.map((e, i) =>
-        `<button class="lib-book-btn${i===0?' active':''}"
+    const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X',
+                    'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX'];
+    shelf.innerHTML = entries.map((e, i) => {
+        const num = ROMAN[Math.min(i, 19)];
+        return `<button class="lib-book-btn${i===0?' active':''}"
                  title="${e.title}"
                  onclick="libShowChapter(${i})"
                  id="lib-book-${i}">
-            <img src="${bookSeq[i]}" alt="Chapter ${i+1}">
-         </button>`
-    ).join('');
+            <img src="img/main/book_${num}.png" alt="Chapter ${i+1}">
+         </button>`;
+    }).join('');
 
     libCurrentIdx = 0;
     libShowChapter(0);
