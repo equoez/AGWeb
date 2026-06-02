@@ -8,37 +8,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* ── Library: series grid ── */
-        /* .library-series-item shares layout with .codex-item */
-        .library-series-item {
-            display: flex;
-            align-items: center;
-            gap: 1em;
-            padding: .75em .5em;
-            border-bottom: 1px solid rgba(255, 210, 122, 0.08);
-            cursor: pointer;
-            transition: background var(--transition-fast);
-            border-radius: 4px;
-        }
-        .library-series-item:last-child { border-bottom: none; }
-        .library-series-item:hover { background: rgba(255, 210, 122, 0.06); }
-
-        .library-series-icon {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-            flex-shrink: 0;
-            image-rendering: pixelated;
-        }
-        .library-series-info { display: flex; flex-direction: column; gap: .2em; }
-
-        /* reuses .codex-item strong styling for the name */
-        .library-series-name {
-            font-family: var(--font-display);
-            font-size: 0.95rem;
-            letter-spacing: 0.03em;
-            color: var(--color-gold-light);
-        }
+        /* ── Library: series grid — uses codex-item/codex-icon from styles.css ── */
+        .library-series-item { cursor: pointer; }
         .library-series-count {
             font-family: var(--font-body);
             font-size: 0.82em;
@@ -147,7 +118,7 @@
             <div id="lib-shelf-view">
                 <h2>The Library</h2>
                 <p class="library-intro">Tomes, chronicles and records kept within the fortress archive.</p>
-                <div class="library-grid" id="lib-series-grid"></div>
+                <div id="lib-series-grid"></div>
             </div>
 
             <!-- Series reader view (hidden until a series is chosen) -->
@@ -332,16 +303,18 @@ function initLibrary() {
     json('sources/journal.json', data => {
         LIB_SERIES = data;
         const grid = document.getElementById('lib-series-grid');
-        grid.innerHTML = LIB_SERIES.map((s, si) => {
-            const count = s.entries.length;
-            return `<div class="library-series-item" onclick="libOpenSeries(${si})">
-                <img class="library-series-icon" src="img/main/bigbook.png" alt="">
-                <div class="library-series-info">
-                    <div class="library-series-name">${s.name}</div>
-                    <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
-                </div>
-            </div>`;
-        }).join('');
+        grid.innerHTML = '<div class="section">'
+            + LIB_SERIES.map((s, si) => {
+                const count = s.entries.length;
+                return `<div class="codex-item library-series-item" onclick="libOpenSeries(${si})">
+                    <img src="img/main/bigbook.png" class="codex-icon" alt="" style="width:32px;height:32px;margin-top:2px;">
+                    <div>
+                        <strong>${s.name}</strong>
+                        <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
+                    </div>
+                </div>`;
+            }).join('')
+            + '</div>';
     }, () => {
         document.getElementById('lib-series-grid').innerHTML =
             '<p style="color:#ff8888;">Could not load <em>sources/journal.json</em>.</p>';
@@ -370,12 +343,25 @@ function libOpenSeries(si, pushHistory=true) {
 
     /* Build book shelf */
     const shelf = document.getElementById('lib-book-shelf');
+    const BOOK_IMGS = [
+        'img/main/book_black.png',
+        'img/main/book_brown.png',
+        'img/main/book_dark_brown.png',
+        'img/main/book_green.png',
+        'img/main/book_red.png',
+    ];
+    /* Shuffle a fixed sequence per series so it looks varied but stays stable */
+    const bookSeq = entries.map((_, i) => BOOK_IMGS[i % BOOK_IMGS.length]);
+    for (let i = bookSeq.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bookSeq[i], bookSeq[j]] = [bookSeq[j], bookSeq[i]];
+    }
     shelf.innerHTML = entries.map((e, i) =>
         `<button class="lib-book-btn${i===0?' active':''}"
                  title="${e.title}"
                  onclick="libShowChapter(${i})"
                  id="lib-book-${i}">
-            <img src="img/main/book.png" alt="Chapter ${i+1}">
+            <img src="${bookSeq[i]}" alt="Chapter ${i+1}">
             <span class="lib-book-label">${toRoman(i+1)}</span>
          </button>`
     ).join('');
