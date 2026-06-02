@@ -48,21 +48,9 @@
             transition: transform .15s;
         }
         .lib-book-btn img {
-            width: 83px;
-            height: auto;
             display: block;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
             filter: brightness(.75);
             transition: filter .15s;
-            transform: scale(0.5);
-            transform-origin: top left;
-        }
-        /* compensate layout space taken by unscaled image */
-        .lib-book-btn {
-            width: 41px;
-            height: 37px;
-            overflow: visible;
         }
         .lib-book-btn:hover img { filter: brightness(1); }
         .lib-book-btn.active img {
