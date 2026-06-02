@@ -20,11 +20,9 @@
         /* ── Library: series reader ── */
         .lib-reader { display: flex; flex-direction: column; gap: 1.1em; }
 
-        /* reuses .char-badge sizing */
         .lib-reader-bigbook {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
+            width: 52px;
+            height: auto;
             flex-shrink: 0;
             image-rendering: pixelated;
             filter: drop-shadow(0 1px 4px rgba(0,0,0,.5));
@@ -115,7 +113,7 @@
                     <div>
                         <div class="char-name" id="lib-series-title"></div>
                         <div class="char-meta" style="padding-bottom:.9em;border-bottom:1px solid rgba(255,255,255,.15);">
-                            <img class="lib-reader-bigbook char-badge" src="img/main/bigbook.png" alt="">
+                            <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
                             <span class="char-rank" id="lib-series-meta-name"></span>
                             <span class="char-separator">·</span>
                             <span class="char-order">The Library</span>
@@ -294,7 +292,7 @@ function initLibrary() {
             + LIB_SERIES.map((s, si) => {
                 const count = s.entries.length;
                 return `<div class="codex-item library-series-item" onclick="libOpenSeries(${si})">
-                    <img src="img/main/bigbook.png" class="codex-icon" alt="" style="width:32px;height:32px;margin-top:2px;">
+                    <img src="img/main/bigbook.png" class="codex-icon" alt="" style="width:48px;height:auto;margin-top:2px;">
                     <div>
                         <strong>${s.name}</strong>
                         <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
