@@ -21,7 +21,7 @@
         .lib-reader { display: flex; flex-direction: column; gap: 1.1em; }
 
         .lib-reader-bigbook {
-            width: 52px;
+            width: 109px;
             height: auto;
             flex-shrink: 0;
             image-rendering: crisp-edges;
@@ -295,7 +295,7 @@ function initLibrary() {
             + LIB_SERIES.map((s, si) => {
                 const count = s.entries.length;
                 return `<div class="codex-item library-series-item" onclick="libOpenSeries(${si})">
-                    <img src="img/main/bigbook.png" class="codex-icon" alt="" style="width:48px;height:auto;margin-top:2px;">
+                    <img src="img/main/bigbook.png" class="codex-icon" alt="" style="width:109px;height:auto;margin-top:2px;image-rendering:crisp-edges;image-rendering:pixelated;">
                     <div>
                         <strong>${s.name}</strong>
                         <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
