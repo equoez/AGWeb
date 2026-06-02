@@ -821,3 +821,105 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 
     .char-name { font-size: 1.55rem; }
 }
+
+/* ============================================================
+   Library
+   ============================================================ */
+
+/* ── Series grid ── */
+.library-intro {
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.library-series-item { cursor: pointer; }
+
+.library-series-count {
+    font-family: var(--font-body);
+    font-size: 0.82em;
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+/* ── Series reader ── */
+.lib-reader {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+}
+
+.lib-reader-bigbook {
+    width: 109px;
+    height: auto;
+    flex-shrink: 0;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* ── Book shelf ── */
+.lib-shelf {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55em;
+    align-items: flex-end;
+    padding: 0.6em 0;
+}
+
+.lib-book-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 4px;
+    position: relative;
+    display: inline-block;
+    transition: transform var(--transition-fast);
+}
+
+.lib-book-btn img {
+    width: 80px;
+    height: auto;
+    display: block;
+    filter: brightness(0.85);
+    transition: filter var(--transition-fast);
+}
+
+.lib-book-btn:hover img { filter: brightness(1); }
+
+.lib-book-btn.active img {
+    filter: brightness(1.15) drop-shadow(0 0 5px rgba(255, 210, 122, 0.7));
+}
+
+.lib-book-btn:hover  { transform: translateY(-3px); }
+.lib-book-btn.active { transform: translateY(-4px); }
+
+/* ── Arrow navigation ── */
+.lib-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.lib-arrow-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    flex-shrink: 0;
+    transition: transform 0.1s, opacity 0.1s;
+}
+
+.lib-arrow-btn img {
+    width: 36px;
+    height: auto;
+    display: block;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+.lib-arrow-btn:disabled { opacity: 0.25; cursor: default; }
+.lib-arrow-btn:not(:disabled):hover  { transform: scale(1.12); }
+.lib-arrow-btn:not(:disabled):active { transform: scale(0.95); }
