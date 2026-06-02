@@ -62,16 +62,16 @@
         .lib-book-btn:hover  { transform: translateY(-3px); }
         .lib-book-btn.active { transform: translateY(-4px); }
 
-        /* roman numeral label — uses site font vars */
+        /* roman numeral label — perspective-matched to book angle */
         .lib-book-label {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 10px;
+            top: 36%;
+            left: 42%;
+            transform: translate(-50%, -50%) rotate(-8deg) skewX(-10deg) scaleX(0.78);
+            font-size: 9px;
             font-family: var(--font-body);
             color: var(--color-text);
-            text-shadow: 0 1px 3px rgba(0,0,0,.95);
+            text-shadow: 0 1px 2px rgba(0,0,0,.95);
             pointer-events: none;
             white-space: nowrap;
             letter-spacing: .03em;
