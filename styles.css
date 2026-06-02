@@ -914,11 +914,10 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 }
 
 .lib-arrow-btn img {
-    width: 36px;
-    height: auto;
+    width: auto;
+    height: 48px;
     display: block;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
+    image-rendering: auto;
 }
 
 .lib-arrow-btn:disabled { opacity: 0.25; cursor: default; }
