@@ -247,11 +247,12 @@ function libOpenSeries(si, pushHistory=true) {
                     'XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX'];
     shelf.innerHTML = entries.map((e, i) => {
         const num = ROMAN[Math.min(i, 19)];
+        /* Change 'testbook.png' to 'book_${num}.png' once all 20 books are generated */
         return `<button class="lib-book-btn${i===0?' active':''}"
                  title="${e.title}"
                  onclick="libShowChapter(${i})"
                  id="lib-book-${i}">
-            <img src="img/main/book_${num}.png" alt="Chapter ${i+1}">
+            <img src="img/main/testbook.png" alt="Chapter ${i+1}">
          </button>`;
     }).join('');
 
