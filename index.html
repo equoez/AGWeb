@@ -275,12 +275,11 @@ function libOpenSeries(si, pushHistory = true) {
     const shelf = document.getElementById('lib-book-shelf');
     shelf.innerHTML = entries.map((e, i) => {
         const num = ROMAN[Math.min(i, 19)];
-        /* TODO: swap 'testbook.png' → 'book_${num}.png' once all 20 books are ready */
         return `<button class="lib-book-btn${i === 0 ? ' active' : ''}"
                         title="${e.title}"
                         onclick="libShowChapter(${i})"
                         id="lib-book-${i}">
-                    <img src="img/main/testbook.png" alt="Chapter ${i + 1}">
+                    <img src="img/main/${num}.png" alt="Chapter ${i + 1}">
                 </button>`;
     }).join('');
 
