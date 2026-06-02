@@ -62,20 +62,7 @@
         .lib-book-btn:hover  { transform: translateY(-3px); }
         .lib-book-btn.active { transform: translateY(-4px); }
 
-        /* roman numeral label — perspective-matched to book angle */
-        .lib-book-label {
-            position: absolute;
-            top: 44%;
-            left: 46%;
-            transform: translate(-50%, -50%) rotate(-14deg) skewX(-16deg) scaleX(0.7);
-            font-size: 9px;
-            font-family: var(--font-body);
-            color: var(--color-text);
-            text-shadow: 0 1px 2px rgba(0,0,0,.95);
-            pointer-events: none;
-            white-space: nowrap;
-            letter-spacing: .03em;
-        }
+
 
         /* ── Arrow navigation ── */
         .lib-nav { display: flex; align-items: center; gap: .5em; }
@@ -321,14 +308,6 @@ function initLibrary() {
     });
 }
 
-function toRoman(n) {
-    const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
-    const syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
-    let r = '';
-    for (let i = 0; i < vals.length; i++) { while (n >= vals[i]) { r += syms[i]; n -= vals[i]; } }
-    return r;
-}
-
 function libOpenSeries(si, pushHistory=true) {
     libCurrentSeries = si;
     const entries = LIB_SERIES[si].entries || [];
@@ -362,7 +341,6 @@ function libOpenSeries(si, pushHistory=true) {
                  onclick="libShowChapter(${i})"
                  id="lib-book-${i}">
             <img src="${bookSeq[i]}" alt="Chapter ${i+1}">
-            <span class="lib-book-label">${toRoman(i+1)}</span>
          </button>`
     ).join('');
 
