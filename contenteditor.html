@@ -839,7 +839,7 @@ function buildDipCard(d, i) {
             <div class="field-row">
                 <div class="field" style="flex:1;min-width:200px;">
                     <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional, defaults to img/main/I.png)</span></label>
-                    <input type="text" placeholder="img/main/I.png" value="${esc(d.image||'')}"
+                    <input type="text" placeholder="img/main/scroll.png" value="${esc(d.image||'')}"
                         oninput="dipDocs[${i}].image=this.value"
                         onmouseenter="this.closest('.series-card').draggable=false"
                         onmouseleave="this.closest('.series-card').draggable=true">
