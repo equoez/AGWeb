@@ -64,7 +64,6 @@
             <!-- Document list -->
             <div id="dip-shelf-view">
                 <h2>Diplomacy</h2>
-                <p class="library-intro">Accords, treaties and pacts forged by the Order.</p>
                 <div id="dip-doc-grid"></div>
             </div>
 
@@ -75,7 +74,7 @@
                     <div class="char-header">
                         <div class="char-name" id="dip-article-title"></div>
                         <div class="char-meta">
-                            <img class="lib-reader-bigbook" src="img/main/I.png" alt="">
+                            <img class="lib-reader-bigbook" src="img/main/scroll.png" alt="">
                             <span class="dip-category-badge" id="dip-article-category"></span>
                         </div>
                     </div>
@@ -357,7 +356,7 @@ document.getElementById('lib-next').addEventListener('click', () => {
        {
          "title": "The Silver Compact",
          "category": "Treaty",
-         "image": "img/main/I.png",   ← optional; falls back to I.png
+         "image": "img/main/scroll.png",   ← optional; falls back to scroll.png
          "body": "Full article text…\n\nParagraphs separated by blank lines."
        },
        …
@@ -392,7 +391,7 @@ function initDiplomacy() {
                 <div class="section">
                     ${items.map(({ doc, idx }) =>
                         `<div class="codex-item library-series-item" onclick="dipOpenDoc(${idx})">
-                            <img src="${doc.image || 'img/main/I.png'}" class="dip-doc-thumb codex-icon" alt="">
+                            <img src="${doc.image || 'img/main/scroll.png'}" class="dip-doc-thumb codex-icon" alt="">
                             <div>
                                 <strong>${doc.title}</strong>
                                 <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
@@ -430,7 +429,7 @@ function dipOpenDoc(idx) {
 
     /* Swap thumbnail image in the header */
     const bigImg = document.querySelector('#dip-article-view .lib-reader-bigbook');
-    if (bigImg) bigImg.src = doc.image || 'img/main/I.png';
+    if (bigImg) bigImg.src = doc.image || 'img/main/scroll.png';
 
     document.getElementById('dip-shelf-view').style.display   = 'none';
     document.getElementById('dip-article-view').style.display = 'block';
