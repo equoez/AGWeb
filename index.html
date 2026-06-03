@@ -75,7 +75,7 @@
                     <div class="char-header">
                         <div class="char-name" id="dip-article-title"></div>
                         <div class="char-meta">
-                            <img class="lib-reader-bigbook" src="img/main/scroll.png" alt="">
+                            <img class="lib-reader-bigbook dip-reader-quill" src="img/main/quill.png" alt="">
                             <span class="dip-category-badge" id="dip-article-category"></span>
                         </div>
                     </div>
@@ -417,7 +417,7 @@ function dipOpenDoc(idx) {
 
     /* Swap thumbnail image in the header */
     const bigImg = document.querySelector('#dip-article-view .lib-reader-bigbook');
-    if (bigImg) bigImg.src = doc.image || 'img/main/scroll.png';
+    if (bigImg) bigImg.src = doc.image || 'img/main/quill.png';
 
     document.getElementById('dip-shelf-view').style.display   = 'none';
     document.getElementById('dip-article-view').style.display = 'block';
