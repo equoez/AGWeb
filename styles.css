@@ -330,8 +330,8 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 }
 
 .codex-icon {
-    width: 22px;
-    height: 22px;
+    width: 44px;
+    height: 44px;
     margin-top: 3px;
     opacity: 0.9;
     flex-shrink: 0;
