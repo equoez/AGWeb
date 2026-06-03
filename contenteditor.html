@@ -17,6 +17,8 @@
         }
         body { padding-bottom: 80px; }
         .editor-wrap { width: 720px; max-width: 96vw; }
+        /* Override shared .content-box fixed width so the panel fills (and centers in) the wrap */
+        .editor-wrap .content-box { width: 100%; }
 
         /* ── Header ── */
         .editor-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid rgba(255,210,122,0.15); }
@@ -160,7 +162,7 @@
 <body>
 <div class="bg-fixed"></div>
 <div class="container">
-    <img src="img/main/AGlogo.png" alt="Argent Gryphon crest" class="logo">
+    <img src="img/main/AGlogo.webp" alt="Argent Gryphon crest" class="logo">
     <div class="editor-wrap">
         <div class="content-box">
 
@@ -176,7 +178,7 @@
             <div class="page-picker" id="page-picker"></div>
 
             <div class="load-bar">
-                <button class="btn btn-sm" onclick="fetchLive()">&#8635; Reload from site</button>
+                <button class="btn btn-sm" onclick="reloadFromSite()">&#8635; Reload from site</button>
                 <label class="btn btn-sm" style="cursor:pointer;">&#8599; Load from file<input type="file" id="file-input" accept=".json" style="display:none"></label>
                 <p id="load-status"></p>
             </div>
@@ -281,6 +283,24 @@ let currentPage  = PAGES_CONFIG[0];
 let codexItems   = [], rankItems = [], characters = [], libSeries = [], dipDocs = [];
 let codexDrag    = null, rankDrag = null, charDrag = null;
 
+/* ── Unsaved-changes tracking ──
+   Any edit inside an editor panel marks the page dirty. Cleared once data is
+   (re)loaded from a file/site. Guards tab-switching and page unload so in-memory
+   edits aren't silently overwritten or lost. */
+let dirty = false;
+const markDirty = () => { dirty = true; };
+document.addEventListener('input', e => {
+    if (e.target.closest('.editor-panel')) markDirty();
+});
+/* Drag-reordering changes data without firing input events */
+document.addEventListener('drop', e => {
+    if (e.target.closest('.editor-panel')) markDirty();
+}, true);
+/* Last line of defence: warn before closing/reloading with unsaved edits */
+window.addEventListener('beforeunload', e => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
 /* ═══════════════════════════════════════════
    TAB PICKER
 ═══════════════════════════════════════════ */
@@ -294,6 +314,10 @@ PAGES_CONFIG.forEach(p => {
 });
 
 function switchPage(p) {
+    if (p !== currentPage && dirty &&
+        !confirm('You have unsaved edits on this tab that haven\'t been copied out. Switching tabs will reload this page from the site and discard them. Continue?')) {
+        return;
+    }
     currentPage = p;
     picker.querySelectorAll('.page-tab').forEach((b,i)=>b.classList.toggle('active',PAGES_CONFIG[i]===p));
     document.querySelectorAll('.editor-panel').forEach(el=>el.classList.remove('active'));
@@ -387,6 +411,7 @@ function loadData(data) {
         renderDipDocs();
     }
     generateOutput();
+    dirty = false;
 }
 
 /* ═══════════════════════════════════════════
@@ -838,8 +863,8 @@ function buildDipCard(d, i) {
             </div>
             <div class="field-row">
                 <div class="field" style="flex:1;min-width:200px;">
-                    <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional, defaults to img/main/I.png)</span></label>
-                    <input type="text" placeholder="img/main/scroll.png" value="${esc(d.image||'')}"
+                    <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional, defaults to img/main/diplomacy_treaties_parchment.png)</span></label>
+                    <input type="text" placeholder="img/main/diplomacy_treaties_parchment.png" value="${esc(d.image||'')}"
                         oninput="dipDocs[${i}].image=this.value"
                         onmouseenter="this.closest('.series-card').draggable=false"
                         onmouseleave="this.closest('.series-card').draggable=true">
@@ -928,18 +953,27 @@ function copyOutput() {
 
 document.getElementById('file-input').addEventListener('change', function() {
     const file=this.files[0]; if(!file) return;
+    if (dirty && !confirm('Loading a file will discard your current unsaved edits. Continue?')) { this.value=''; return; }
     const r=new FileReader();
     r.onload=e=>{try{loadData(JSON.parse(e.target.result));}catch{alert('Invalid JSON file.');}};
     r.readAsText(file); this.value='';
 });
 
+/* Manual "Reload from site" — confirm first if there are unsaved edits.
+   (Automatic reloads via switchPage are already guarded there, so this wrapper
+   is only used by the button to avoid a double prompt.) */
+function reloadFromSite() {
+    if (dirty && !confirm('Reloading from the site will discard your current unsaved edits. Continue?')) return;
+    fetchLive();
+}
+
 function fetchLive() {
     const status=document.getElementById('load-status');
     status.textContent='Loading…'; status.style.color='';
     fetch('sources/'+currentPage.file+'?nocache='+Date.now())
-        .then(r=>{if(!r.ok) throw 0; return r.json();})
+        .then(r=>{if(!r.ok) throw new Error(`${r.status} ${r.statusText}`); return r.json();})
         .then(data=>{loadData(data);status.textContent='Loaded ✓';status.style.color='var(--color-success)';})
-        .catch(()=>{status.textContent='Could not load — use "Load from file".';status.style.color='var(--color-danger)';});
+        .catch(err=>{console.error('Reload failed:',err);status.textContent='Could not load — use "Load from file".';status.style.color='var(--color-danger)';});
 }
 
 /* ── Init ── */
