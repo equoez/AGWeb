@@ -381,7 +381,7 @@ function initDiplomacy() {
         grid.innerHTML = '<div class="section">'
             + DIP_DOCS.map((doc, idx) =>
                 `<div class="codex-item library-series-item" onclick="dipOpenDoc(${idx})">
-                    <img src="${doc.image || 'img/main/scroll.png'}" class="dip-doc-thumb codex-icon" alt="">
+                    <img src="${doc.image || 'img/main/scroll.png'}" class="dip-doc-thumb" alt="">
                     <div>
                         <strong>${doc.title}</strong>
                         <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
