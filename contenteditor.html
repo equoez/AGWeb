@@ -133,6 +133,7 @@
         .series-head.open .card-chevron { transform:rotate(180deg); }
         .series-head-title { font-family:var(--font-display); font-size:0.95rem; color:var(--color-gold); font-weight:700; letter-spacing:0.04em; flex:1; min-width:0; }
         .series-head-count { font-family:var(--font-display); font-size:11px; color:var(--color-gold-dim); }
+        .dip-cat-badge { font-family:var(--font-display); font-size:10px; letter-spacing:0.05em; padding:2px 9px; border-radius:4px; border:1px solid rgba(255,210,122,0.2); background:rgba(255,210,122,0.06); color:var(--color-gold-dim); }
         .series-body { display:none; padding:14px 16px 18px; border-top:1px solid rgba(255,210,122,0.1); }
         .series-body.open { display:block; }
         .series-name-row { display:flex; gap:10px; align-items:center; margin-bottom:16px; }
@@ -229,6 +230,12 @@
                 <div class="add-row"><button class="btn" onclick="addSeries()">+ Add series</button></div>
             </div>
 
+            <!-- ── Diplomacy ── -->
+            <div class="editor-panel" id="panel-diplomacy">
+                <div id="dip-docs-list"></div>
+                <div class="add-row"><button class="btn" onclick="addDipDoc()">+ Add document</button></div>
+            </div>
+
             <!-- ── Output ── -->
             <div class="output-section">
                 <div class="output-header">
@@ -253,7 +260,7 @@
 const PAGES_CONFIG = [
     { id:'homepage',   file:'homepage.json',   label:'Home',       mode:'simple'     },
     { id:'enlist',     file:'enlist.json',      label:'Enlist',     mode:'simple'     },
-    { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'simple'     },
+    { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'diplomacy'  },
     { id:'decree',     file:'decree.json',      label:'Decree',     mode:'simple'     },
     { id:'codex',      file:'codex.json',       label:'Codex',      mode:'codex'      },
     { id:'ranks',      file:'ranks.json',       label:'Ranks',      mode:'ranks'      },
@@ -271,7 +278,7 @@ const badgeSrc  = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge
 const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 let currentPage  = PAGES_CONFIG[0];
-let codexItems   = [], rankItems = [], characters = [], libSeries = [];
+let codexItems   = [], rankItems = [], characters = [], libSeries = [], dipDocs = [];
 let codexDrag    = null, rankDrag = null, charDrag = null;
 
 /* ═══════════════════════════════════════════
@@ -373,6 +380,11 @@ function loadData(data) {
             ? data.map(s => ({ name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) }))
             : [];
         renderSeries();
+    } else if (m==='diplomacy') {
+        dipDocs = Array.isArray(data)
+            ? data.map(d => ({...d}))
+            : [];
+        renderDipDocs();
     }
     generateOutput();
 }
@@ -408,6 +420,18 @@ function generateOutput() {
             name: s.name || '',
             entries: (s.entries||[]).map(e => ({ title: e.title||'', body: e.body||'' }))
         }));
+    } else if (m==='diplomacy') {
+        dipDocs.forEach((d, i) => {
+            const el = document.getElementById(`rte-dip-${i}`);
+            if (el) d.body = el.innerHTML;
+        });
+        out = dipDocs.map(d => {
+            const obj = { title: d.title||'', category: d.category||'' };
+            if (d.image)       obj.image       = d.image;
+            if (d.description) obj.description = d.description;
+            obj.body = d.body || '';
+            return obj;
+        });
     }
     document.getElementById('output-box').textContent = JSON.stringify(out,null,2);
 }
@@ -744,6 +768,141 @@ function refreshSeriesCount(si) {
     const card = document.querySelector(`.series-card[data-si="${si}"]`); if (!card) return;
     const count = libSeries[si].entries.length;
     card.querySelector('.series-head-count').textContent = `${count} ${count===1?'entry':'entries'}`;
+}
+
+/* ═══════════════════════════════════════════
+   DIPLOMACY — DOCUMENTS
+═══════════════════════════════════════════ */
+let dipDragIdx = null;
+
+const DIP_CATEGORIES = ['Treaty','Pact','Alliance','Accord','Declaration','Agreement'];
+
+function renderDipDocs() {
+    const list = document.getElementById('dip-docs-list');
+    if (!dipDocs.length) { list.innerHTML = '<div class="empty-state">No documents yet.</div>'; return; }
+    list.innerHTML = '';
+    dipDocs.forEach((d, i) => list.appendChild(buildDipCard(d, i)));
+}
+
+function buildDipCard(d, i) {
+    const card = document.createElement('div');
+    card.className = 'series-card';
+    card.dataset.di = i;
+    card.draggable = true;
+    card.addEventListener('dragstart', e => { dipDragIdx = i; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+        e.preventDefault(); card.classList.remove('drag-over');
+        if (dipDragIdx !== null && dipDragIdx !== i) {
+            const t = dipDocs[dipDragIdx]; dipDocs.splice(dipDragIdx,1); dipDocs.splice(i,0,t);
+            renderDipDocs();
+        }
+    });
+
+    const catOptions = DIP_CATEGORIES.map(c =>
+        `<option value="${c}"${(d.category||'')=== c?' selected':''}>${c}</option>`
+    ).join('');
+    const otherSelected = d.category && !DIP_CATEGORIES.includes(d.category);
+    const bodyHtml = bodyToHtml(d.body);
+
+    card.innerHTML = `
+        <div class="series-head" onclick="toggleSeriesCard(this)">
+            <span class="drag-handle" onmouseenter="this.closest('.series-card').draggable=true">&#8942;&#8942;</span>
+            <div class="series-head-title">${esc(d.title) || '<em style="opacity:0.4">Untitled Document</em>'}</div>
+            <span class="series-head-count dip-cat-badge">${esc(d.category)||'—'}</span>
+            <span class="card-chevron">&#8964;</span>
+        </div>
+        <div class="series-body">
+            <div class="field-row" style="margin-top:4px;">
+                <div class="field" style="flex:2;min-width:200px;">
+                    <label>Title</label>
+                    <input type="text" value="${esc(d.title||'')}"
+                        oninput="dipDocs[${i}].title=this.value;refreshDipHead(${i})"
+                        onmouseenter="this.closest('.series-card').draggable=false"
+                        onmouseleave="this.closest('.series-card').draggable=true">
+                </div>
+                <div class="field" style="flex:0 0 160px;">
+                    <label>Category</label>
+                    <select onchange="dipDocs[${i}].category=this.value;refreshDipHead(${i});toggleDipCustomCat(${i},this.value)">
+                        ${catOptions}
+                        <option value="__custom__"${otherSelected?' selected':''}>Other…</option>
+                    </select>
+                </div>
+                <div class="field dip-custom-cat-field" id="dip-custom-cat-${i}" style="flex:0 0 160px;${otherSelected?'':'display:none;'}">
+                    <label>Custom category</label>
+                    <input type="text" value="${otherSelected?esc(d.category||''):''}" placeholder="e.g. Edict"
+                        oninput="dipDocs[${i}].category=this.value;refreshDipHead(${i})">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field" style="flex:1;min-width:200px;">
+                    <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional, defaults to img/main/I.png)</span></label>
+                    <input type="text" placeholder="img/main/I.png" value="${esc(d.image||'')}"
+                        oninput="dipDocs[${i}].image=this.value"
+                        onmouseenter="this.closest('.series-card').draggable=false"
+                        onmouseleave="this.closest('.series-card').draggable=true">
+                </div>
+            </div>
+            <div class="field" style="margin-top:8px;">
+                <label>Description <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional intro line shown in italics)</span></label>
+                <input type="text" value="${esc(d.description||'')}"
+                    oninput="dipDocs[${i}].description=this.value"
+                    onmouseenter="this.closest('.series-card').draggable=false"
+                    onmouseleave="this.closest('.series-card').draggable=true">
+            </div>
+            <div class="rte-wrap" style="margin-top:14px;">
+                <label class="rte-label">Body</label>
+                <div class="rte-toolbar" id="rte-dip-${i}-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                    <div class="rte-btn-sep"></div>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','underline')"><u>U</u></button>
+                </div>
+                <div class="rte-editor" id="rte-dip-${i}" contenteditable="true"
+                    oninput="dipDocs[${i}].body=this.innerHTML"
+                    onkeyup="updateToolbarById('rte-dip-${i}-toolbar')"
+                    onmouseup="updateToolbarById('rte-dip-${i}-toolbar')"
+                    onmouseenter="this.closest('.series-card').draggable=false"
+                    onmouseleave="this.closest('.series-card').draggable=true"
+                >${bodyHtml}</div>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+                <button class="btn btn-danger btn-xs"
+                    onclick="if(confirm('Remove this document?')){dipDocs.splice(${i},1);renderDipDocs();}">
+                    Remove document
+                </button>
+            </div>
+        </div>
+    `;
+    return card;
+}
+
+function refreshDipHead(i) {
+    const card = document.querySelector(`.series-card[data-di="${i}"]`); if (!card) return;
+    const d = dipDocs[i];
+    card.querySelector('.series-head-title').innerHTML = d.title ? esc(d.title) : '<em style="opacity:0.4">Untitled Document</em>';
+    card.querySelector('.dip-cat-badge').textContent = d.category || '—';
+}
+
+function toggleDipCustomCat(i, val) {
+    const field = document.getElementById(`dip-custom-cat-${i}`);
+    if (!field) return;
+    field.style.display = val === '__custom__' ? '' : 'none';
+    if (val !== '__custom__') dipDocs[i].category = val;
+    else dipDocs[i].category = field.querySelector('input').value;
+}
+
+function addDipDoc() {
+    dipDocs.push({ title: '', category: 'Treaty', image: '', description: '', body: '' });
+    renderDipDocs();
+    setTimeout(() => {
+        const cards = document.querySelectorAll('#dip-docs-list .series-card');
+        const last = cards[cards.length - 1];
+        if (last) { toggleSeriesCard(last.querySelector('.series-head')); last.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    }, 50);
 }
 
 /* ═══════════════════════════════════════════
