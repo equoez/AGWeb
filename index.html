@@ -64,6 +64,7 @@
             <!-- Document list -->
             <div id="dip-shelf-view">
                 <h2>Diplomacy</h2>
+                <p class="library-intro">Accords, treaties and pacts forged by the Order.</p>
                 <div id="dip-doc-grid"></div>
             </div>
 
@@ -377,30 +378,17 @@ function initDiplomacy() {
             return;
         }
 
-        /* Group by category */
-        const groups = {};
-        DIP_DOCS.forEach((doc, idx) => {
-            const cat = doc.category || 'Document';
-            if (!groups[cat]) groups[cat] = [];
-            groups[cat].push({ doc, idx });
-        });
-
-        grid.innerHTML = Object.entries(groups).map(([cat, items]) =>
-            `<div class="dip-category-block">
-                <div class="dip-category-label">${cat}</div>
-                <div class="section">
-                    ${items.map(({ doc, idx }) =>
-                        `<div class="codex-item library-series-item" onclick="dipOpenDoc(${idx})">
-                            <img src="${doc.image || 'img/main/scroll.png'}" class="dip-doc-thumb codex-icon" alt="">
-                            <div>
-                                <strong>${doc.title}</strong>
-                                <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
-                            </div>
-                        </div>`
-                    ).join('')}
-                </div>
-            </div>`
-        ).join('');
+        grid.innerHTML = '<div class="section">'
+            + DIP_DOCS.map((doc, idx) =>
+                `<div class="codex-item library-series-item" onclick="dipOpenDoc(${idx})">
+                    <img src="${doc.image || 'img/main/scroll.png'}" class="dip-doc-thumb codex-icon" alt="">
+                    <div>
+                        <strong>${doc.title}</strong>
+                        <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
+                    </div>
+                </div>`
+            ).join('')
+            + '</div>';
     }, () => {
         document.getElementById('dip-doc-grid').innerHTML =
             '<p style="color:#ff8888;">Could not load <em>sources/diplomacy.json</em>.</p>';
