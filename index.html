@@ -37,7 +37,7 @@
                     <div class="char-header">
                         <div class="char-name" id="lib-series-title"></div>
                         <div class="char-meta">
-                            <img class="lib-reader-bigbook" src="img/main/bigbook.png" alt="">
+                            <img class="lib-reader-bigbook" src="img/main/quill.png" alt="">
                             <span class="char-order">The Library</span>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                     <div class="char-header">
                         <div class="char-name" id="dip-article-title"></div>
                         <div class="char-meta">
-                            <img class="lib-reader-bigbook dip-reader-quill" src="img/main/quill.png" alt="">
+                            <img class="lib-reader-bigbook" src="img/main/scroll.png" alt="">
                             <span class="dip-category-badge" id="dip-article-category"></span>
                         </div>
                     </div>
@@ -277,7 +277,7 @@ function initLibrary() {
             + LIB_SERIES.map((s, si) => {
                 const count = s.entries.length;
                 return `<div class="codex-item library-series-item" onclick="libOpenSeries(${si})">
-                    <img src="img/main/bigbook.png" class="lib-series-bigbook codex-icon" alt="">
+                    <img src="img/main/quill.png" class="lib-series-bigbook codex-icon" alt="">
                     <div>
                         <strong>${s.name}</strong>
                         <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
@@ -417,7 +417,7 @@ function dipOpenDoc(idx) {
 
     /* Swap thumbnail image in the header */
     const bigImg = document.querySelector('#dip-article-view .lib-reader-bigbook');
-    if (bigImg) bigImg.src = doc.image || 'img/main/quill.png';
+    if (bigImg) bigImg.src = doc.image || 'img/main/scroll.png';
 
     document.getElementById('dip-shelf-view').style.display   = 'none';
     document.getElementById('dip-article-view').style.display = 'block';
