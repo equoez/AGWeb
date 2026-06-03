@@ -65,15 +65,59 @@
     ]
   },
   {
-    "name": "Orders of the Warden",
+    "name": "The Heart of an artist monk",
     "entries": [
       {
-        "title": "Order I — Stand Firm",
-        "body": "<p>Let no wall be abandoned while a single Gryphon still draws breath. Hold the line, shield your brother, and trust that reinforcements will come.</p><p>These are not words of comfort. They are law.</p>"
+        "title": "The Heart of an artist monk, by Renai",
+        "body": "<div>The hands of an artist monk are bare. Bare and prepared.</div><div>Prepared for healing, for reading.</div><div>For opening a book and follow a sentence with soft fingers.</div><div><br></div><div>The fingers of a monk are magical and can create things. They can hurt, and they can heal. They can hold and they can drop.&nbsp;</div><div><br></div><div>The monk heals itself and its friends. The monk kills to be stronger and wiser.</div><div>To absorb the knowledge of the world and grow a noble Heart.</div><div><br></div><div>So the Heart of a monk is also bare, because it is steady to absorb the shapes of things that receives with the tactful hands of an artist.</div>"
+      }
+    ]
+  },
+  {
+    "name": "FWD Poem",
+    "entries": [
+      {
+        "title": "Followers of the White Dragon, by Tekvorian",
+        "body": "<div>For truth and justice.</div><div>For order and prosperity.</div><div><br></div><div>One mind, one soul.</div><div>One kind, one goal.</div><div><br></div><div>Together through times of chaos.</div><div>Together through times of peace.</div><div><br></div><div>With wisdom and honor.</div><div>With strength and valor.</div><div><br></div><div>Devotion to our belief.</div><div>Devotion to our codex.</div><div><br></div><div>We are the Followers of&nbsp;<span style=\"font-size: 0.95rem;\">the White Dragon.</span></div>"
+      }
+    ]
+  },
+  {
+    "name": "Chronicle of an Explorer Druid",
+    "entries": [
+      {
+        "title": "In Search of the Lizard Urn",
+        "body": "<p>The Explorer's Society tasked me with finding the Lizard Urn in a village called Chor, east of Port Hope. I prepared my potions and runes, well-armed since this time I wouldn't be going with my friend Renay. When I arrived at the village, I found that the Lizards weren't very strong, but they more than made up for it in numbers?hundreds of them protecting their village. Since my intention wasn't to kill them, I used an invisibility ring to slip past them. However, I was betrayed by their best fighters, who didn't hesitate to attack. I was outnumbered and decided to flee, but without retreating. I pushed deeper into the village, always running until I found my back against a massive wall: the Kha'zeel Mountains, impossible to climb. The lizardmen kept searching for me and attacking.</p>"
       },
       {
-        "title": "Order II — The Silence Decree",
-        "body": "<p>What is spoken within these walls remains within these walls. No mission detail, no name, no route is to leave the fortress by loose tongue or careless letter.</p><p>Violators will answer to me personally.</p>"
+        "title": "Through the Dragon Tunnels",
+        "body": "<div>Cornered, I followed the great wall that separated me from the Darama Desert until I found a passage that went into the mountains. Luck was on my side. Gathering all the courage I had and my remaining potions, I entered the unknown tunnels, hoping to find the desert and the city of Ankarahum.</div><div><br></div><div>My luck didn't last long, though, as I found myself in the most populated nest of green dragons, dozens of them, even with their young. I tried my luck fighting them, and thanks to being well-equipped, I managed to give them a good fight and take down several while exploring the caves, looking for the passage to the desert. Only one ascending staircase could be the way out, but then I realized the luck I thought I had a moment ago was gone, or perhaps I never had it and was destined to die in that dragon nest.</div>"
+      },
+      {
+        "title": "The Red Dragon's Lair",
+        "body": "<p>Before me stood a huge red dragon, a beast I had never fought before. With a single jet of flame, it dissolved my magic shield, and before I could even process what was happening, a swipe of its claw nearly sent me to the grave. I tumbled down the stairs, giving me just enough time to summon my shield again against the green dragons waiting for me there. I fought with all my might and cunning, and many dragons fell to my spells and runes, but a dozen dragons surrounding you is overwhelming. My shield paled with every blast of flame they threw at me; even the young ones attacked without mercy. All seemed lost. My combat techniques and strategies were completely overwhelmed. I could barely see the tunnel I came from through the green bodies of the dragons surrounding me.</p>"
+      },
+      {
+        "title": "The Long Road Home",
+        "body": "<div>If only Renay were here, punching left and right, I thought. I could almost see him coming out of the tunnel and wiping out this green multitude, and then he would say to me, \"Why didn't you use the temple scroll?\"</div><div><br></div><div>That was it! The scroll. I took it, and with practically no life left, I activated it and appeared in Carlin. Oh, my dear Carlin! Still smoking, I drank potions until I was able to stand up again.</div>"
+      }
+    ]
+  },
+  {
+    "name": "Wild flowers",
+    "entries": [
+      {
+        "title": "Wild flowers, by Renai",
+        "body": "<div>Wild flowers popping up from snow</div><div>After a white mantle of thoughts</div><div><br></div><div>Wild powers from a Wrath god</div><div>That shapes a destiny of thorns&nbsp;</div><div><br></div><div>Wild emotions of a monk&nbsp;</div><div>Who seeks for pouring love in mould</div><div><br></div><div>Disordered facts in the path of growth</div><div>Enhanced by time and thinking</div><div><br></div><div>Displayed in the mind an engulfing flood</div><div>Binding both old and new streams&nbsp;</div><div><br></div><div>Disciplined patience is his new law&nbsp;</div><div>Embracing to his chest both flowers and snow.</div>"
+      }
+    ]
+  },
+  {
+    "name": "A humble druid's dream",
+    "entries": [
+      {
+        "title": "A humble druid's dream, by Micu",
+        "body": "<div>Soft breeze,</div><div>Autumn sun,&nbsp;</div><div>The walls of Carlin in the distance,</div><div>A den of sleeping wolves and puppies running around with butterflies,</div><div>In the past remains the scourge of the fury forest,&nbsp;</div><div>Only the simple passage of time remains without disturbances in the natural cycle,</div><div>And my body nourishing the soils.</div><div><br></div><div>M.M.</div>"
       }
     ]
   }
