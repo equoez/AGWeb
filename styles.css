@@ -852,21 +852,13 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 
 .lib-reader-bigbook,
 .lib-series-bigbook {
-    width: 109px;
-    height: auto;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
     flex-shrink: 0;
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-/* Diplomacy article header — quill icon (56×56 pixel art) */
-.dip-reader-quill {
-    width: 56px;
-    height: 56px;
-    object-fit: contain;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
 }
 
 /* ── Book shelf ── */
