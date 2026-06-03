@@ -66,7 +66,7 @@ body {
     width:  110%;
     height: 110%;
     z-index: -1;
-    background: url("img/main/AGbg.png") no-repeat center center;
+    background: url("img/main/AGbg.webp") no-repeat center center;
     background-size: cover;
     transition: filter 0.4s ease;
 }
@@ -75,7 +75,7 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: url("img/main/AGbgd.png") no-repeat center center;
+    background: url("img/main/AGbgd.webp") no-repeat center center;
     background-size: cover;
     opacity: 0;
     filter: brightness(1) contrast(1) saturate(1);
@@ -348,12 +348,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 /* ============================================================
    Diplomacy — Treaty Block
    ============================================================ */
-.treaty {
-    padding: 18px 20px;
-    border-left: 3px solid var(--color-gold-dim);
-    background: rgba(255, 210, 122, 0.04);
-    border-radius: 0 8px 8px 0;
-}
 
 /* ============================================================
    Ranks
@@ -444,100 +438,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 /* ============================================================
    Journal
    ============================================================ */
-.journal-intro {
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin-bottom: 20px;
-    font-size: 0.95rem;
-}
-
-.journal-nav {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.journal-index-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
-}
-
-.journal-label {
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    color: var(--color-gold-dim);
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.journal-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.journal-tab {
-    width: 28px;
-    height: 28px;
-    border: 1px solid rgba(255, 210, 122, 0.25);
-    border-radius: 4px;
-    background: rgba(255, 210, 122, 0.05);
-    color: var(--color-text-muted);
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-    line-height: 1;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.journal-tab:hover {
-    background: rgba(255, 210, 122, 0.12);
-    color: var(--color-gold-light);
-    border-color: rgba(255, 210, 122, 0.45);
-}
-
-.journal-tab.active {
-    background: rgba(255, 210, 122, 0.18);
-    color: var(--color-gold);
-    border-color: var(--color-gold-dim);
-}
-
-.journal-arrow {
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(255, 210, 122, 0.25);
-    border-radius: 6px;
-    background: rgba(255, 210, 122, 0.05);
-    color: var(--color-gold-dim);
-    font-size: 1.3rem;
-    cursor: pointer;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background var(--transition-fast), color var(--transition-fast);
-    line-height: 1;
-    padding: 0;
-}
-
-.journal-arrow:hover:not(:disabled) {
-    background: rgba(255, 210, 122, 0.14);
-    color: var(--color-gold);
-}
-
-.journal-arrow:disabled {
-    opacity: 0.25;
-    cursor: default;
-}
 
 .journal-entry-title {
     font-family: var(--font-display);
@@ -767,12 +667,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     font-style: normal;
 }
 
-.home-divider {
-    border: none;
-    border-top: 1px solid rgba(255, 210, 122, 0.12);
-    margin: 20px 0;
-}
-
 /* ============================================================
    Responsive
    ============================================================ */
@@ -807,12 +701,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     .member-points-icon {
         width: 17px;
         height: 17px;
-    }
-
-    .journal-tab {
-        width: 24px;
-        height: 24px;
-        font-size: 0.65rem;
     }
 
     .journal-entry-title { font-size: 0.9rem; }
@@ -927,25 +815,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 /* ============================================================
    Diplomacy
    ============================================================ */
-.dip-category-block {
-    margin-bottom: 28px;
-}
-
-.dip-category-block:last-child {
-    margin-bottom: 0;
-}
-
-.dip-category-label {
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-gold-dim);
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.15);
-}
 
 .dip-category-pill {
     color: var(--color-gold-dim);

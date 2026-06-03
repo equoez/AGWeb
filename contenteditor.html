@@ -536,7 +536,7 @@ function buildCharCard(c,i) {
                     <span class="sheet-toggle-label">Has character sheet</span>
                 </div>
                 <div class="sheet-fields ${hasSheet?'open':''}">
-                    <div class="field-row"><div class="field"><label>Portrait image path</label><input type="text" placeholder="e.g. characters/valarya.png" value="${esc(c.sheet?.portrait||'')}" oninput="if(!characters[${i}].sheet)characters[${i}].sheet={};characters[${i}].sheet.portrait=this.value"></div></div>
+                    <div class="field-row"><div class="field"><label>Portrait image path</label><input type="text" placeholder="e.g. characters/valarya.webp" value="${esc(c.sheet?.portrait||'')}" oninput="if(!characters[${i}].sheet)characters[${i}].sheet={};characters[${i}].sheet.portrait=this.value"></div></div>
                     <div class="rte-wrap">
                         <label class="rte-label">Biography</label>
                         <div class="rte-toolbar" id="rte-char-${i}-toolbar">
