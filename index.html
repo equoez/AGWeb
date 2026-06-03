@@ -58,7 +58,35 @@
         </section>
         <!-- ══ /LIBRARY ══ -->
 
-        <section data-page="diplomacy" class="page"><div id="diplomacy-content"></div></section>
+        <!-- ══ DIPLOMACY ══ -->
+        <section data-page="diplomacy" class="page">
+
+            <!-- Document list -->
+            <div id="dip-shelf-view">
+                <h2>Diplomacy</h2>
+                <p class="library-intro">Accords, treaties and pacts forged by the Order.</p>
+                <div id="dip-doc-grid"></div>
+            </div>
+
+            <!-- Article view (hidden until a document is opened) -->
+            <div id="dip-article-view" style="display:none;">
+                <a class="char-back" onclick="dipShowShelf(); return false;">Return to Diplomacy</a>
+                <div class="dip-article">
+                    <div class="char-header">
+                        <div class="char-name" id="dip-article-title"></div>
+                        <div class="char-meta">
+                            <img class="lib-reader-bigbook" src="img/main/I.png" alt="">
+                            <span class="dip-category-badge" id="dip-article-category"></span>
+                        </div>
+                    </div>
+                    <div class="char-rule"></div>
+                    <p id="dip-article-desc" class="dip-article-desc" style="display:none;"></p>
+                    <div class="journal-entry-body" id="dip-article-body"></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- ══ /DIPLOMACY ══ -->
         <section data-page="decree"    class="page"><div id="decree-content"></div></section>
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
 
@@ -322,6 +350,101 @@ document.getElementById('lib-next').addEventListener('click', () => {
 });
 
 /* ============================================================
+   Diplomacy
+   ============================================================
+   Data lives in sources/diplomacy.json — an array of documents:
+     [
+       {
+         "title": "The Silver Compact",
+         "category": "Treaty",
+         "image": "img/main/I.png",   ← optional; falls back to I.png
+         "body": "Full article text…\n\nParagraphs separated by blank lines."
+       },
+       …
+     ]
+   The "category" field is free-form (Treaty, Pact, Alliance, Accord…).
+   ============================================================ */
+let DIP_DOCS  = [];
+let dipReady  = false;
+
+function initDiplomacy() {
+    if (dipReady) return;
+    dipReady = true;
+    json('sources/diplomacy.json', data => {
+        DIP_DOCS = data;
+        const grid = document.getElementById('dip-doc-grid');
+        if (!DIP_DOCS.length) {
+            grid.innerHTML = '<p style="color:var(--color-text-muted);font-style:italic;">No documents on record.</p>';
+            return;
+        }
+
+        /* Group by category */
+        const groups = {};
+        DIP_DOCS.forEach((doc, idx) => {
+            const cat = doc.category || 'Document';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push({ doc, idx });
+        });
+
+        grid.innerHTML = Object.entries(groups).map(([cat, items]) =>
+            `<div class="dip-category-block">
+                <div class="dip-category-label">${cat}</div>
+                <div class="section">
+                    ${items.map(({ doc, idx }) =>
+                        `<div class="codex-item library-series-item" onclick="dipOpenDoc(${idx})">
+                            <img src="${doc.image || 'img/main/I.png'}" class="dip-doc-thumb codex-icon" alt="">
+                            <div>
+                                <strong>${doc.title}</strong>
+                                <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
+                            </div>
+                        </div>`
+                    ).join('')}
+                </div>
+            </div>`
+        ).join('');
+    }, () => {
+        document.getElementById('dip-doc-grid').innerHTML =
+            '<p style="color:#ff8888;">Could not load <em>sources/diplomacy.json</em>.</p>';
+    });
+}
+
+function dipOpenDoc(idx) {
+    const doc = DIP_DOCS[idx];
+    if (!doc) return;
+
+    document.getElementById('dip-article-title').textContent    = doc.title;
+    document.getElementById('dip-article-category').textContent = doc.category || '';
+    /* Optional description shown above the body */
+    const descEl = document.getElementById('dip-article-desc');
+    if (descEl) descEl.innerHTML = doc.description || '';
+    if (descEl) descEl.style.display = doc.description ? 'block' : 'none';
+
+    /* Render body: if it contains HTML tags use it directly, otherwise treat as plain text */
+    const rawBody = doc.body || '';
+    const isHTML  = /<[a-z][\s\S]*>/i.test(rawBody);
+    setHTML('dip-article-body',
+        isHTML
+            ? rawBody
+            : rawBody.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('')
+    );
+
+    /* Swap thumbnail image in the header */
+    const bigImg = document.querySelector('#dip-article-view .lib-reader-bigbook');
+    if (bigImg) bigImg.src = doc.image || 'img/main/I.png';
+
+    document.getElementById('dip-shelf-view').style.display   = 'none';
+    document.getElementById('dip-article-view').style.display = 'block';
+    try { history.pushState({ page: 'diplomacy', doc: idx }, '', '/#diplomacy'); } catch(e) {}
+    window.scrollTo(0, 0);
+}
+
+function dipShowShelf(pushHistory = true) {
+    document.getElementById('dip-shelf-view').style.display   = 'block';
+    document.getElementById('dip-article-view').style.display = 'none';
+    if (pushHistory) try { history.pushState({ page: 'diplomacy' }, '', '/#diplomacy'); } catch(e) {}
+}
+
+/* ============================================================
    Page switching
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
@@ -330,7 +453,13 @@ function showPage(pageId, pushHistory = true) {
 
     if (pageId === 'home')      loadSimple('home', 'homepage.json');
     if (pageId === 'enlist')    loadSimple('enlist', 'enlist.json');
-    if (pageId === 'diplomacy') loadSimple('diplomacy', 'diplomacy.json');
+    if (pageId === 'diplomacy') {
+        initDiplomacy();
+        if (document.getElementById('dip-article-view')?.style.display !== 'none') {
+            dipShowShelf();
+            return;
+        }
+    }
     if (pageId === 'decree')    loadSimple('decree', 'decree.json');
     if (pageId === 'codex')     loadCodex();
     if (pageId === 'ranks')     loadRanks();
@@ -354,6 +483,16 @@ window.addEventListener('popstate', e => {
     const st = e.state;
     const h  = location.hash.slice(1);
 
+    if (st?.page === 'diplomacy' && st.doc != null) {
+        showPage('diplomacy', false);
+        dipOpenDoc(st.doc);
+        return;
+    }
+    if (st?.page === 'diplomacy') {
+        showPage('diplomacy', false);
+        dipShowShelf(false);
+        return;
+    }
     if (st?.page === 'library' && st.series != null) {
         showPage('library', false);
         libOpenSeries(st.series, false);

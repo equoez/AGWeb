@@ -922,4 +922,67 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 
 .lib-arrow-btn:disabled { opacity: 0.25; cursor: default; }
 .lib-arrow-btn:not(:disabled):hover  { transform: scale(1.12); }
-.lib-arrow-btn:not(:disabled):active { transform: scale(0.95); }
+
+/* ============================================================
+   Diplomacy
+   ============================================================ */
+.dip-category-block {
+    margin-bottom: 28px;
+}
+
+.dip-category-block:last-child {
+    margin-bottom: 0;
+}
+
+.dip-category-label {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold-dim);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.15);
+}
+
+.dip-category-pill {
+    color: var(--color-gold-dim);
+    font-style: italic;
+}
+
+.dip-doc-thumb {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    flex-shrink: 0;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.dip-article {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.dip-article-desc {
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+}
+
+.dip-category-badge {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold-dim);
+    background: rgba(255, 210, 122, 0.08);
+    border: 1px solid rgba(255, 210, 122, 0.2);
+    border-radius: 4px;
+    padding: 2px 10px;
+}
+
