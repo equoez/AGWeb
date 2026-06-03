@@ -952,8 +952,8 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 }
 
 .dip-doc-thumb {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     object-fit: contain;
     flex-shrink: 0;
     image-rendering: crisp-edges;
@@ -985,4 +985,3 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     border-radius: 4px;
     padding: 2px 10px;
 }
-
