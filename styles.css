@@ -2,8 +2,7 @@
    Argent Gryphon — styles.css
    ============================================================ */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+/* --- Google Fonts loaded via <link> in index.html <head> --- */
 
 /* --- CSS Variables --- */
 :root {
@@ -786,31 +785,12 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .lib-book-btn:hover  { transform: translateY(-3px); }
 .lib-book-btn.active { transform: translateY(-4px); }
 
-/* ── Arrow navigation ── */
+/* ── Book shelf wrapper ── */
 .lib-nav {
     display: flex;
     align-items: center;
     gap: 0.5em;
 }
-
-.lib-arrow-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 2px;
-    flex-shrink: 0;
-    transition: transform 0.1s, opacity 0.1s;
-}
-
-.lib-arrow-btn img {
-    width: auto;
-    height: 48px;
-    display: block;
-    image-rendering: auto;
-}
-
-.lib-arrow-btn:disabled { opacity: 0.25; cursor: default; }
-.lib-arrow-btn:not(:disabled):hover  { transform: scale(1.12); }
 
 /* ============================================================
    Diplomacy
