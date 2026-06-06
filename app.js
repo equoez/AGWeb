@@ -120,29 +120,6 @@ function loadMembers() {
 }
 
 /* ============================================================
-Mission Page
-============================================================ */
-function loadMission() {
-  const el = document.getElementById('diplomacy-content');
-  if (el.dataset.loaded) return;
-  el.dataset.loaded = '1';
-  json('sources/missions.json', d => {
-    el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
-      + (d.intro  ? `<p>${d.intro}</p>` : '')
-      + '<div class="section">'
-      + (d.items || []).map(it =>
-        `<div class="codex-item">
-          <img src="img/main/FWD_Fist.png" class="codex-icon" alt="">
-          <div><strong>${it.title}</strong> ${it.text}</div>
-        </div>`
-      ).join('')
-      + '</div>';
-  }, () => {
-    el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/missions.json</em>.</p>';
-  });
-}
-
-/* ============================================================
    Character Sheet
    ============================================================ */
 function showCharacterSheet(index) {
