@@ -290,34 +290,6 @@ function initDiplomacy() {
     });
 }
 
-function initMissions() {
-    if (dipReady) return;
-    dipReady = true;
-    json('sources/diplomacy.json', data => {
-        DIP_DOCS = data;
-        const grid = document.getElementById('dip-doc-grid');
-        if (!DIP_DOCS.length) {
-            grid.innerHTML = '<p style="color:var(--color-text-muted);font-style:italic;">No documents on record.</p>';
-            return;
-        }
-
-        grid.innerHTML = '<div class="section">'
-            + DIP_DOCS.map((doc, idx) =>
-                `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="dipOpenDoc(${idx})" onkeydown="activateOnKey(event)">
-                    <img src="${doc.image || 'img/main/diplomacy_treaties_parchment.png'}" class="dip-doc-thumb" alt="" loading="lazy" decoding="async">
-                    <div>
-                        <strong>${doc.title}</strong>
-                        <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
-                    </div>
-                </div>`
-            ).join('')
-            + '</div>';
-    }, () => {
-        document.getElementById('dip-doc-grid').innerHTML =
-            '<p style="color:#ff8888;">Could not load <em>sources/diplomacy.json</em>.</p>';
-    });
-}
-
 function dipOpenDoc(idx) {
     const doc = DIP_DOCS[idx];
     if (!doc) return;
