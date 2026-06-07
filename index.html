@@ -92,7 +92,39 @@
 
         </section>
         <!-- ══ /DIPLOMACY ══ -->
-        <section data-page="decree"    class="page"><div id="decree-content"></div></section>
+
+        <!-- ══ MISSION ══ -->
+        <section data-page="mission" class="page">
+
+            <!-- Document list -->
+            <div id="mis-shelf-view">
+                <h2>Missions</h2>
+                <p class="library-intro">Orders, objectives and directives issued by the Order.</p>
+                <div id="mis-doc-grid"></div>
+            </div>
+
+            <!-- Article view (hidden until a document is opened) -->
+            <div id="mis-article-view" style="display:none;">
+                <a class="char-back" role="button" tabindex="0" onclick="misShowShelf(); return false;" onkeydown="activateOnKey(event)">Return to Missions</a>
+                <div class="dip-article">
+                    <div class="char-header">
+                        <div class="char-name" id="mis-article-title"></div>
+                        <div class="char-meta">
+                            <img class="lib-reader-bigbook" src="img/main/diplomacy_treaties_parchment.png" alt="">
+                            <span class="dip-category-badge" id="mis-article-category"></span>
+                        </div>
+                    </div>
+                    <div class="char-rule"></div>
+                    <p id="mis-article-desc" class="dip-article-desc" style="display:none;"></p>
+                    <div class="journal-entry-body" id="mis-article-body"></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- ══ /MISSION ══ -->
+
+        <!-- REMOVED: decree page section -->
+
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
 
         <section data-page="members" class="page">
