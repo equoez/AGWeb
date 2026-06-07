@@ -1,7 +1,7 @@
 /* ============================================================
    Utilities
    ============================================================ */
-const PAGES      = ['home','codex','enlist','library','diplomacy','decree','ranks','members'];
+const PAGES      = ['home','codex','enlist','library','diplomacy','mission','ranks','members'];
 const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
 const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
 /* Lets keyboard users activate role="button" cards with Enter or Space */
@@ -21,7 +21,7 @@ setHTML('navbar', PAGES.map(p =>
 ).join(''));
 
 /* ============================================================
-   Simple pages (home, enlist, diplomacy, decree)
+   Simple pages (home, enlist, mission, diplomacy, decree removed)
    ============================================================ */
 function loadSimple(page, file) {
     const el = document.getElementById(page + '-content');
@@ -327,7 +327,87 @@ function dipShowShelf(pushHistory = true) {
 }
 
 /* ============================================================
-   Page switching
+   MISSION
+   ============================================================
+   Data lives in sources/mission.json — an array of documents:
+     [
+       {
+         "title": "Operation Winter's Edge",
+         "category": "Operation",
+         "image": "img/main/mission_image.png",   ← optional; falls back to parchment
+         "body": "Mission details text…\n\nParagraphs separated by blank lines."
+       },
+       …
+     ]
+   The "category" field is free-form (Operation, Directive, Order, Task…).
+   ============================================================ */
+let MIS_DOCS  = [];
+let misReady  = false;
+
+function initMission() {
+    if (misReady) return;
+    misReady = true;
+    json('sources/mission.json', data => {
+        MIS_DOCS = data;
+        const grid = document.getElementById('mis-doc-grid');
+        if (!MIS_DOCS.length) {
+            grid.innerHTML = '<p style="color:var(--color-text-muted);font-style:italic;">No missions on record.</p>';
+            return;
+        }
+
+        grid.innerHTML = '<div class="section">'
+            + MIS_DOCS.map((doc, idx) =>
+                `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="misOpenDoc(${idx})" onkeydown="activateOnKey(event)">
+                    <img src="${doc.image || 'img/main/diplomacy_treaties_parchment.png'}" class="mis-doc-thumb" alt="" loading="lazy" decoding="async">
+                    <div>
+                        <strong>${doc.title}</strong>
+                        <div class="library-series-count mis-category-pill">${doc.category || 'Mission'}</div>
+                    </div>
+                </div>`
+            ).join('')
+            + '</div>';
+    }, () => {
+        document.getElementById('mis-doc-grid').innerHTML =
+            '<p style="color:#ff8888;">Could not load <em>sources/mission.json</em>.</p>';
+    });
+}
+
+function misOpenDoc(idx) {
+    const doc = MIS_DOCS[idx];
+    if (!doc) return;
+
+    document.getElementById('mis-article-title').textContent    = doc.title;
+    document.getElementById('mis-article-category').textContent = doc.category || '';
+    
+    const descEl = document.getElementById('mis-article-desc');
+    if (descEl) descEl.innerHTML = doc.description || '';
+    if (descEl) descEl.style.display = doc.description ? 'block' : 'none';
+
+    const rawBody = doc.body || '';
+    const isHTML  = /<[a-z][\s\S]*>/i.test(rawBody);
+    setHTML('mis-article-body',
+        isHTML
+            ? rawBody
+            : rawBody.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('')
+    );
+
+    const bigImg = document.querySelector('#mis-article-view .lib-reader-bigbook');
+    if (bigImg) bigImg.src = doc.image || 'img/main/diplomacy_treaties_parchment.png';
+
+    document.getElementById('mis-shelf-view').style.display   = 'none';
+    document.getElementById('mis-article-view').style.display = 'block';
+    try { history.pushState({ page: 'mission', doc: idx }, '', '/#mission'); } catch(e) {}
+    window.scrollTo(0, 0);
+}
+
+function misShowShelf(pushHistory = true) {
+    document.getElementById('mis-shelf-view').style.display   = 'block';
+    document.getElementById('mis-article-view').style.display = 'none';
+    if (pushHistory) try { history.pushState({ page: 'mission' }, '', '/#mission'); } catch(e) {}
+}
+
+/* ============================================================
+   Page switching (decree removed, mission added)
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
     document.querySelector('.page.active')?.classList.remove('active');
@@ -342,7 +422,14 @@ function showPage(pageId, pushHistory = true) {
             return;
         }
     }
-    if (pageId === 'decree')    loadSimple('decree', 'decree.json');
+    if (pageId === 'mission') {
+        initMission();
+        if (document.getElementById('mis-article-view')?.style.display !== 'none') {
+            misShowShelf();
+            return;
+        }
+    }
+    /* decree page removed */
     if (pageId === 'codex')     loadCodex();
     if (pageId === 'ranks')     loadRanks();
     if (pageId === 'members')   loadMembers();
@@ -373,6 +460,16 @@ window.addEventListener('popstate', e => {
     if (st?.page === 'diplomacy') {
         showPage('diplomacy', false);
         dipShowShelf(false);
+        return;
+    }
+    if (st?.page === 'mission' && st.doc != null) {
+        showPage('mission', false);
+        misOpenDoc(st.doc);
+        return;
+    }
+    if (st?.page === 'mission') {
+        showPage('mission', false);
+        misShowShelf(false);
         return;
     }
     if (st?.page === 'library' && st.series != null) {
@@ -470,5 +567,5 @@ document.addEventListener('mouseout', e => {
     if (!e.target.classList.contains('member-points-icon')) return;
     bgEl.classList.remove('dark-magic-anim');
     document.body.classList.remove('dark-magic-active');
-    dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
+    dmTimer = setTimeout(() => bgEl.remove(), 30000);
 });
