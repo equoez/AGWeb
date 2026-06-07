@@ -18,24 +18,4 @@
     "image": "img/main/diplomacy_decree_parchment.png",
     "body": "<div>Let it be known throughout the world that the Council of Red Rose, in divine accord, hereby ordains the formation of a sacred brotherhood and chivalric order: The Order of the Argent Gryphon.</div><div>&nbsp;</div><div>&nbsp;The Council grants full command to Valkera Blackheart, Praetor of the Red Rose, empowering her to raise the Order in the Vandura mountains as she deems fit. She is tasked to anoint warriors of pure hearts and arm each with the Griffin Shield - a symbol of vigilance and bravery.</div><div><br></div><div>Founded in the spirit of unwavering honour and vigilant protection of the innocent, the Argent Gryphon shall stand as a beacon against the encroaching forces of evil.</div><div>&nbsp;</div><div>Sealed with the Red Rose great seal,</div><div>representing the Council,</div><div>Leader Rye Ane,</div><div>Legatus of Red Rose.</div>"
   },
-  {
-    "title": "Hunt for Osamiron",
-    "category": "Mission",
-    "image": "img/main/diplomacy_decree_parchment.png",
-    "description": "This mission lasts for one month.",
-    "body": "With the Cultist question dealt with, we are once more free to pursuit the man whose deeds brought about the foundation of our Order in the first place: Osamiron. Six months ago, he was last seen in company of a previously unknown follower, attacking the Red Rose at the Open-Air Theatre of Thais. He hasn't been seen or heard of since then.<div><br></div><div>Your objectives are to...</div><div>-&nbsp;Gather intelligence on Osamiron's movements since then.</div><div>- Investigate the identity of the unknown follower.</div><div>- Recover artifacts that may potentially be turned to evil purposes.</div>"
-  },
-  {
-    "title": "Measuring Vandura",
-    "category": "Mission",
-    "image": "img/main/diplomacy_decree_parchment.png",
-    "description": "This mission lasts for one month.",
-    "body": "<div>The riches of the Shattered Isles draws adventurers and factions to seek their fortune in Vandura. We must not let outsiders get there before us. Patrol its lands and report your findings to the Wardens.</div><div><br></div><div>Resources of value are to be claimed in the name of the Order and returned to the Mountain Hideout. Crush any who actively oppose the Gryphon's lawful authority.</div><div><br></div><div>Complete the full discovery of...</div><div>- Vandura Cultist Hideout.</div><div>- Liberty Bay City.</div><div>- Liberty Bay Surroundings.</div>"
-  },
-  {
-    "title": "Empower the Gryphon",
-    "category": "Edict",
-    "description": "This edict lasts for six months.",
-    "body": "The Argent Gryphon is sovereign and feared, but reputation alone is not enough. If we hope to maintain our sphere of influence, our focus must be to bolster our strength.<div><br></div><div>During this period, the Order shall increase its numbers through the recruitment of worthy initiates, strengthen its ties to the Circle of Stonehaze and Summerhaven, and seek cooperation with new allies.</div>"
-  }
 ]
