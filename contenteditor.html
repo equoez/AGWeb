@@ -14,42 +14,47 @@
             --color-danger:       #ff6b6b;
             --color-success:      #6bff9e;
             --color-section-bg:   rgba(255,210,122,0.03);
+            --font-display: 'Cinzel', serif;
+            --font-body: 'EB Garamond', serif;
+            --radius-btn: 4px;
+            --color-gold: #ffd700;
+            --color-gold-light: #ffeaa7;
+            --color-gold-dim: #c9a95d;
+            --color-text: #e0e0e0;
+            --color-text-muted: #a0a0a0;
         }
-        body { padding-bottom: 80px; }
-        .editor-wrap { width: 720px; max-width: 96vw; }
-        /* Override shared .content-box fixed width so the panel fills (and centers in) the wrap */
+        body { padding-bottom: 80px; background: #1a140a; color: var(--color-text); font-family: var(--font-body); }
+        .editor-wrap { width: 720px; max-width: 96vw; margin: 0 auto; }
         .editor-wrap .content-box { width: 100%; }
 
-        /* ── Header ── */
+        /* Header */
         .editor-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid rgba(255,210,122,0.15); }
-        .editor-header h2 { margin:0; }
+        .editor-header h2 { margin:0; font-family: var(--font-display); color: var(--color-gold); }
 
-        /* ── Tab picker ── */
+        /* Tab Picker */
         .page-picker { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
-        .page-tab { padding:7px 16px; border:1px solid rgba(255,210,122,0.25); border-radius:var(--radius-btn); background:rgba(255,210,122,0.05); color:var(--color-text-muted); font-family:var(--font-display); font-size:12px; letter-spacing:0.05em; cursor:pointer; transition:background 0.2s,color 0.2s,border-color 0.2s; }
-        .page-tab:hover  { background:rgba(255,210,122,0.12); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
+        .page-tab { padding:7px 16px; border:1px solid rgba(255,210,122,0.25); border-radius:var(--radius-btn); background:rgba(255,210,122,0.05); color:var(--color-text-muted); font-family:var(--font-display); font-size:12px; letter-spacing:0.05em; cursor:pointer; transition:all 0.2s; }
+        .page-tab:hover { background:rgba(255,210,122,0.12); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
         .page-tab.active { background:rgba(255,210,122,0.18); color:var(--color-gold); border-color:var(--color-gold-dim); }
 
-        /* ── Buttons ── */
-        .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius-btn); border:1px solid rgba(255,210,122,0.3); background:rgba(255,210,122,0.08); color:var(--color-gold); font-family:var(--font-display); font-size:13px; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:background 0.2s,border-color 0.2s,transform 0.15s; }
-        .btn:hover   { background:rgba(255,210,122,0.15); border-color:rgba(255,210,122,0.5); transform:translateY(-1px); }
-        .btn:active  { transform:translateY(0); }
+        /* Buttons */
+        .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius-btn); border:1px solid rgba(255,210,122,0.3); background:rgba(255,210,122,0.08); color:var(--color-gold); font-family:var(--font-display); font-size:13px; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:all 0.15s; }
+        .btn:hover { background:rgba(255,210,122,0.15); border-color:rgba(255,210,122,0.5); transform:translateY(-1px); }
+        .btn:active { transform:translateY(0); }
         .btn-primary { background:rgba(255,210,122,0.18); border-color:var(--color-gold-dim); }
         .btn-primary:hover { background:rgba(255,210,122,0.28); }
-        .btn-danger  { border-color:rgba(255,107,107,0.4); color:var(--color-danger); background:rgba(255,107,107,0.06); }
+        .btn-danger { border-color:rgba(255,107,107,0.4); color:var(--color-danger); background:rgba(255,107,107,0.06); }
         .btn-danger:hover { background:rgba(255,107,107,0.14); border-color:rgba(255,107,107,0.6); }
         .btn-sm { padding:6px 13px; font-size:12px; }
         .btn-xs { padding:4px 10px; font-size:11px; }
 
-        /* ── Instructions ── */
+        /* Instructions & Load Bar */
         .instructions { background:rgba(255,210,122,0.04); border:1px solid rgba(255,210,122,0.12); border-left:3px solid var(--color-gold-dim); border-radius:0 8px 8px 0; padding:14px 18px; margin-bottom:24px; font-size:0.9rem; color:var(--color-text-muted); line-height:1.6; }
         .instructions strong { color:var(--color-gold-light); }
-
-        /* ── Load bar ── */
         .load-bar { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
         .load-bar p { margin:0; font-size:0.88rem; color:var(--color-text-muted); }
 
-        /* ── Field helpers ── */
+        /* Fields */
         .field-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); display:block; margin-bottom:6px; }
         .field-input { width:100%; background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:6px; color:var(--color-text); font-family:var(--font-display); font-size:1rem; padding:9px 12px; outline:none; transition:border-color 0.2s; box-sizing:border-box; margin-bottom:20px; }
         .field-input:focus { border-color:var(--color-input-focus); }
@@ -61,10 +66,10 @@
         .field select option { background:#1a140a; }
         .field textarea { resize:vertical; min-height:80px; line-height:1.6; }
 
-        /* ── RTE ── */
+        /* Rich Text Editor */
         .rte-toolbar { display:flex; flex-wrap:wrap; gap:4px; padding:6px 8px; background:rgba(0,0,0,0.25); border:1px solid var(--color-input-border); border-bottom:none; border-radius:6px 6px 0 0; }
         .rte-btn { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:26px; padding:0 7px; border:1px solid rgba(255,210,122,0.2); border-radius:4px; background:rgba(255,210,122,0.05); color:var(--color-text-muted); font-size:13px; cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s; line-height:1; }
-        .rte-btn:hover  { background:rgba(255,210,122,0.14); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
+        .rte-btn:hover { background:rgba(255,210,122,0.14); color:var(--color-gold-light); border-color:rgba(255,210,122,0.4); }
         .rte-btn.active { background:rgba(255,210,122,0.2); color:var(--color-gold); border-color:var(--color-gold-dim); }
         .rte-btn-sep { width:1px; background:rgba(255,210,122,0.15); margin:2px; align-self:stretch; }
         .rte-editor { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:0 0 6px 6px; color:var(--color-text); font-family:var(--font-body); font-size:0.95rem; padding:14px 16px; outline:none; min-height:200px; line-height:1.75; transition:border-color 0.2s; }
@@ -77,10 +82,10 @@
         .rte-wrap { margin-top:14px; }
         .rte-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); display:block; margin-bottom:8px; }
 
-        /* ── Expandable cards (characters, journal) ── */
+        /* Cards (Expandable) */
         .exp-card { background:var(--color-section-bg); border:1px solid rgba(255,210,122,0.1); border-radius:10px; margin-bottom:12px; overflow:hidden; transition:border-color 0.2s; }
         .exp-card:hover { border-color:rgba(255,210,122,0.2); }
-        .exp-card.dragging  { opacity:0.5; }
+        .exp-card.dragging { opacity:0.5; }
         .exp-card.drag-over { border-color:var(--color-gold-dim); }
         .card-head { display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; user-select:none; }
         .card-head-badge { width:36px; height:36px; min-width:36px; object-fit:contain; filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5)); }
@@ -97,7 +102,7 @@
         .card-body { display:none; padding:0 16px 16px; border-top:1px solid rgba(255,210,122,0.08); }
         .card-body.open { display:block; }
 
-        /* ── Toggle switch ── */
+        /* Toggle Switch */
         .sheet-section { margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,210,122,0.08); }
         .sheet-toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
         .sheet-toggle-label { font-family:var(--font-display); font-size:12px; letter-spacing:0.05em; color:var(--color-gold-dim); }
@@ -110,10 +115,10 @@
         .sheet-fields { display:none; }
         .sheet-fields.open { display:block; }
 
-        /* ── Flat item cards (codex, ranks) ── */
+        /* Flat Item Cards */
         .flat-card { background:var(--color-section-bg); border:1px solid rgba(255,210,122,0.1); border-radius:8px; padding:12px 14px; margin-bottom:10px; display:flex; gap:10px; align-items:flex-start; }
         .flat-card:hover { border-color:rgba(255,210,122,0.2); }
-        .flat-card.dragging  { opacity:0.45; }
+        .flat-card.dragging { opacity:0.45; }
         .flat-card.drag-over { border-color:var(--color-gold-dim); }
         .flat-fields { flex:1; display:flex; gap:10px; flex-wrap:wrap; }
         .flat-field { display:flex; flex-direction:column; gap:4px; }
@@ -122,14 +127,14 @@
         .flat-field input:focus,.flat-field textarea:focus { border-color:var(--color-input-focus); }
         .flat-field textarea { resize:vertical; min-height:60px; }
 
-        /* ── Drag handle ── */
+        /* Drag Handle */
         .drag-handle { cursor:grab; color:rgba(255,210,122,0.25); font-size:1rem; padding:0 4px; flex-shrink:0; user-select:none; }
         .drag-handle:hover { color:rgba(255,210,122,0.5); }
 
-        /* ── Library: series outer card ── */
+        /* Library Series Card */
         .series-card { background:rgba(255,210,122,0.04); border:1px solid rgba(255,210,122,0.15); border-radius:12px; margin-bottom:18px; overflow:hidden; }
         .series-card:hover { border-color:rgba(255,210,122,0.25); }
-        .series-card.dragging  { opacity:0.5; }
+        .series-card.dragging { opacity:0.5; }
         .series-card.drag-over { border-color:var(--color-gold-dim); }
         .series-head { display:flex; align-items:center; gap:12px; padding:13px 16px; cursor:pointer; user-select:none; background:rgba(255,210,122,0.04); }
         .series-head.open .card-chevron { transform:rotate(180deg); }
@@ -145,10 +150,10 @@
         .entries-label { font-family:var(--font-display); font-size:11px; letter-spacing:0.06em; color:var(--color-gold-dim); margin-bottom:10px; display:block; }
         .entries-sublist { padding-left:4px; }
 
-        /* ── Output ── */
+        /* Output Section */
         .output-section { margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,210,122,0.15); }
         .output-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
-        .output-header h3 { margin:0; }
+        .output-header h3 { margin:0; font-family:var(--font-display); }
         #output-box { background:rgba(0,0,0,0.35); border:1px solid rgba(255,210,122,0.15); border-radius:8px; padding:16px; font-family:'Courier New',monospace; font-size:12px; color:var(--color-text-muted); white-space:pre; overflow-x:auto; max-height:400px; overflow-y:auto; line-height:1.6; }
         .copy-feedback { font-size:12px; color:var(--color-success); opacity:0; transition:opacity 0.3s; }
         .copy-feedback.show { opacity:1; }
@@ -183,7 +188,7 @@
                 <p id="load-status"></p>
             </div>
 
-            <!-- ── Simple: title + body RTE ── -->
+            <!-- Simple Panels -->
             <div class="editor-panel" id="panel-simple">
                 <label class="field-label" for="simple-title">Page Title</label>
                 <input class="field-input" type="text" id="simple-title">
@@ -200,7 +205,7 @@
                 <div class="rte-editor" id="simple-body" contenteditable="true" onkeyup="updateToolbar('simple')" onmouseup="updateToolbar('simple')"></div>
             </div>
 
-            <!-- ── Codex ── -->
+            <!-- Codex Panel -->
             <div class="editor-panel" id="panel-codex">
                 <label class="field-label" for="codex-title">Page Title</label>
                 <input class="field-input" type="text" id="codex-title">
@@ -211,7 +216,7 @@
                 <div class="add-row"><button class="btn btn-sm" onclick="addCodexItem()">+ Add item</button></div>
             </div>
 
-            <!-- ── Ranks ── -->
+            <!-- Ranks Panel -->
             <div class="editor-panel" id="panel-ranks">
                 <label class="field-label" for="ranks-title">Page Title</label>
                 <input class="field-input" type="text" id="ranks-title">
@@ -220,25 +225,31 @@
                 <div class="add-row"><button class="btn btn-sm" onclick="addRankItem()">+ Add rank</button></div>
             </div>
 
-            <!-- ── Characters ── -->
+            <!-- Characters Panel -->
             <div class="editor-panel" id="panel-characters">
                 <div id="char-list"></div>
                 <div class="add-row"><button class="btn" onclick="addCharacter()">+ Add character</button></div>
             </div>
 
-            <!-- ── Library / Journal ── -->
+            <!-- Journal/Library Panel -->
             <div class="editor-panel" id="panel-journal">
                 <div id="series-list"></div>
                 <div class="add-row"><button class="btn" onclick="addSeries()">+ Add series</button></div>
             </div>
 
-            <!-- ── Diplomacy ── -->
+            <!-- Diplomacy Panel -->
             <div class="editor-panel" id="panel-diplomacy">
                 <div id="dip-docs-list"></div>
                 <div class="add-row"><button class="btn" onclick="addDipDoc()">+ Add document</button></div>
             </div>
 
-            <!-- ── Output ── -->
+            <!-- Mission Panel -->
+            <div class="editor-panel" id="panel-mission">
+                <div id="mis-docs-list"></div>
+                <div class="add-row"><button class="btn" onclick="addMisDoc()">+ Add mission</button></div>
+            </div>
+
+            <!-- Output Section -->
             <div class="output-section">
                 <div class="output-header">
                     <h3>Generated JSON</h3>
@@ -263,11 +274,12 @@ const PAGES_CONFIG = [
     { id:'homepage',   file:'homepage.json',   label:'Home',       mode:'simple'     },
     { id:'enlist',     file:'enlist.json',      label:'Enlist',     mode:'simple'     },
     { id:'diplomacy',  file:'diplomacy.json',   label:'Diplomacy',  mode:'diplomacy'  },
-    { id:'decree',     file:'decree.json',      label:'Decree',     mode:'simple'     },
+    // decree removed
     { id:'codex',      file:'codex.json',       label:'Codex',      mode:'codex'      },
     { id:'ranks',      file:'ranks.json',       label:'Ranks',      mode:'ranks'      },
     { id:'characters', file:'characters.json',  label:'Characters', mode:'characters' },
     { id:'library',    file:'journal.json',     label:'Library',    mode:'journal'    },
+    { id:'mission',    file:'mission.json',     label:'Missions',   mode:'diplomacy'  },
 ];
 
 const CHAR_RANKS = [
@@ -280,26 +292,15 @@ const badgeSrc  = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge
 const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 let currentPage  = PAGES_CONFIG[0];
-let codexItems   = [], rankItems = [], characters = [], libSeries = [], dipDocs = [];
+let codexItems   = [], rankItems = [], characters = [], libSeries = [];
+let dipDocs = [], misDocs = [];
 let codexDrag    = null, rankDrag = null, charDrag = null;
 
-/* ── Unsaved-changes tracking ──
-   Any edit inside an editor panel marks the page dirty. Cleared once data is
-   (re)loaded from a file/site. Guards tab-switching and page unload so in-memory
-   edits aren't silently overwritten or lost. */
 let dirty = false;
 const markDirty = () => { dirty = true; };
-document.addEventListener('input', e => {
-    if (e.target.closest('.editor-panel')) markDirty();
-});
-/* Drag-reordering changes data without firing input events */
-document.addEventListener('drop', e => {
-    if (e.target.closest('.editor-panel')) markDirty();
-}, true);
-/* Last line of defence: warn before closing/reloading with unsaved edits */
-window.addEventListener('beforeunload', e => {
-    if (dirty) { e.preventDefault(); e.returnValue = ''; }
-});
+document.addEventListener('input', e => { if (e.target.closest('.editor-panel')) markDirty(); });
+document.addEventListener('drop', e => { if (e.target.closest('.editor-panel')) markDirty(); }, true);
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 
 /* ═══════════════════════════════════════════
    TAB PICKER
@@ -314,10 +315,7 @@ PAGES_CONFIG.forEach(p => {
 });
 
 function switchPage(p) {
-    if (p !== currentPage && dirty &&
-        !confirm('You have unsaved edits on this tab that haven\'t been copied out. Switching tabs will reload this page from the site and discard them. Continue?')) {
-        return;
-    }
+    if (p !== currentPage && dirty && !confirm('You have unsaved edits on this tab. Switching will discard them. Continue?')) return;
     currentPage = p;
     picker.querySelectorAll('.page-tab').forEach((b,i)=>b.classList.toggle('active',PAGES_CONFIG[i]===p));
     document.querySelectorAll('.editor-panel').forEach(el=>el.classList.remove('active'));
@@ -327,7 +325,7 @@ function switchPage(p) {
 }
 
 /* ═══════════════════════════════════════════
-   RTE — shared for simple pages
+   RTE
 ═══════════════════════════════════════════ */
 function rteCmd(editorId, cmd) {
     const el = document.getElementById(editorId==='simple'?'simple-body':editorId);
@@ -353,7 +351,6 @@ function updateToolbar(editorId) {
     btns[4].classList.toggle('active',document.queryCommandState('underline'));
 }
 
-/* Per-card RTE for characters/journal */
 function rteFormat(editorId, cmd) {
     const el = document.getElementById(editorId); if(!el) return;
     el.focus();
@@ -379,7 +376,7 @@ function updateToolbarById(toolbarId) {
 }
 
 /* ═══════════════════════════════════════════
-   LOAD DATA (dispatch by mode)
+   LOAD DATA
 ═══════════════════════════════════════════ */
 function loadData(data) {
     const m = currentPage.mode;
@@ -399,23 +396,23 @@ function loadData(data) {
         characters = data.map ? data.map(c=>({...c})) : [];
         renderCharacters();
     } else if (m==='journal') {
-        /* New format: array of { name, entries[] } */
-        libSeries = Array.isArray(data)
-            ? data.map(s => ({ name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) }))
-            : [];
+        libSeries = Array.isArray(data) ? data.map(s => ({ name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) })) : [];
         renderSeries();
     } else if (m==='diplomacy') {
-        dipDocs = Array.isArray(data)
-            ? data.map(d => ({...d}))
-            : [];
-        renderDipDocs();
+        if (currentPage.id === 'diplomacy') {
+            dipDocs = Array.isArray(data) ? data.map(d => ({...d})) : [];
+            renderDipDocs();
+        } else if (currentPage.id === 'mission') {
+            misDocs = Array.isArray(data) ? data.map(d => ({...d})) : [];
+            renderMisDocs();
+        }
     }
     generateOutput();
     dirty = false;
 }
 
 /* ═══════════════════════════════════════════
-   GENERATE JSON (dispatch by mode)
+   GENERATE JSON
 ═══════════════════════════════════════════ */
 function generateOutput() {
     let out;
@@ -434,7 +431,6 @@ function generateOutput() {
             return obj;
         });
     } else if (m==='journal') {
-        /* Harvest any open RTE bodies before serialising */
         libSeries.forEach((s, si) => {
             (s.entries||[]).forEach((e, ei) => {
                 const el = document.getElementById(`rte-entry-${si}-${ei}`);
@@ -446,13 +442,14 @@ function generateOutput() {
             entries: (s.entries||[]).map(e => ({ title: e.title||'', body: e.body||'' }))
         }));
     } else if (m==='diplomacy') {
-        dipDocs.forEach((d, i) => {
-            const el = document.getElementById(`rte-dip-${i}`);
+        const target = currentPage.id === 'diplomacy' ? dipDocs : misDocs;
+        target.forEach((d, i) => {
+            const el = document.getElementById(currentPage.id === 'diplomacy' ? `rte-dip-${i}` : `rte-mis-${i}`);
             if (el) d.body = el.innerHTML;
         });
-        out = dipDocs.map(d => {
+        out = target.map(d => {
             const obj = { title: d.title||'', category: d.category||'' };
-            if (d.image)       obj.image       = d.image;
+            if (d.image) obj.image = d.image;
             if (d.description) obj.description = d.description;
             obj.body = d.body || '';
             return obj;
@@ -498,7 +495,6 @@ function renderRankItems() {
 }
 function addRankItem() { rankItems.push({name:'',key:'',desc:''}); renderRankItems(); }
 
-/* ── Shared flat card factory ── */
 function mkFlatCard(i, prefix, arr, dragRef, setDrag, rerender) {
     const card = document.createElement('div');
     card.className = 'flat-card';
@@ -616,7 +612,7 @@ function addCharacter() {
 }
 
 /* ═══════════════════════════════════════════
-   LIBRARY — SERIES + ENTRIES
+   LIBRARY — SERIES + ENTRIES (Part 1 End)
 ═══════════════════════════════════════════ */
 let seriesDragIdx = null;
 
@@ -669,7 +665,6 @@ function buildSeriesCard(s, si) {
         </div>
     `;
 
-    /* Render entries into the sublist */
     renderEntries(si, card.querySelector(`#entries-sublist-${si}`));
     return card;
 }
@@ -695,7 +690,6 @@ function addSeries() {
     }, 50);
 }
 
-/* ── Entries within a series ── */
 function renderEntries(si, container) {
     if (!container) container = document.getElementById(`entries-sublist-${si}`);
     if (!container) return;
@@ -778,7 +772,6 @@ function refreshEntryHead(si, ei) {
 function addEntry(si) {
     libSeries[si].entries.push({ title: '', body: '' });
     renderEntries(si);
-    /* Update count badge */
     refreshSeriesCount(si);
     setTimeout(() => {
         const sub = document.getElementById(`entries-sublist-${si}`);
@@ -794,13 +787,14 @@ function refreshSeriesCount(si) {
     const count = libSeries[si].entries.length;
     card.querySelector('.series-head-count').textContent = `${count} ${count===1?'entry':'entries'}`;
 }
-
 /* ═══════════════════════════════════════════
-   DIPLOMACY — DOCUMENTS
+   DIPLOMACY & MISSION — DOCUMENTS
 ═══════════════════════════════════════════ */
 let dipDragIdx = null;
+let misDragIdx = null;
 
 const DIP_CATEGORIES = ['Treaty','Pact','Alliance','Accord','Declaration','Agreement'];
+const MIS_CATEGORIES = ['Operation','Directive','Order','Task','Reconnaissance'];
 
 function renderDipDocs() {
     const list = document.getElementById('dip-docs-list');
@@ -809,28 +803,55 @@ function renderDipDocs() {
     dipDocs.forEach((d, i) => list.appendChild(buildDipCard(d, i)));
 }
 
-function buildDipCard(d, i) {
+function renderMisDocs() {
+    const list = document.getElementById('mis-docs-list');
+    if (!misDocs.length) { list.innerHTML = '<div class="empty-state">No missions yet.</div>'; return; }
+    list.innerHTML = '';
+    misDocs.forEach((d, i) => list.appendChild(buildMisCard(d, i)));
+}
+
+function buildDipCard(d, i) { return buildDocCard(d, i, 'dip', DIP_CATEGORIES); }
+function buildMisCard(d, i) { return buildDocCard(d, i, 'mis', MIS_CATEGORIES); }
+
+function buildDocCard(d, i, prefix, categories) {
     const card = document.createElement('div');
     card.className = 'series-card';
     card.dataset.di = i;
     card.draggable = true;
-    card.addEventListener('dragstart', e => { dipDragIdx = i; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    
+    const setDragFn = (idx) => { 
+        if (prefix === 'dip') dipDragIdx = idx; 
+        else misDragIdx = idx; 
+    };
+    const getDragRef = () => prefix === 'dip' ? dipDragIdx : misDragIdx;
+
+    card.addEventListener('dragstart', e => { 
+        setDragFn(i); 
+        card.classList.add('dragging'); 
+        e.dataTransfer.effectAllowed = 'move'; 
+    });
     card.addEventListener('dragend',   () => card.classList.remove('dragging'));
     card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
     card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
     card.addEventListener('drop', e => {
         e.preventDefault(); card.classList.remove('drag-over');
-        if (dipDragIdx !== null && dipDragIdx !== i) {
-            const t = dipDocs[dipDragIdx]; dipDocs.splice(dipDragIdx,1); dipDocs.splice(i,0,t);
-            renderDipDocs();
+        const currentDrag = getDragRef();
+        if (currentDrag !== null && currentDrag !== i) {
+            const targetArr = prefix === 'dip' ? dipDocs : misDocs;
+            const t = targetArr[currentDrag]; 
+            targetArr.splice(currentDrag,1); 
+            targetArr.splice(i,0,t);
+            if (prefix === 'dip') renderDipDocs(); else renderMisDocs();
         }
     });
 
-    const catOptions = DIP_CATEGORIES.map(c =>
+    const catOptions = categories.map(c =>
         `<option value="${c}"${(d.category||'')=== c?' selected':''}>${c}</option>`
     ).join('');
-    const otherSelected = d.category && !DIP_CATEGORIES.includes(d.category);
+    const otherSelected = d.category && !categories.includes(d.category);
     const bodyHtml = bodyToHtml(d.body);
+
+    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
 
     card.innerHTML = `
         <div class="series-head" onclick="toggleSeriesCard(this)">
@@ -844,60 +865,60 @@ function buildDipCard(d, i) {
                 <div class="field" style="flex:2;min-width:200px;">
                     <label>Title</label>
                     <input type="text" value="${esc(d.title||'')}"
-                        oninput="dipDocs[${i}].title=this.value;refreshDipHead(${i})"
+                        oninput="${prefix}Docs[${i}].title=this.value;refresh${capitalizeFirst(prefix)}Head(${i})"
                         onmouseenter="this.closest('.series-card').draggable=false"
                         onmouseleave="this.closest('.series-card').draggable=true">
                 </div>
                 <div class="field" style="flex:0 0 160px;">
                     <label>Category</label>
-                    <select onchange="dipDocs[${i}].category=this.value;refreshDipHead(${i});toggleDipCustomCat(${i},this.value)">
+                    <select onchange="${prefix}Docs[${i}].category=this.value;refresh${capitalizeFirst(prefix)}Head(${i});toggle${capitalizeFirst(prefix)}CustomCat(${i},this.value)">
                         ${catOptions}
                         <option value="__custom__"${otherSelected?' selected':''}>Other…</option>
                     </select>
                 </div>
-                <div class="field dip-custom-cat-field" id="dip-custom-cat-${i}" style="flex:0 0 160px;${otherSelected?'':'display:none;'}">
+                <div class="field ${prefix}-custom-cat-field" id="${prefix}-custom-cat-${i}" style="flex:0 0 160px;${otherSelected?'':'display:none;'}">
                     <label>Custom category</label>
                     <input type="text" value="${otherSelected?esc(d.category||''):''}" placeholder="e.g. Edict"
-                        oninput="dipDocs[${i}].category=this.value;refreshDipHead(${i})">
+                        oninput="${prefix}Docs[${i}].category=this.value;refresh${capitalizeFirst(prefix)}Head(${i})">
                 </div>
             </div>
             <div class="field-row">
                 <div class="field" style="flex:1;min-width:200px;">
-                    <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional, defaults to img/main/diplomacy_treaties_parchment.png)</span></label>
+                    <label>Image path <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional)</span></label>
                     <input type="text" placeholder="img/main/diplomacy_treaties_parchment.png" value="${esc(d.image||'')}"
-                        oninput="dipDocs[${i}].image=this.value"
+                        oninput="${prefix}Docs[${i}].image=this.value"
                         onmouseenter="this.closest('.series-card').draggable=false"
                         onmouseleave="this.closest('.series-card').draggable=true">
                 </div>
             </div>
             <div class="field" style="margin-top:8px;">
-                <label>Description <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional intro line shown in italics)</span></label>
+                <label>Description <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">(optional)</span></label>
                 <input type="text" value="${esc(d.description||'')}"
-                    oninput="dipDocs[${i}].description=this.value"
+                    oninput="${prefix}Docs[${i}].description=this.value"
                     onmouseenter="this.closest('.series-card').draggable=false"
                     onmouseleave="this.closest('.series-card').draggable=true">
             </div>
             <div class="rte-wrap" style="margin-top:14px;">
                 <label class="rte-label">Body</label>
-                <div class="rte-toolbar" id="rte-dip-${i}-toolbar">
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
+                <div class="rte-toolbar" id="rte-${prefix}-${i}-toolbar">
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-${prefix}-${i}','header')"><b style="font-family:var(--font-display);font-size:11px;">H</b></button>
                     <div class="rte-btn-sep"></div>
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','bold')"><b>B</b></button>
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','italic')"><i>I</i></button>
-                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-dip-${i}','underline')"><u>U</u></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-${prefix}-${i}','bold')"><b>B</b></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-${prefix}-${i}','italic')"><i>I</i></button>
+                    <button class="rte-btn" onmousedown="event.preventDefault();event.stopPropagation();rteFormat('rte-${prefix}-${i}','underline')"><u>U</u></button>
                 </div>
-                <div class="rte-editor" id="rte-dip-${i}" contenteditable="true"
-                    oninput="dipDocs[${i}].body=this.innerHTML"
-                    onkeyup="updateToolbarById('rte-dip-${i}-toolbar')"
-                    onmouseup="updateToolbarById('rte-dip-${i}-toolbar')"
+                <div class="rte-editor" id="rte-${prefix}-${i}" contenteditable="true"
+                    oninput="${prefix}Docs[${i}].body=this.innerHTML"
+                    onkeyup="updateToolbarById('rte-${prefix}-${i}-toolbar')"
+                    onmouseup="updateToolbarById('rte-${prefix}-${i}-toolbar')"
                     onmouseenter="this.closest('.series-card').draggable=false"
                     onmouseleave="this.closest('.series-card').draggable=true"
                 >${bodyHtml}</div>
             </div>
             <div style="margin-top:16px;display:flex;justify-content:flex-end;">
                 <button class="btn btn-danger btn-xs"
-                    onclick="if(confirm('Remove this document?')){dipDocs.splice(${i},1);renderDipDocs();}">
-                    Remove document
+                    onclick="if(confirm('Remove this ${prefix==='dip'?'document':'mission'}?')){if('${prefix}'==='dip'){dipDocs.splice(${i},1);renderDipDocs();}else{misDocs.splice(${i},1);renderMisDocs();}}">
+                    Remove ${prefix==='dip'?'document':'mission'}
                 </button>
             </div>
         </div>
@@ -912,6 +933,13 @@ function refreshDipHead(i) {
     card.querySelector('.dip-cat-badge').textContent = d.category || '—';
 }
 
+function refreshMisHead(i) {
+    const card = document.querySelector(`.series-card[data-di="${i}"]`); if (!card) return;
+    const d = misDocs[i];
+    card.querySelector('.series-head-title').innerHTML = d.title ? esc(d.title) : '<em style="opacity:0.4">Untitled Mission</em>';
+    card.querySelector('.dip-cat-badge').textContent = d.category || '—';
+}
+
 function toggleDipCustomCat(i, val) {
     const field = document.getElementById(`dip-custom-cat-${i}`);
     if (!field) return;
@@ -920,11 +948,29 @@ function toggleDipCustomCat(i, val) {
     else dipDocs[i].category = field.querySelector('input').value;
 }
 
+function toggleMisCustomCat(i, val) {
+    const field = document.getElementById(`mis-custom-cat-${i}`);
+    if (!field) return;
+    field.style.display = val === '__custom__' ? '' : 'none';
+    if (val !== '__custom__') misDocs[i].category = val;
+    else misDocs[i].category = field.querySelector('input').value;
+}
+
 function addDipDoc() {
     dipDocs.push({ title: '', category: 'Treaty', image: '', description: '', body: '' });
     renderDipDocs();
     setTimeout(() => {
         const cards = document.querySelectorAll('#dip-docs-list .series-card');
+        const last = cards[cards.length - 1];
+        if (last) { toggleSeriesCard(last.querySelector('.series-head')); last.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    }, 50);
+}
+
+function addMisDoc() {
+    misDocs.push({ title: '', category: 'Operation', image: '', description: '', body: '' });
+    renderMisDocs();
+    setTimeout(() => {
+        const cards = document.querySelectorAll('#mis-docs-list .series-card');
         const last = cards[cards.length - 1];
         if (last) { toggleSeriesCard(last.querySelector('.series-head')); last.scrollIntoView({ behavior:'smooth', block:'start' }); }
     }, 50);
@@ -959,9 +1005,6 @@ document.getElementById('file-input').addEventListener('change', function() {
     r.readAsText(file); this.value='';
 });
 
-/* Manual "Reload from site" — confirm first if there are unsaved edits.
-   (Automatic reloads via switchPage are already guarded there, so this wrapper
-   is only used by the button to avoid a double prompt.) */
 function reloadFromSite() {
     if (dirty && !confirm('Reloading from the site will discard your current unsaved edits. Continue?')) return;
     fetchLive();
