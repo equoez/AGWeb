@@ -1,14 +1,50 @@
 {
   "title": "Ranks",
   "ranks": [
-    { "name": "Lord Warden",  "key": "wardens",     "desc": "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals." },
-    { "name": "Lady Warden",  "key": "wardens",     "desc": "" },
-    { "name": "Warden",       "key": "wardens",     "desc": "Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose." },
-    { "name": "Oathsworn",    "key": "oathsworn",   "desc": "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril." },
-    { "name": "Enlightened",  "key": "enlightened", "desc": "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands." },
-    { "name": "Shieldbearer", "key": "shieldbearer","desc": "Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties." },
-    { "name": "Initiate",     "key": "initiate",    "desc": "Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order." },
-    { "name": "Sentinel",     "key": "sentinel",    "desc": "Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay." },
-    { "name": "Ward",         "key": "ward",        "desc": "Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay." }
+    {
+      "name": "Lord Warden",
+      "key": "wardens",
+      "desc": "Tasked with guiding policy, the Lord or Lady Warden presides over the Warden's Council as first among equals."
+    },
+    {
+      "name": "Lady Warden",
+      "key": "wardens",
+      "desc": ""
+    },
+    {
+      "name": "Warden",
+      "key": "wardens",
+      "desc": "Wardens oversee the Argent Gryphon in all its affairs, bearing responsibility for its purpose."
+    },
+    {
+      "name": "Oathsworn",
+      "key": "oathsworn",
+      "desc": "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril."
+    },
+    {
+      "name": "Enlightened",
+      "key": "enlightened",
+      "desc": "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."
+    },
+    {
+      "name": "Shieldbearer",
+      "key": "shieldbearer",
+      "desc": "Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties."
+    },
+    {
+      "name": "Initiate",
+      "key": "initiate",
+      "desc": "Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order."
+    },
+    {
+      "name": "Sentinel",
+      "key": "sentinel",
+      "desc": "Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay."
+    },
+    {
+      "name": "Wayfarer",
+      "key": "ward",
+      "desc": "Wards are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay."
+    }
   ]
 }
