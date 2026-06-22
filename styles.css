@@ -191,20 +191,21 @@ body {
     margin: -16px auto 16px;
     padding: 4px 12px 4px 6px;
     border-radius: var(--radius-btn);
-    border: 1px solid rgba(255, 210, 122, 0.2);
-    background: rgba(255, 210, 122, 0.05);
-    color: var(--color-gold);
+    border: none;
+    background: var(--color-nav-bg);
+    -webkit-backdrop-filter: var(--blur-panel);
+    backdrop-filter: var(--blur-panel);
+    color: var(--color-gold-light);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     font-family: var(--font-display);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-decoration: none;
-    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 .discord-link:hover {
-    background: rgba(255, 210, 122, 0.12);
-    border-color: rgba(255, 210, 122, 0.4);
-    color: var(--color-gold-light);
+    color: #fff;
     transform: translateY(-1px);
 }
 .discord-icon {
