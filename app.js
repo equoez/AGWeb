@@ -1,7 +1,7 @@
 /* ============================================================
    Utilities
    ============================================================ */
-const PAGES      = ['home','codex','enlist','library','diplomacy','mission','ranks','members'];
+const PAGES      = ['home','codex','enlist','library','diplomacy','missions','ranks','members'];
 const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
 const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
 /* Lets keyboard users activate role="button" cards with Enter or Space */
@@ -21,7 +21,7 @@ setHTML('navbar', PAGES.map(p =>
 ).join(''));
 
 /* ============================================================
-   Simple pages (home, enlist, mission, diplomacy, decree removed)
+   Simple pages (home, enlist, missions, diplomacy, decree removed)
    ============================================================ */
 function loadSimple(page, file) {
     const el = document.getElementById(page + '-content');
@@ -397,18 +397,18 @@ function misOpenDoc(idx) {
 
     document.getElementById('mis-shelf-view').style.display   = 'none';
     document.getElementById('mis-article-view').style.display = 'block';
-    try { history.pushState({ page: 'mission', doc: idx }, '', '/#mission'); } catch(e) {}
+    try { history.pushState({ page: 'missions', doc: idx }, '', '/#missions'); } catch(e) {}
     window.scrollTo(0, 0);
 }
 
 function misShowShelf(pushHistory = true) {
     document.getElementById('mis-shelf-view').style.display   = 'block';
     document.getElementById('mis-article-view').style.display = 'none';
-    if (pushHistory) try { history.pushState({ page: 'mission' }, '', '/#mission'); } catch(e) {}
+    if (pushHistory) try { history.pushState({ page: 'missions' }, '', '/#missions'); } catch(e) {}
 }
 
 /* ============================================================
-   Page switching (decree removed, mission added)
+   Page switching (decree removed, missions added)
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
     document.querySelector('.page.active')?.classList.remove('active');
@@ -423,7 +423,7 @@ function showPage(pageId, pushHistory = true) {
             return;
         }
     }
-    if (pageId === 'mission') {
+    if (pageId === 'missions') {
         initMission();
         if (document.getElementById('mis-article-view')?.style.display !== 'none') {
             misShowShelf();
@@ -463,13 +463,13 @@ window.addEventListener('popstate', e => {
         dipShowShelf(false);
         return;
     }
-    if (st?.page === 'mission' && st.doc != null) {
-        showPage('mission', false);
+    if (st?.page === 'missions' && st.doc != null) {
+        showPage('missions', false);
         misOpenDoc(st.doc);
         return;
     }
-    if (st?.page === 'mission') {
-        showPage('mission', false);
+    if (st?.page === 'missions') {
+        showPage('missions', false);
         misShowShelf(false);
         return;
     }
