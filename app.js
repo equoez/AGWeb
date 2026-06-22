@@ -24,8 +24,8 @@ const json       = (url, cb, err) => fetch(url)
 const NAV = [
     { type: 'link',  page: 'home',   label: 'Home'   },
     { type: 'link',  page: 'enlist', label: 'Enlist' },
-    { type: 'group', label: 'Chronicle', pages: ['codex','ranks','members','diplomacy','missions'] },
-    { type: 'link',  page: 'library', label: 'Library' },
+    { type: 'link',  page: 'members', label: 'Members' },
+    { type: 'group', label: 'Chronicle', pages: ['codex','ranks','diplomacy','missions','library'] },
 ];
 /* Lookup: page id -> the group label it lives under (for active highlighting) */
 const PAGE_GROUP = {};
