@@ -63,9 +63,10 @@ function loadCodex() {
 let RANK_MAP = new Map();
 
 /* Pre-load rank map so badges are correct before the Ranks page is visited */
-json('sources/ranks.json', d => {
-    RANK_MAP = new Map((d.ranks || []).map(r => [r.name, r.key]));
-});
+let rankMapReady = fetch('sources/ranks.json')
+    .then(r => r.json())
+    .then(d => { RANK_MAP = new Map((d.ranks || []).map(r => [r.name, r.key])); })
+    .catch(e => console.error('Could not preload ranks:', e));
 
 function loadRanks() {
     const el = document.getElementById('ranks-content');
@@ -98,7 +99,7 @@ function loadMembers() {
     list.dataset.loaded = '1';
     json('sources/characters.json', chars => {
         characterData = chars;
-        setHTML('members-list', chars.map((c, i) => {
+        rankMapReady.then(() => setHTML('members-list', chars.map((c, i) => {
             if (!c.rank) return '';
             const icon = c.sheet
                 ? `<a class="sheet-icon-link" href="#${nameToSlug(c.name)}" onclick="showCharacterSheet(${i});return false;" title="View character sheet">
@@ -113,7 +114,7 @@ function loadMembers() {
                 </div>
                 ${c.points > 0 ? `<div class="member-points"><span class="member-points-number">${c.points}</span><img class="member-points-icon" src="img/icons/heroicscroll.png" alt="points"></div>` : ''}
             </div>`;
-        }).join(''));
+        }).join('')));
     }, () => {
         document.getElementById('members-error').style.display = 'block';
     });
