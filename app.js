@@ -15,10 +15,80 @@ const json       = (url, cb, err) => fetch(url)
 
 /* ============================================================
    Navbar
+   ------------------------------------------------------------
+   Top level shows a short row; pages under "Chronicle" are tucked
+   into a dropdown to keep the bar light. `NAV` drives both the
+   markup and the active-highlight logic, so adding/moving a page
+   is a one-line change here.
    ============================================================ */
-setHTML('navbar', PAGES.map(p =>
-    `<button class="nav-button" onclick="showPage('${p}')">${p[0].toUpperCase() + p.slice(1)}</button>`
-).join(''));
+const NAV = [
+    { type: 'link',  page: 'home',   label: 'Home'   },
+    { type: 'link',  page: 'enlist', label: 'Enlist' },
+    { type: 'group', label: 'Chronicle', pages: ['codex','ranks','members','diplomacy','missions'] },
+    { type: 'link',  page: 'library', label: 'Library' },
+];
+/* Lookup: page id -> the group label it lives under (for active highlighting) */
+const PAGE_GROUP = {};
+NAV.filter(n => n.type === 'group').forEach(g =>
+    g.pages.forEach(pg => { PAGE_GROUP[pg] = g.label; })
+);
+const cap = p => p[0].toUpperCase() + p.slice(1);
+
+setHTML('navbar', NAV.map(item => {
+    if (item.type === 'link') {
+        return `<button class="nav-button" data-nav="${item.page}" onclick="showPage('${item.page}')">${item.label}</button>`;
+    }
+    /* Dropdown group */
+    const menu = item.pages.map(pg =>
+        `<button class="nav-menu-item" data-nav="${pg}" role="menuitem"
+            onclick="showPage('${pg}'); closeNavMenus();">${cap(pg)}</button>`
+    ).join('');
+    return `
+        <div class="nav-group" data-group="${item.label}">
+            <button class="nav-button nav-group-toggle" aria-haspopup="true" aria-expanded="false"
+                onclick="toggleNavMenu(this)">
+                ${item.label}<span class="nav-caret" aria-hidden="true">&#9662;</span>
+            </button>
+            <div class="nav-menu" role="menu">${menu}</div>
+        </div>`;
+}).join(''));
+
+/* ── Dropdown open/close ── */
+function toggleNavMenu(btn) {
+    const group = btn.closest('.nav-group');
+    const isOpen = group.classList.contains('open');
+    closeNavMenus();
+    if (!isOpen) {
+        group.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+    }
+}
+function closeNavMenus() {
+    document.querySelectorAll('.nav-group.open').forEach(g => {
+        g.classList.remove('open');
+        g.querySelector('.nav-group-toggle')?.setAttribute('aria-expanded', 'false');
+    });
+}
+/* Close when clicking outside, or on Escape */
+document.addEventListener('click', e => { if (!e.target.closest('.nav-group')) closeNavMenus(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNavMenus(); });
+
+/* ── Active-page highlight ── */
+/* Marks the current page's button active; if it lives in a group,
+   the group's toggle is highlighted instead. */
+function updateNavActive(pageId) {
+    document.querySelectorAll('#navbar .nav-button, #navbar .nav-menu-item')
+        .forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#navbar .nav-group-toggle')
+        .forEach(b => b.classList.remove('active'));
+
+    document.querySelector(`#navbar [data-nav="${pageId}"]`)?.classList.add('active');
+    const groupLabel = PAGE_GROUP[pageId];
+    if (groupLabel) {
+        document.querySelector(`#navbar .nav-group[data-group="${groupLabel}"] .nav-group-toggle`)
+            ?.classList.add('active');
+    }
+}
 
 /* ============================================================
    Simple pages (home, enlist, missions, diplomacy, decree removed)
@@ -411,6 +481,7 @@ function misShowShelf(pushHistory = true) {
    Page switching (decree removed, missions added)
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
+    updateNavActive(pageId);
     document.querySelector('.page.active')?.classList.remove('active');
     document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
 
