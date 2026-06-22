@@ -639,5 +639,5 @@ document.addEventListener('mouseout', e => {
     if (!e.target.classList.contains('member-points-icon')) return;
     bgEl.classList.remove('dark-magic-anim');
     document.body.classList.remove('dark-magic-active');
-    dmTimer = setTimeout(() => bgEl.remove(), 30000);
+    dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
 });
