@@ -270,13 +270,35 @@ const PAGES_CONFIG = [
     { id:'library',    file:'journal.json',     label:'Library',    mode:'journal'    },
 ];
 
-const CHAR_RANKS = [
+/* Fallback rank list — used if ranks.json can't be fetched (e.g. opened via
+   file://). When the editor loads, syncRanksFromJson() overwrites these from
+   sources/ranks.json so the Characters dropdown + badges stay in sync with the
+   Ranks tab automatically. */
+let CHAR_RANKS = [
     ['Lord Warden','wardens'],['Lady Warden','wardens'],['Warden','wardens'],
     ['Oathsworn','oathsworn'],['Enlightened','enlightened'],['Shieldbearer','shieldbearer'],
     ['Initiate','initiate'],['Sentinel','sentinel'],['Wayfarer','ward'],
 ];
-const RANK_MAP  = new Map(CHAR_RANKS.map(([n,k])=>[n,k]));
-const badgeSrc  = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge.png`;
+let RANK_MAP   = new Map(CHAR_RANKS.map(([n,k])=>[n,k]));
+const badgeSrc = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge.png`;
+
+/* Pull the live rank names + badge keys from ranks.json so the character
+   dropdown never drifts from the Ranks tab. Silently keeps the fallback list
+   on any failure. Returns a promise so init can await it before first render. */
+function syncRanksFromJson() {
+    return fetch('sources/ranks.json?nocache='+Date.now())
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(data => {
+            const list = (data.ranks||[])
+                .filter(x => x && x.name)
+                .map(x => [x.name, x.key||'initiate']);
+            if (list.length) {
+                CHAR_RANKS = list;
+                RANK_MAP   = new Map(CHAR_RANKS.map(([n,k])=>[n,k]));
+            }
+        })
+        .catch(err => console.warn('Could not sync ranks from ranks.json — using built-in list.', err));
+}
 const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 let currentPage  = PAGES_CONFIG[0];
@@ -323,6 +345,9 @@ function switchPage(p) {
     document.querySelectorAll('.editor-panel').forEach(el=>el.classList.remove('active'));
     document.getElementById('panel-'+p.mode).classList.add('active');
     document.getElementById('output-box').textContent = 'Click "Generate JSON" to preview the output.';
+    /* Refresh the rank list from ranks.json before showing Characters, so the
+       dropdown reflects any rank edits saved to the site this session. */
+    if (p.mode === 'characters') { syncRanksFromJson().then(fetchLive); return; }
     fetchLive();
 }
 
@@ -977,7 +1002,9 @@ function fetchLive() {
 }
 
 /* ── Init ── */
-switchPage(currentPage);
+/* Sync the character-rank list from ranks.json first, then render. If the
+   fetch fails the built-in fallback list is used, so the editor still works. */
+syncRanksFromJson().then(() => switchPage(currentPage));
 </script>
 </body>
 </html>
