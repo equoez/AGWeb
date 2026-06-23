@@ -25,7 +25,7 @@ const NAV = [
     { type: 'link',  page: 'home',   label: 'Home'   },
     { type: 'link',  page: 'enlist', label: 'Enlist' },
     { type: 'link',  page: 'members', label: 'Members' },
-    { type: 'group', label: 'Chronicle', pages: ['codex','ranks','diplomacy','missions','library'] },
+    { type: 'group', label: 'Library', pages: ['codex','ranks','diplomacy','missions','library'] },
 ];
 /* Lookup: page id -> the group label it lives under (for active highlighting) */
 const PAGE_GROUP = {};
@@ -33,6 +33,9 @@ NAV.filter(n => n.type === 'group').forEach(g =>
     g.pages.forEach(pg => { PAGE_GROUP[pg] = g.label; })
 );
 const cap = p => p[0].toUpperCase() + p.slice(1);
+/* Explicit labels for pages whose dropdown name differs from the page id */
+const PAGE_LABEL = { library: 'Stories' };
+const navLabel = p => PAGE_LABEL[p] || cap(p);
 
 setHTML('navbar', NAV.map(item => {
     if (item.type === 'link') {
@@ -41,7 +44,7 @@ setHTML('navbar', NAV.map(item => {
     /* Dropdown group */
     const menu = item.pages.map(pg =>
         `<button class="nav-menu-item" data-nav="${pg}" role="menuitem"
-            onclick="showPage('${pg}'); closeNavMenus();">${cap(pg)}</button>`
+            onclick="showPage('${pg}'); closeNavMenus();">${navLabel(pg)}</button>`
     ).join('');
     return `
         <div class="nav-group" data-group="${item.label}">
