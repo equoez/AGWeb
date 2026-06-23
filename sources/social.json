@@ -1,7 +1,6 @@
-{ 
-  "discord": 
-  { 
-    "url": "https://discord.gg/D9m9p2pp3V", 
-    "label": "Join our Discord" 
-  } 
+{
+  "discord": {
+    "url": "https://discord.gg/D9m9p2pp3V",
+    "label": "Join our Discord"
+  }
 }
