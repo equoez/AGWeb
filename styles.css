@@ -381,6 +381,10 @@ p:last-child { margin-bottom: 0; }
 em     { color: var(--color-text-muted); font-style: italic; }
 strong { color: var(--color-gold-light); font-weight: 500; }
 
+/* Status messages: failed loads and empty sections */
+.load-error { color: #ff8888; }
+.empty-note { color: var(--color-text-muted); font-style: italic; }
+
 /* ============================================================
    Section Divider
    ============================================================ */
