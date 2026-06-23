@@ -26,9 +26,25 @@ function loadError(target, file) {
 }
 
 /* ============================================================
+   Social links (Discord)
+   ------------------------------------------------------------
+   The Discord button's URL and label live in sources/social.json
+   so a non-coder can update them via the content editor. The HTML
+   ships with a working link baked in as a fallback, so if the JSON
+   is missing or fails to load the button still works.
+   ============================================================ */
+json('sources/social.json', d => {
+    const dc = d.discord || {};
+    const link  = document.getElementById('discord-link');
+    const label = document.getElementById('discord-label');
+    if (link && dc.url)    link.href = dc.url;
+    if (label && dc.label) label.textContent = dc.label;
+});
+
+/* ============================================================
    Navbar
    ------------------------------------------------------------
-   Top level shows a short row; pages under "Chronicle" are tucked
+   Top level shows a short row; pages under "Library" are tucked
    into a dropdown to keep the bar light. `NAV` drives both the
    markup and the active-highlight logic, so adding/moving a page
    is a one-line change here.
