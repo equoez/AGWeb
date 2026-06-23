@@ -18,11 +18,6 @@
     }
   },
   {
-    "name": "Ophelia Starwhisper",
-    "rank": "Warden",
-    "points": 0
-  },
-  {
     "name": "Roderic Rivershaw",
     "rank": "Warden",
     "points": 0,
@@ -97,6 +92,11 @@
     "name": "Renai Thunderstrike",
     "rank": "Initiate",
     "points": 3
+  },
+  {
+    "name": "Ophelia Starwhisper",
+    "rank": "Initiate",
+    "points": 0
   },
   {
     "name": "Regin of Rosebud",
