@@ -1,7 +1,6 @@
 /* ============================================================
    Utilities
    ============================================================ */
-const PAGES      = ['home','codex','enlist','library','diplomacy','missions','ranks','members'];
 const nameToSlug = n => n.toLowerCase().replace(/[^a-z0-9]/g,'');
 const setHTML    = (id, html) => document.getElementById(id).innerHTML = html;
 /* Lets keyboard users activate role="button" cards with Enter or Space */
@@ -12,6 +11,19 @@ const json       = (url, cb, err) => fetch(url)
     .then(r => { if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${url}`); return r.json(); })
     .then(cb)
     .catch(e => { console.error('Fetch failed:', e); (err || (() => {}))(e); });
+
+/* Render a block of plain text as paragraphs: blank lines split paragraphs,
+   single newlines become <br>. Used by every long-form reader. */
+const paragraphs = text => (text || '')
+    .split(/\n\n+/)
+    .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
+    .join('');
+
+/* Standard "could not load" message; styled via CSS (.load-error). */
+function loadError(target, file) {
+    const el = typeof target === 'string' ? document.getElementById(target) : target;
+    if (el) el.innerHTML = `<p class="load-error">Could not load <em>sources/${file}</em>.</p>`;
+}
 
 /* ============================================================
    Navbar
@@ -32,6 +44,9 @@ const PAGE_GROUP = {};
 NAV.filter(n => n.type === 'group').forEach(g =>
     g.pages.forEach(pg => { PAGE_GROUP[pg] = g.label; })
 );
+/* All navigable page ids, derived from NAV so it never drifts out of sync.
+   ('character' is a detail view reached via slug, not a nav entry.) */
+const PAGES = NAV.flatMap(n => n.type === 'group' ? n.pages : [n.page]);
 const cap = p => p[0].toUpperCase() + p.slice(1);
 /* Explicit labels for pages whose dropdown name differs from the page id */
 const PAGE_LABEL = { library: 'Stories' };
@@ -94,7 +109,7 @@ function updateNavActive(pageId) {
 }
 
 /* ============================================================
-   Simple pages (home, enlist, missions, diplomacy, decree removed)
+   Simple pages (home, enlist)
    ============================================================ */
 function loadSimple(page, file) {
     const el = document.getElementById(page + '-content');
@@ -102,9 +117,7 @@ function loadSimple(page, file) {
     el.dataset.loaded = '1';
     json('sources/' + file, d => {
         el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '') + (d.body || '');
-    }, () => {
-        el.innerHTML = `<p style="color:#ff8888;">Could not load <em>sources/${file}</em>.</p>`;
-    });
+    }, () => loadError(el, file));
 }
 
 /* ============================================================
@@ -125,9 +138,7 @@ function loadCodex() {
                 </div>`
             ).join('')
             + '</div>';
-    }, () => {
-        el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/codex.json</em>.</p>';
-    });
+    }, () => loadError('codex-content', 'codex.json'));
 }
 
 /* ============================================================
@@ -154,9 +165,7 @@ function loadRanks() {
                     <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
                 </div>`
             ).join('');
-    }, () => {
-        el.innerHTML = '<p style="color:#ff8888;">Could not load <em>sources/ranks.json</em>.</p>';
-    });
+    }, () => loadError('ranks-content', 'ranks.json'));
 }
 
 const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.png`;
@@ -265,10 +274,7 @@ function initLibrary() {
                 </div>`;
             }).join('')
             + '</div>';
-    }, () => {
-        document.getElementById('lib-series-grid').innerHTML =
-            '<p style="color:#ff8888;">Could not load <em>sources/journal.json</em>.</p>';
-    });
+    }, () => loadError('lib-series-grid', 'journal.json'));
 }
 
 function libOpenSeries(si, pushHistory = true) {
@@ -303,9 +309,7 @@ function libShowChapter(i) {
     const e = entries[i];
 
     document.getElementById('lib-chapter-title').textContent = e.title;
-    setHTML('lib-chapter-body',
-        e.body.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('')
-    );
+    setHTML('lib-chapter-body', paragraphs(e.body));
 
     document.querySelectorAll('.lib-book-btn').forEach((b, j) =>
         b.classList.toggle('active', j === i)
@@ -319,169 +323,114 @@ function libShowShelf(pushHistory = true) {
 }
 
 /* ============================================================
-   Diplomacy
+   Document sections (Diplomacy & Missions)
    ============================================================
-   Data lives in sources/diplomacy.json — an array of documents:
+   Both pages are the same shape: a grid of cards that each open a
+   full-text article. makeDocSection() builds one such page; the two
+   instances below differ only in element-id prefix, data file, and
+   a couple of labels.
+
+   Data lives in sources/<file> — an array of documents:
      [
        {
          "title": "The Silver Compact",
-         "category": "Treaty",
-         "image": "img/main/diplomacy_treaties_parchment.png",   ← optional; falls back to parchment
-         "body": "Full article text…\n\nParagraphs separated by blank lines."
+         "category": "Treaty",            ← free-form; shown as a pill/badge
+         "image": "img/main/some.png",    ← optional; falls back to parchment
+         "description": "Optional intro shown above the body.",
+         "body": "Full text…\n\nBlank lines separate paragraphs."
+                  // if the body contains HTML tags it is rendered as-is
        },
        …
      ]
-   The "category" field is free-form (Treaty, Pact, Alliance, Accord…).
    ============================================================ */
-let DIP_DOCS  = [];
-let dipReady  = false;
+const DOC_FALLBACK_IMG = 'img/main/diplomacy_treaties_parchment.png';
 
-function initDiplomacy() {
-    if (dipReady) return;
-    dipReady = true;
-    json('sources/diplomacy.json', data => {
-        DIP_DOCS = data;
-        const grid = document.getElementById('dip-doc-grid');
-        if (!DIP_DOCS.length) {
-            grid.innerHTML = '<p style="color:var(--color-text-muted);font-style:italic;">No documents on record.</p>';
-            return;
+function makeDocSection({ prefix, page, file, emptyNoun, defaultCategory }) {
+    let docs  = [];
+    let ready = false;
+    const $ = id => document.getElementById(`${prefix}-${id}`);
+
+    function init() {
+        if (ready) return;
+        ready = true;
+        json('sources/' + file, data => {
+            docs = data;
+            const grid = $('doc-grid');
+            if (!docs.length) {
+                grid.innerHTML = `<p class="empty-note">No ${emptyNoun} on record.</p>`;
+                return;
+            }
+            grid.innerHTML = '<div class="section">'
+                + docs.map((doc, idx) =>
+                    `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="${prefix}OpenDoc(${idx})" onkeydown="activateOnKey(event)">
+                        <img src="${doc.image || DOC_FALLBACK_IMG}" class="${prefix}-doc-thumb" alt="" loading="lazy" decoding="async">
+                        <div>
+                            <strong>${doc.title}</strong>
+                            <div class="library-series-count ${prefix}-category-pill">${doc.category || defaultCategory}</div>
+                        </div>
+                    </div>`
+                ).join('')
+                + '</div>';
+        }, () => loadError($('doc-grid'), file));
+    }
+
+    function openDoc(idx) {
+        const doc = docs[idx];
+        if (!doc) return;
+
+        $('article-title').textContent    = doc.title;
+        $('article-category').textContent = doc.category || '';
+
+        /* Optional description shown above the body */
+        const descEl = $('article-desc');
+        if (descEl) {
+            descEl.innerHTML = doc.description || '';
+            descEl.style.display = doc.description ? 'block' : 'none';
         }
 
-        grid.innerHTML = '<div class="section">'
-            + DIP_DOCS.map((doc, idx) =>
-                `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="dipOpenDoc(${idx})" onkeydown="activateOnKey(event)">
-                    <img src="${doc.image || 'img/main/diplomacy_treaties_parchment.png'}" class="dip-doc-thumb" alt="" loading="lazy" decoding="async">
-                    <div>
-                        <strong>${doc.title}</strong>
-                        <div class="library-series-count dip-category-pill">${doc.category || 'Document'}</div>
-                    </div>
-                </div>`
-            ).join('')
-            + '</div>';
-    }, () => {
-        document.getElementById('dip-doc-grid').innerHTML =
-            '<p style="color:#ff8888;">Could not load <em>sources/diplomacy.json</em>.</p>';
-    });
+        /* Render body: raw HTML if it looks like markup, else paragraphs */
+        const rawBody = doc.body || '';
+        const isHTML  = /<[a-z][\s\S]*>/i.test(rawBody);
+        setHTML(`${prefix}-article-body`, isHTML ? rawBody : paragraphs(rawBody));
+
+        /* Swap the header image */
+        const bigImg = document.querySelector(`#${prefix}-article-view .lib-reader-bigbook`);
+        if (bigImg) bigImg.src = doc.image || DOC_FALLBACK_IMG;
+
+        $('shelf-view').style.display   = 'none';
+        $('article-view').style.display = 'block';
+        try { history.pushState({ page, doc: idx }, '', '/#' + page); } catch(e) {}
+        window.scrollTo(0, 0);
+    }
+
+    function showShelf(pushHistory = true) {
+        $('shelf-view').style.display   = 'block';
+        $('article-view').style.display = 'none';
+        if (pushHistory) try { history.pushState({ page }, '', '/#' + page); } catch(e) {}
+    }
+
+    return { init, openDoc, showShelf };
 }
 
-function dipOpenDoc(idx) {
-    const doc = DIP_DOCS[idx];
-    if (!doc) return;
+const Diplomacy = makeDocSection({
+    prefix: 'dip', page: 'diplomacy', file: 'diplomacy.json',
+    emptyNoun: 'documents', defaultCategory: 'Document',
+});
+const Missions = makeDocSection({
+    prefix: 'mis', page: 'missions', file: 'mission.json',
+    emptyNoun: 'missions', defaultCategory: 'Mission',
+});
 
-    document.getElementById('dip-article-title').textContent    = doc.title;
-    document.getElementById('dip-article-category').textContent = doc.category || '';
-    /* Optional description shown above the body */
-    const descEl = document.getElementById('dip-article-desc');
-    if (descEl) descEl.innerHTML = doc.description || '';
-    if (descEl) descEl.style.display = doc.description ? 'block' : 'none';
-
-    /* Render body: if it contains HTML tags use it directly, otherwise treat as plain text */
-    const rawBody = doc.body || '';
-    const isHTML  = /<[a-z][\s\S]*>/i.test(rawBody);
-    setHTML('dip-article-body',
-        isHTML
-            ? rawBody
-            : rawBody.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('')
-    );
-
-    /* Swap thumbnail image in the header */
-    const bigImg = document.querySelector('#dip-article-view .lib-reader-bigbook');
-    if (bigImg) bigImg.src = doc.image || 'img/main/diplomacy_treaties_parchment.png';
-
-    document.getElementById('dip-shelf-view').style.display   = 'none';
-    document.getElementById('dip-article-view').style.display = 'block';
-    try { history.pushState({ page: 'diplomacy', doc: idx }, '', '/#diplomacy'); } catch(e) {}
-    window.scrollTo(0, 0);
-}
-
-function dipShowShelf(pushHistory = true) {
-    document.getElementById('dip-shelf-view').style.display   = 'block';
-    document.getElementById('dip-article-view').style.display = 'none';
-    if (pushHistory) try { history.pushState({ page: 'diplomacy' }, '', '/#diplomacy'); } catch(e) {}
-}
+/* Thin globals so inline onclick="dipOpenDoc(…)" etc. keep working */
+const initDiplomacy = () => Diplomacy.init();
+const dipOpenDoc     = idx => Diplomacy.openDoc(idx);
+const dipShowShelf   = (p = true) => Diplomacy.showShelf(p);
+const initMission    = () => Missions.init();
+const misOpenDoc     = idx => Missions.openDoc(idx);
+const misShowShelf   = (p = true) => Missions.showShelf(p);
 
 /* ============================================================
-   MISSION
-   ============================================================
-   Data lives in sources/mission.json — an array of documents:
-     [
-       {
-         "title": "Operation Winter's Edge",
-         "category": "Operation",
-         "image": "img/main/mission_image.png",   ← optional; falls back to parchment
-         "body": "Mission details text…\n\nParagraphs separated by blank lines."
-       },
-       …
-     ]
-   The "category" field is free-form (Operation, Directive, Order, Task…).
-   ============================================================ */
-let MIS_DOCS  = [];
-let misReady  = false;
-
-function initMission() {
-    if (misReady) return;
-    misReady = true;
-    json('sources/mission.json', data => {
-        MIS_DOCS = data;
-        const grid = document.getElementById('mis-doc-grid');
-        if (!MIS_DOCS.length) {
-            grid.innerHTML = '<p style="color:var(--color-text-muted);font-style:italic;">No missions on record.</p>';
-            return;
-        }
-
-        grid.innerHTML = '<div class="section">'
-            + MIS_DOCS.map((doc, idx) =>
-                `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="misOpenDoc(${idx})" onkeydown="activateOnKey(event)">
-                    <img src="${doc.image || 'img/main/diplomacy_treaties_parchment.png'}" class="mis-doc-thumb" alt="" loading="lazy" decoding="async">
-                    <div>
-                        <strong>${doc.title}</strong>
-                        <div class="library-series-count mis-category-pill">${doc.category || 'Mission'}</div>
-                    </div>
-                </div>`
-            ).join('')
-            + '</div>';
-    }, () => {
-        document.getElementById('mis-doc-grid').innerHTML =
-            '<p style="color:#ff8888;">Could not load <em>sources/mission.json</em>.</p>';
-    });
-}
-
-function misOpenDoc(idx) {
-    const doc = MIS_DOCS[idx];
-    if (!doc) return;
-
-    document.getElementById('mis-article-title').textContent    = doc.title;
-    document.getElementById('mis-article-category').textContent = doc.category || '';
-    
-    const descEl = document.getElementById('mis-article-desc');
-    if (descEl) descEl.innerHTML = doc.description || '';
-    if (descEl) descEl.style.display = doc.description ? 'block' : 'none';
-
-    const rawBody = doc.body || '';
-    const isHTML  = /<[a-z][\s\S]*>/i.test(rawBody);
-    setHTML('mis-article-body',
-        isHTML
-            ? rawBody
-            : rawBody.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('')
-    );
-
-    const bigImg = document.querySelector('#mis-article-view .lib-reader-bigbook');
-    if (bigImg) bigImg.src = doc.image || 'img/main/diplomacy_treaties_parchment.png';
-
-    document.getElementById('mis-shelf-view').style.display   = 'none';
-    document.getElementById('mis-article-view').style.display = 'block';
-    try { history.pushState({ page: 'missions', doc: idx }, '', '/#missions'); } catch(e) {}
-    window.scrollTo(0, 0);
-}
-
-function misShowShelf(pushHistory = true) {
-    document.getElementById('mis-shelf-view').style.display   = 'block';
-    document.getElementById('mis-article-view').style.display = 'none';
-    if (pushHistory) try { history.pushState({ page: 'missions' }, '', '/#missions'); } catch(e) {}
-}
-
-/* ============================================================
-   Page switching (decree removed, missions added)
+   Page switching
    ============================================================ */
 function showPage(pageId, pushHistory = true) {
     updateNavActive(pageId);
@@ -504,7 +453,6 @@ function showPage(pageId, pushHistory = true) {
             return;
         }
     }
-    /* decree page removed */
     if (pageId === 'codex')     loadCodex();
     if (pageId === 'ranks')     loadRanks();
     if (pageId === 'members')   loadMembers();
