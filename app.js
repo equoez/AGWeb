@@ -53,7 +53,7 @@ const NAV = [
     { type: 'link',  page: 'home',   label: 'Home'   },
     { type: 'link',  page: 'enlist', label: 'Enlist' },
     { type: 'link',  page: 'members', label: 'Members' },
-    { type: 'group', label: 'Library', pages: ['codex','ranks','diplomacy','missions','library'] },
+    { type: 'group', label: 'Library', pages: ['library','diplomacy','missions','ranks','codex'] },
 ];
 /* Lookup: page id -> the group label it lives under (for active highlighting) */
 const PAGE_GROUP = {};
