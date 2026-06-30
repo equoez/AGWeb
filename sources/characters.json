@@ -182,5 +182,14 @@
     "name": "Lilly Thundershade",
     "rank": "Wayfarer",
     "points": 0
+  },
+  {
+    "name": "Seraphine Duskvale",
+    "rank": "Wayfarer",
+    "points": 0,
+    "sheet": {
+      "portrait": "characters/seraphine.webp",
+      "bio": "<h3 class=\"isSelectedEnd\"><span>Overview</span></h3><p class=\"isSelectedEnd\"><span><b>Name</b>:</span><span>&nbsp;Seraphine Duskvale</span><br><span><b>Race</b>:</span><span>&nbsp;Human</span><br><span><b>Profession</b>:</span><span>Mage</span><br><span><b>Personality</b>:&nbsp;</span><span>Composed, eloquent, compassionate</span></p><h3 class=\"isSelectedEnd\"><span>Background</span></h3><p class=\"isSelectedEnd\"><span>Seraphine Duskvale believes that words can shape the world as surely as magic. Raised among scholars, she devoted her life to the pursuit of arcane knowledge while traveling the kingdoms, where she became known for her calm judgment and remarkable gift for bringing people together. Whether speaking before nobles, comforting the uncertain, or settling disputes between rivals, she has an uncanny ability to earn trust and leave others feeling heard.</span></p><p><span>Though a gifted mage in her own right, Seraphine rarely seeks recognition through displays of power. She believes wisdom is measured not by the spells one commands, but by the understanding one inspires in others, and she carries herself with a quiet confidence that naturally draws people to her.</span></p>"
+    }
   }
 ]
