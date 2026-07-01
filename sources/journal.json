@@ -1,5 +1,22 @@
 [
   {
+    "name": "The Canticle of Scrolls",
+    "entries": [
+      {
+        "title": "Verse One - Shieldbearer",
+        "body": "<div>When first an Initiate takes the quill,</div><div>With fiery heart and ardent will,</div><div><b>Twelve scrolls</b> must be earned and sealed,</div><div>The Griffin Shield be theirs to wield.</div><div><br></div><div><span style=\"font-size: 0.95rem;\"><i>Source: 4:9, Rivershaw, Ghostlands</i></span></div>"
+      },
+      {
+        "title": "Verse Two - Enlightened",
+        "body": "<div>The Shieldbearer stands with guard and might,</div><div>Yet must press on in learning’s light;</div><div><b>Three score</b> scrolls by toil amassed,</div><div>The Enlightened grace be won at last.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 7:2, Blackthorn, Cormaya</i></div>"
+      },
+      {
+        "title": "Verse Three - Oathsworn",
+        "body": "<div>The Enlightened walks a hallowed road,</div><div>By wisdom’s flame and honour’s code;</div><div><b>A full gross</b> gathered, bound and sworn,</div><div>The Oathsworn rank in them be born.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 1:14, Blackheart, Wolftower</i></div>"
+      }
+    ]
+  },
+  {
     "name": "Valkera's Journal",
     "entries": [
       {
@@ -115,11 +132,11 @@
     ]
   },
   {
-    "name": "FWD Poem",
+    "name": "The Argent Gryphon",
     "entries": [
       {
-        "title": "Followers of the White Dragon, by Tekvorian",
-        "body": "<div>For truth and justice.</div><div>For order and prosperity.</div><div><br></div><div>One mind, one soul.</div><div>One kind, one goal.</div><div><br></div><div>Together through times of chaos.</div><div>Together through times of peace.</div><div><br></div><div>With wisdom and honor.</div><div>With strength and valor.</div><div><br></div><div>Devotion to our belief.</div><div>Devotion to our codex.</div><div><br></div><div>We are the Followers of&nbsp;<span style=\"font-size: 0.95rem;\">the White Dragon.</span></div>"
+        "title": "The Argent Gryphon, by Ursula",
+        "body": "<div>High in Vanduran stone,</div><div>They stand by ancient oath.</div><div>Faith is shield and strength,</div><div>Honour guides each path.</div><div><br></div><div>From halls in hidden peaks,</div><div>They hold the silent line.</div><div>No hunger for great praise,</div><div>Only duty, calm, and kind.</div><div><br></div><div>When shadows rise at night,</div><div>And hearts begin to doubt,</div><div>The Gryphon still keeps watch,</div><div>So others rest in peace.</div>"
       }
     ]
   },
@@ -172,11 +189,11 @@
     ]
   },
   {
-    "name": "The Argent Gryphon",
+    "name": "FWD Poem",
     "entries": [
       {
-        "title": "The Argent Gryphon, by Ursula",
-        "body": "<div>High in Vanduran stone,</div><div>They stand by ancient oath.</div><div>Faith is shield and strength,</div><div>Honour guides each path.</div><div><br></div><div>From halls in hidden peaks,</div><div>They hold the silent line.</div><div>No hunger for great praise,</div><div>Only duty, calm, and kind.</div><div><br></div><div>When shadows rise at night,</div><div>And hearts begin to doubt,</div><div>The Gryphon still keeps watch,</div><div>So others rest in peace.</div>"
+        "title": "Followers of the White Dragon, by Tekvorian",
+        "body": "<div>For truth and justice.</div><div>For order and prosperity.</div><div><br></div><div>One mind, one soul.</div><div>One kind, one goal.</div><div><br></div><div>Together through times of chaos.</div><div>Together through times of peace.</div><div><br></div><div>With wisdom and honor.</div><div>With strength and valor.</div><div><br></div><div>Devotion to our belief.</div><div>Devotion to our codex.</div><div><br></div><div>We are the Followers of&nbsp;<span style=\"font-size: 0.95rem;\">the White Dragon.</span></div>"
       }
     ]
   }
