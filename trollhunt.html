@@ -45,21 +45,21 @@ body {
 .container { display: flex; flex-direction: column; align-items: center; padding: 28px 16px 48px; }
 .logo { width: 140px; margin-bottom: 12px; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7)); }
 .panel {
-    width: 720px; max-width: 100%;
+    width: 1180px; max-width: 100%;
     background: var(--color-bg-panel);
     -webkit-backdrop-filter: var(--blur-panel); backdrop-filter: var(--blur-panel);
     border: 1px solid rgba(255, 210, 122, 0.15);
     border-radius: var(--radius-panel);
-    padding: 26px 28px 28px;
+    padding: 26px 30px 30px;
     box-shadow: 0 6px 30px rgba(0,0,0,0.55);
     position: relative;
 }
 h1 {
-    font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+    font-family: var(--font-display); font-size: 1.9rem; font-weight: 700;
     color: var(--color-gold); letter-spacing: 0.08em; text-align: center;
     text-shadow: 0 1px 8px rgba(0,0,0,0.6); margin-bottom: 2px;
 }
-.subtitle { text-align: center; font-style: italic; color: var(--color-text-muted); font-size: 0.93rem; margin-bottom: 14px; }
+.subtitle { text-align: center; font-style: italic; color: var(--color-text-muted); font-size: 1rem; margin-bottom: 16px; }
 .hud {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
     gap: 8px 20px; margin-bottom: 12px;
@@ -99,7 +99,7 @@ h1 {
 .log p.loot   { color: var(--log-green); }
 .log p.status { color: var(--log-orange); }
 .log p.bad    { color: var(--log-red); }
-.shop { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.shop { margin-top: 14px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
 .shop-btn {
     display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
     text-align: left; background: rgba(255,210,122,0.06);
@@ -172,7 +172,7 @@ h1 {
         </div>
         <div class="wallbar" title="Wall integrity"><div class="wallbar-fill" id="wall-fill"></div></div>
         <div class="field-wrap">
-            <canvas id="field" width="1004" height="565" aria-label="Battlefield: click a troll on the path to strike it"></canvas>
+            <canvas id="field" width="1340" height="754" aria-label="Battlefield: click a troll on the path to strike it"></canvas>
         </div>
         <div class="log" id="log" aria-live="polite"></div>
         <div class="shop" id="shop"></div>
@@ -225,7 +225,7 @@ for (const k in SPRITE_DATA) {
 /* ── Canvas ── */
 const canvas = document.getElementById('field');
 const ctx = canvas.getContext('2d');
-const W = 1004, H = 565;
+const W = 1340, H = 754;
 const DPR = Math.min(2, window.devicePixelRatio || 1);
 canvas.width = W * DPR; canvas.height = H * DPR;
 ctx.scale(DPR, DPR);
@@ -243,24 +243,30 @@ bg.src = 'img/game/vandura_battlefield.webp';
    down through the valley, crosses toward the bridge area, and ends at the
    foot of the castle steps on the lower left. x,y are fractions of W,H. */
 const PATH = [
-    [0.90,  0.625], /* cave-mouth on the right ridge */
+    [0.930, 0.585], /* cave-mouth on the right ridge */
+    [0.905, 0.545],
+    [0.885, 0.60],
     [0.865, 0.66],
-    [0.83,  0.70],
-    [0.80,  0.735],
-    [0.755, 0.755],
-    [0.71,  0.76],
-    [0.665, 0.75],
-    [0.63,  0.77],
-    [0.59,  0.80],
-    [0.55,  0.83],
-    [0.50,  0.855],
-    [0.455, 0.865],
-    [0.415, 0.855],
-    [0.385, 0.83],
-    [0.355, 0.815], /* stone steps / gate approach */
-    [0.315, 0.825],
-    [0.275, 0.85],
-    [0.245, 0.875], /* the gate */
+    [0.815, 0.675],
+    [0.775, 0.655],
+    [0.735, 0.61],
+    [0.700, 0.66],
+    [0.672, 0.735],
+    [0.640, 0.805], /* down onto the wide road */
+    [0.585, 0.842],
+    [0.520, 0.895],
+    [0.455, 0.952], /* lowest sweep of the road */
+    [0.400, 0.973],
+    [0.360, 0.963],
+    [0.320, 0.912],
+    [0.285, 0.862],
+    [0.245, 0.820],
+    [0.205, 0.788],
+    [0.168, 0.748],
+    [0.150, 0.712],
+    [0.128, 0.655],
+    [0.095, 0.585], /* castle steps */
+    [0.076, 0.575], /* the gate */
 ].map(([x, y]) => ({ x: x * W, y: y * H }));
 
 /* Precompute cumulative length so trolls move at constant speed along it */
@@ -288,22 +294,23 @@ function pathAt(dist) {
 }
 /* perspective scale: sprites are smaller far up the path (top), larger near the gate */
 function depthScale(y) {
-    const t = Math.max(0, Math.min(1, (y / H - 0.62) / 0.26)); /* 0 at cave, 1 at gate */
-    return 0.55 + 0.6 * t;
+    const t = Math.max(0, Math.min(1, (y / H - 0.55) / 0.42)); /* 0 high on path, 1 at lowest sweep */
+    return 0.7 + 0.85 * t;
 }
 
 /* ── Hunter posts on the castle wall (normalized) ── */
 const HUNTER_SLOTS = [
-    [0.175, 0.19], [0.135, 0.44], [0.075, 0.52],
-    [0.20, 0.50], [0.155, 0.60], [0.115, 0.36],
+    [0.055, 0.60], [0.10, 0.585],                        /* left wall by the gate */
+    [0.19, 0.62], [0.26, 0.63], [0.31, 0.645], [0.225, 0.585], /* rocks & steps right of gate */
+    [0.135, 0.83], [0.195, 0.85],                        /* front outcrop, lower left */
 ].map(([x, y]) => ({ x: x * W, y: y * H }));
 
 /* ── Troll types ── */
 const TROLL_POSES = ['troll_a', 'troll_b', 'troll_c', 'troll_d'];
 const TYPES = {
-    troll:   { art: 'troll_a', name: 'a troll',        hp: 24,  speed: 26, gold: [3, 8],   exp: 15,  h: 46, weight: 64, wallDmg: 4, boss: false },
-    frost:   { art: 'frost', name: 'a frost troll',    hp: 17,  speed: 46, gold: [5, 11],  exp: 25,  h: 44, weight: 26, wallDmg: 3, boss: false },
-    cyclops: { art: 'cyclops', name: 'a cyclops',      hp: 260, speed: 15, gold: [45, 80], exp: 140, h: 78, weight: 0,  wallDmg: 18, boss: true },
+    troll:   { art: 'troll_a', name: 'a troll',        hp: 24,  speed: 34, gold: [3, 8],   exp: 15,  h: 60, weight: 64, wallDmg: 4, boss: false },
+    frost:   { art: 'frost', name: 'a frost troll',    hp: 17,  speed: 58, gold: [5, 11],  exp: 25,  h: 58, weight: 26, wallDmg: 3, boss: false },
+    cyclops: { art: 'cyclops', name: 'a cyclops',      hp: 260, speed: 20, gold: [45, 80], exp: 140, h: 102, weight: 0, wallDmg: 18, boss: true },
 };
 const GRUNTS = ['Groar!', 'Hmmm!', 'Grrr!', 'Ugh ugh!', 'Brawr!'];
 const RARE_LOOT = {
@@ -593,7 +600,7 @@ function update(dt) {
                 const sx = hn.x + 6, sy = hn.y - 18;
                 const tx = s.x, ty = s.y - TYPES[best.key].h * s.sc * 0.55;
                 const d = Math.hypot(tx - sx, ty - sy) || 1;
-                const sp = 420;
+                const sp = 560;
                 bolts.push({ x: sx, y: sy, vx: (tx - sx) / d * sp, vy: (ty - sy) / d * sp - 20 });
             } else hn.cd = 150;
         }
@@ -639,7 +646,7 @@ function draw(time) {
     for (const hn of hunters) {
         const img = ART.hunter;
         if (img.complete && img.naturalWidth) {
-            const h = 40, w = h * (img.naturalWidth / img.naturalHeight);
+            const h = 52, w = h * (img.naturalWidth / img.naturalHeight);
             ctx.drawImage(img, hn.x - w / 2, hn.y - h, w, h);
         }
     }
