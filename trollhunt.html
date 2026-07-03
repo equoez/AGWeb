@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troll Hunt — Argent Gryphon</title>
+<meta name="description" content="Trolls descend the mountain path toward the fortress of the Argent Gryphon. Man the wall, hire hunters, and hold the pass.">
+<link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+:root {
+    --color-bg-panel:       rgba(10, 8, 4, 0.72);
+    --color-gold:           #ffd27a;
+    --color-gold-light:     #ffe9b0;
+    --color-gold-dim:       #c9a040;
+    --color-text:           #e8dfc8;
+    --color-text-muted:     #b0a080;
+    --font-display:         'Cinzel', 'Georgia', serif;
+    --font-body:            'EB Garamond', 'Georgia', serif;
+    --font-log:             Verdana, Geneva, sans-serif;
+    --radius-panel:         16px;
+    --radius-btn:           8px;
+    --blur-panel:           blur(8px);
+    --transition-fast:      0.2s ease;
+    --log-white:            #efefef;
+    --log-green:            #8ee08e;
+    --log-orange:           #f0b060;
+    --log-red:              #ff8080;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+    font-family: var(--font-body); font-size: 17px; line-height: 1.7;
+    color: var(--color-text); min-height: 100vh; background: #14100a;
+}
+.bg-fixed {
+    position: fixed; top: -5%; left: -5%; width: 110%; height: 110%; z-index: -1;
+    background:
+        url("img/main/AGbg.webp") no-repeat center center,
+        radial-gradient(ellipse at 50% 20%, #2a2216 0%, #14100a 70%);
+    background-size: cover, cover;
+}
+.container { display: flex; flex-direction: column; align-items: center; padding: 28px 16px 48px; }
+.logo { width: 140px; margin-bottom: 12px; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7)); }
+.panel {
+    width: 720px; max-width: 100%;
+    background: var(--color-bg-panel);
+    -webkit-backdrop-filter: var(--blur-panel); backdrop-filter: var(--blur-panel);
+    border: 1px solid rgba(255, 210, 122, 0.15);
+    border-radius: var(--radius-panel);
+    padding: 26px 28px 28px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.55);
+    position: relative;
+}
+h1 {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+    color: var(--color-gold); letter-spacing: 0.08em; text-align: center;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.6); margin-bottom: 2px;
+}
+.subtitle { text-align: center; font-style: italic; color: var(--color-text-muted); font-size: 0.93rem; margin-bottom: 14px; }
+.hud {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 8px 20px; margin-bottom: 12px;
+    font-family: var(--font-display); font-size: 0.76rem;
+    letter-spacing: 0.06em; color: var(--color-gold-dim);
+}
+.hud b { color: var(--color-gold-light); font-size: 0.95rem; margin-left: 5px; }
+.hud-rank { display: inline-flex; align-items: center; gap: 6px; }
+.hud-rank img { width: 24px; height: 24px; object-fit: contain; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6)); }
+.wallbar {
+    width: 100%; height: 8px; border-radius: 4px; margin-bottom: 12px;
+    background: rgba(0,0,0,0.5); border: 1px solid rgba(255,210,122,0.15); overflow: hidden;
+}
+.wallbar-fill {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, #c9a040, #ffd27a);
+    transition: width 0.25s ease;
+}
+.wallbar-fill.hurt { background: linear-gradient(90deg, #a04034, #e07050); }
+.field-wrap {
+    position: relative; border-radius: 12px;
+    border: 1px solid rgba(255,210,122,0.14);
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.35), 0 4px 24px rgba(0,0,0,0.5);
+    overflow: hidden; line-height: 0;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+}
+#field { width: 100%; height: auto; display: block; cursor: crosshair; }
+.log {
+    margin-top: 14px; background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255,210,122,0.14);
+    border-radius: 8px; padding: 8px 12px; height: 96px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    font-family: var(--font-log); font-size: 11.5px; line-height: 1.55;
+}
+.log p { color: var(--log-white); }
+.log p.loot   { color: var(--log-green); }
+.log p.status { color: var(--log-orange); }
+.log p.bad    { color: var(--log-red); }
+.shop { margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.shop-btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    text-align: left; background: rgba(255,210,122,0.06);
+    border: 1px solid rgba(255,210,122,0.22); border-radius: var(--radius-btn);
+    padding: 9px 12px 8px; cursor: pointer; color: var(--color-text);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease;
+}
+.shop-btn:hover:not(:disabled) { background: rgba(255,210,122,0.14); border-color: rgba(255,210,122,0.45); transform: translateY(-1px); }
+.shop-btn:active:not(:disabled) { transform: translateY(0); }
+.shop-btn:focus-visible { outline: 2px solid var(--color-gold-dim); outline-offset: 2px; }
+.shop-btn:disabled { opacity: 0.45; cursor: default; }
+.shop-name { font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; color: var(--color-gold-light); }
+.shop-lvl  { font-size: 0.78rem; color: var(--color-text-muted); font-style: italic; line-height: 1.3; }
+.shop-cost { font-family: var(--font-display); font-size: 0.78rem; color: var(--color-gold); letter-spacing: 0.04em; }
+.shop-cost.maxed { color: var(--color-text-muted); }
+.overlay {
+    position: absolute; inset: 0; border-radius: var(--radius-panel);
+    background: rgba(8, 6, 3, 0.9);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 30px 34px; z-index: 10;
+}
+.overlay[hidden] { display: none; }
+.overlay h2 { font-family: var(--font-display); font-weight: 700; color: var(--color-gold); letter-spacing: 0.08em; font-size: 1.3rem; margin-bottom: 10px; }
+.overlay p { max-width: 48ch; font-size: 0.97rem; margin-bottom: 12px; }
+.overlay .muted { color: var(--color-text-muted); font-style: italic; font-size: 0.9rem; }
+.brief-list { text-align: left; margin: 2px 0 16px; font-size: 0.93rem; max-width: 48ch; }
+.brief-list li { list-style: none; margin-bottom: 6px; padding-left: 1.2em; text-indent: -1.2em; }
+.brief-list li::before { content: '\2039 '; color: var(--color-gold-dim); }
+.btn {
+    display: inline-block; font-family: var(--font-display); font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.06em; color: var(--color-gold);
+    background: rgba(255,210,122,0.10); border: 1px solid rgba(255,210,122,0.35);
+    border-radius: var(--radius-btn); padding: 11px 26px; cursor: pointer; text-decoration: none;
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform 0.15s ease;
+}
+.btn:hover { background: rgba(255,210,122,0.2); border-color: rgba(255,210,122,0.55); transform: translateY(-1px); }
+.btn:focus-visible { outline: 2px solid var(--color-gold-dim); outline-offset: 3px; }
+.back-link {
+    display: inline-block; margin-top: 20px; font-family: var(--font-display);
+    font-size: 0.75rem; letter-spacing: 0.07em; color: var(--color-gold-dim);
+    text-decoration: none; opacity: 0.7;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+.back-link::before { content: '\2039 '; }
+.back-link:hover { opacity: 1; color: var(--color-gold); }
+@media (max-width: 680px) {
+    .panel { padding: 18px 14px 22px; }
+    h1 { font-size: 1.15rem; }
+    .hud { gap: 5px 12px; font-size: 0.68rem; }
+    .shop { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .log { font-size: 10.5px; height: 88px; }
+    .overlay { padding: 22px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .btn, .shop-btn, .wallbar-fill { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+<div class="container">
+    <img src="img/main/AGlogo.webp" alt="Argent Gryphon crest" class="logo" onerror="this.style.display='none'">
+    <div class="panel">
+        <h1>The Siege of Vandura</h1>
+        <p class="subtitle">Trolls descend the mountain path. The wall must hold.</p>
+        <div class="hud">
+            <span>Gold<b id="hud-gold">0</b></span>
+            <span>Wave<b id="hud-wave">1</b></span>
+            <span>Slain<b id="hud-kills">0</b></span>
+            <span class="hud-rank"><img id="hud-badge" src="img/ranks/ranks_ward_rankbadge.png" alt="" onerror="this.style.display='none'"><b id="hud-rank">Ward</b></span>
+        </div>
+        <div class="wallbar" title="Wall integrity"><div class="wallbar-fill" id="wall-fill"></div></div>
+        <div class="field-wrap">
+            <canvas id="field" width="1004" height="565" aria-label="Battlefield: click a troll on the path to strike it"></canvas>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+        <div class="shop" id="shop"></div>
+        <div class="overlay" id="start-overlay">
+            <h2>Orders from the Warden</h2>
+            <p>Trolls pour from the cave-mouth on the far ridge and follow the old
+               supply road down to our gate. Hold the wall, and turn their own
+               plunder into the coin that pays your hunters.</p>
+            <ul class="brief-list">
+                <li><strong>Click or tap a troll</strong> on the path to strike it with your blade.</li>
+                <li>Slain trolls drop gold. Spend it below on hunters and upgrades.</li>
+                <li>Hunters posted on the wall loose crossbow bolts on their own.</li>
+                <li>Trolls that reach the gate batter the wall. A cyclops leads every fifth wave.</li>
+                <li>If the wall is breached, the trolls plunder a quarter of your gold before the Order drives them back.</li>
+            </ul>
+            <p class="muted" id="best-line" hidden></p>
+            <button class="btn" id="btn-start">Man the wall</button>
+        </div>
+    </div>
+    <a class="back-link" href="index.html">Return to the Order</a>
+</div>
+<script>
+'use strict';
+/* ============================================================
+   The Siege of Vandura — idle defense for the Argent Gryphon.
+   Trolls spawn at the cave-mouth (right) and walk the painted
+   supply road down to the castle gate (left). Hunters of the
+   Order stand on the wall and fire crossbow bolts; the player
+   strikes trolls by hand. Loot buys hunters and upgrades.
+   Background art + creature sprites are the Order's own.
+   ============================================================ */
+
+/* ── Sprite data (trimmed PNGs, embedded) ── */
+const SPRITE_DATA = {
+    troll_a: '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',
+    troll_b: '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',
+    troll_c: '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',
+    troll_d: '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',
+    frost: 'iVBORw0KGgoAAAANSUhEUgAAACYAAAAfCAYAAACLSL/LAAAHXklEQVR4nMWXe3CU5RXGf+cjm70k7LLZkMuGXAiRpBDSEIFAFBFEIIyWUjpTlGlLHWcqOlZ0vLQdWsA6RWvrWGd0pK0z2HGU1iqMYi1OCwQKIVzCtRBIIEQIm5D7wmYvye7pHx8khmuEDn3+2/d7v2+e93mec/a8cBWIJ08luVCv9ux2Ie7yBfHkqc6dBhZBPkG19bD8P4gZV6yIDX44D2aUoOWl/euZsxRAUkpui5ID1JDkQtXZRTAyBxqakc01oCHoUWisgoxS+PdamP4QaniQ4Fm+qqiklCixCAC3qvRAK20uKC1BXvkANTwQCcLhf4DbDUePQrwdrTsOK5bA/p1o3RBkL4rFAMOCLp1nfid4HlkjClbwh26KZP8LmbNUNAAawlj/JrEtW9ElSxiekEjrv/4JS1ax7PjnvDS6HL3LA2PHQSgC/okwJwdxdqA2B3R1QvVBOF4PTjsUjEGeee1rk+vLmGiAZac3gcNFtGo3LH0a6Q7S2tsLWdlocvJFNcJwPgR2N4zMh/RsjFARrnFj8aYkYU/1QNpwmDUF5s1BIgH09Rf4ulV+Rfi1cAzkjuS9uLg+C3XtWojGqMQwM2ezwtkGiPUg0S+IhYKcP3QCX9UBgs1t0NUCzU2IvwtHO3DkALpqKeLM0sEWTxyYodWZXn51x0KKjr7DwbCF4QAVW9CaGti2GaJegqhZtY89BX9+G9xOtMMP+7YTDRSB2MHRAE2d8O1v4chMo3v/WjASwW5Ff/0cxMLIS6ieq76utaZisYhZecDQuESkvYMeYOh9M6H6ABg2kje+yo5DNVCaiUyeDPfPg/014M0GNkPNqzDCA1V+ZH8d1B8nsKEC7eqE2AVk3WdQnA+GlUuVe13FJKVE9bVHobISLI00YCE5MxMLcL62FnEPQ2u78XhSaF33d7AZiM+HzJ+PVnwBsTCUlZGY7uTCsh8guzsh1IpUHDZtFxs62omO+gacaoamtsE4iYFFINgNrlQoTsT3wAJaa2vpubhBVy6HqV6OBYJIZzuyfAU8/Ty65l3kxz9hyMYd0N5BIMEBHSFICaFT89Dxw833Ww+LHDsHLhskuYEbq2USC4dJnDAJcadARIk+NB9d8wdOAXzZgCxfadq1tQIdloRWbEXf/SMc2Ie+8jJRK5DmwiZiNub8IsSWAjledE4x4skzMxLuhMYmyM5FVy2+YZUa2npYAvc/TuoD5UhFPaz7KzR18sS6T9BIGL3vXoaUTkQmTIK/bWJIcSG8/Q5sq0emT0EWLyLBm0HwxbcgGMIIRTBCEaR0MjisaLEHXHbk4yqor4FgJ2QUgNV6XcXiLsndfPd8RWzw0afCxLFq9RbQs/+oucmbQri2ls82fcjDdUfpciUi3SH0g/cgbRSBS6f0eOHsWaI5SaBhGD4MnIWofyeCHVm9Hl55CneOi46e63eNvj6mbXXS1513/0fCH/2F6Kd/Ml2orUU3fcgjTWfwNzRC1wWz0doSoOkEGHYMRxL2O/KJ9gbBprC9CmbMBqsNJpWgblMhPdlAe/Uh+P6MfpuvpdjVIG1RjFETSd+ziZa2euR3v4dgK2TnIpU7LzbaJIgotnHZhMVG9+trMNKsxAoWQE0ldDYh02egvruBZ+FUJdgEZ/E3OZ+aCmvWDyRnc6GNewUumy6uSnDEXQqgP12IY3QO3Z1B5Pk30HvTIcGGWJ3orl3I0Q5zCHAHYfZcNHeYaaflESS3Gha+gL64GBp9DLmnDPfocbSdqDXXf/4wVB+BNBeybhd68pBcU7E+i89sN0/wMhq8dJJ4P5R/D860oIEg3DMJTmxDG/eKWCeo1lRD7mqMkXnE6n8JDSkAOKdNx//++0R37Sd+fCna1YYRH0B37AO1QFMXdAWvb+W1CAJIepFKkhcFOFBjPh9lRSJ5qif3iITvVPWuwJ46By2dRndVBQIkDk/l/OqNEO8g8bnlOLJzCQH4OyAjHXJz0OxUZDV65QQ7WKJi6f8Rngn2/vLXxr0iGw7RvfItLL29kJmDlmTiK/4OunAKRLoBCM55DI0kIM4R2MaMA/tQJLcA4h2DV2wA7IoRfhASIVZwDqqehWAYLUlDqk0h1XdQ8IF/0TJN+Pg3BH7xDHrOhysjC//aSmpzy9C2OpH0ItV0D6GcbMSdiPq6EMNylZl/MGqdPCT6ZBGxoRvg1G/B5TQVaw+hD45Hn5zbV216co90ly8lKXkYlvJyeuJMLdR3sL/wCgqQ/By04wLyszfRxr03Dv810RWEL08zZFIx0QsBOHsOUhRaAkhSdOBBfAelY+qPFKA33oG21Q28a+R7SWpppm36RIj1cMsQT57K7i1qhM4oTzyqLPquUlamsmChijNrUAOhePKU9uMqGXfqV3vaLd8ZJblQ0RA6rQhOH0Nag+jofGRP7RXKXI/cFSreKrG+DzmzVAtHYIwtIZZpR974/JaucDefscthiYfHlxCL9SDNreZf1i3gpvvYVTG3lASHBWaV3njv7YQ4s8wAtxwZdPhvK/4XpP4LcAQY69Qw/CkAAAAASUVORK5CYII=',
+    cyclops: 'iVBORw0KGgoAAAANSUhEUgAAADwAAAA/CAYAAAC8aKvcAAAWSElEQVR4nN2be3Rc1X3vP/N+v6XR+zGSRn7pgSkIY4xxoFASFJ5xWDduaMtNcu9q2qSLpKFNabm9TW/vTUi7FmVBm7YpbSArhEAgteOAE9uAjYwcsCXbsjWjh0e2ZqTRjDQPzXvmnPvH0TmSMLbsAKs037W0PHNm73P29/z2/j2+exuuECYVokmFeKX9/kvi14Gs+nIaXde0TLTd/eEO6MOGaq0G77ZoTly7z0cZl7SwSYXY0wg9jdL3/+pkYQ0LX9eEWF9lIDhVoCyoSRZURLKV90W6zqy5wAe833teCbQX+0GeynMJsJjhbFQgI2iUAV/JIFeSvKrJyA2bqpXfDp+aQzibES0mHROJ0odO/KKEnSYN6Yya1noVYKRcKTG/KKJT61DpBADRX6Xm9SlpkO9luZW4o8dJ3zovXrflgt82NTuYjuYQhaSYL7//WXQpXEC4zqwRhUoFl1Wg22fGoBM5Hy3irzNy/y2baKp1sef1Cb5/+CwnzleoM2tEl1HN1k77qvsEwikAbu2ppcZjVYg6PE587S2k5hPKd4Dp2QRlVZBAJItOrRWnFgsfCulVhGsMiNd1OOhqMrJnaBaDTmQoWGBqrkJbbQWDXk9TayO3VbTcsMnNz98Jc+hMFLfFzC9GFnhwewPd/hraOloueFB8IQmAr72Fxg29y9fPjpLL5elo8VJr1/Dc/nEOjybx2dXiZEr4wEkrhOvMGvGFr29jYjbDd14eolAUMBtVeBwqomkV5+MVBkfnuHFrL54aD6pShTZvikw2R7miYVtnK06bAYfHSXwhicflwO52YvN4AWgA0vGo8l2GwVMFqQXKOS3eOi839RSxmDRMRItUJ3PiXLLIB0lcK5P9/tc/RtO6DUzFBwGIJ0WyeRGjXo3DUCaUgHPxHNb6BhziDEIlx9XGZsx2C6++GUCjsaPVaEjGE8o0lZGORwFIzScuIGy2uKQPpRh2j5f2DgG7pcKn3S6yuTz/vj+E6nRcFIXKB0JcXWfWiL9/cz039t+JyuFiKjRHbBHUGg1nQmUMOhG1TvJHsYwWqhswuRswGu00b7wKt8NINi8wFkkRiaWJzmdIxhOryKbmE8qalcnLEA0W1Fozgs6EyWTE4zSSymiYTeVobm3kkQdv4IkvXMNvbnLjd6ved1qrBfjsrtuUC4Fwklu6HTTVunj0h0HmkmryZTVGlUiVpQyATqdDqOSYPRdi/6EgWqOeE6FFzs4t8rFNNQA4ltbsuzE5HgJQ1rGQS6MuZtFrBdKpPIKox2HTkUplGAuGsbpsdPjr+cNaJ5bd7/DyL+felyfXAso0E3MpAuEUV29s4I8e/iLnZr7BP78eA6DaYuDL9/YiLubQqNWYXPWMjRzBYdXT2eJmcjrFG6MJgpEUzUUTXncCj8sBLDssQLl2/vQQNo+XcilDOVcgk82xuJAiEU9Q5bXha29ldi7GXGSOSkWgzlvNp29ej9WkYXA0jjEq/kpOTQswHQwAkEvOE4wJGMcTaC1Gvv13j3DPSy9x+J1xdt65Dd/WrQi5IgAajQatVkuNxwqA2ahmfYPxggfEF5Ik4wnFc9vdTlLzCekljIeo81azuDhPLl9AVOkxWTXUNbVSVd9Ic0VganSUscAEpWwek1XLhiYXJo2OmzbCs4fC4sj8lSUrWnlQDUA+ncFfpSabLxGbnMRd28D2e+9l+71S42Q4DIDDW4dGraZtQzsqvZZgcBqAlioz+4ZnaPaYFMclOzGZqAy5D4BWXUZU6fF6PLi8blRGK3qbC43FQTMwOxcjvZAim4NyuYwgCHS2uPjdHRqe+vnZK7K0GuDQkVGmgwHiC0n6r2kiGM1w5tgxBEFQGla0y/c8f3pICTE9fdey/YarMOh1HBiZRxD1lMol5qNxJsZCSqJh83ixu6WXIP87OBpl+lycQiaHTqtDbdSBToNGrSZfKFBML2BpaKPrN7pobPLgqbai1UqRNDqfYdvVTayvM10uV+nlAoRiWRr8nRAMUCiWACiW1KRjs7z184P4NrTjbWhCp9UyHZrknbeO8crRc/zePX3c8Il+DAY9LUOn4PgsPq8JQaOmXKngX9cm3XcFbB4v6XgUr9tCS5WZ4xOzeOeMdLZUKJcylDJJnNW10uclciaTg7rmVtLzKcqClubmak6PzhKNZ7hnSzNnIqOXbWVtJFtRBcIpcToYwO52UuOxkhE0fP/HA2zvv53n3prB9lZI6bDrf32Xgaf3U2vXUt/eDoC5to7m1iYMunEypQLrG5vwd7bQ4O/E4a0DIBmNrIrBDo+TmvkML+0LIGLgumiGzjoj630eCukcVpcNR30DqfPjCDoTpVKZYqmIw2alcd06LJZRps6ep6nGRIPDRLaQEWcLa5evWoBgTODI4Ah+fwN+fwP/+N/VfP3fTnHgjaN888s3M+Hayb133AHA9dMzNLW20d0E9a2NiHoNKqON14ZmSGehya2iocmD1WVXyK6EHIeT8QSz8UWKZQOVcomfDc/xdkhP7/kM/roELXVWvLNJjAYDOk0ZtcbEYiKN1WnD6a3D6a1Dq/kFE+MR7ttSxdOvF1GnBXGtcKWklrPxRWCa9vY6urvX09se5vN//AN+8J0/pNd9kOce3sFYaJb5PX/FuloXLQ0NAOhtbvY8/TSGQoxGe4mZeImyxnBBtrUSqfkE0fkMoVgWl7FEZ72dPcMJQtE8IzMl6i1pGt1atnVGaW90YDQYpJe0WOKaq9ehVku6hX/Lx8jkfkGhWORT1wo8uT+8loElpxXJVlT7hmcAqKmuwu528tjXPkmtGx7/1pNMhhfZfNsObr71Oj73lS/S3tPF1OQ5FhfyiNk5TgVnAbDbjRSKIrVVNpwt/ks+WHrB0Flvp6XKLA1Go8Gmg3SxzOmZPIcCaV44EmXg9Cwnzkr5QDK9SHZ+jopWhU6rpc3fSnNLNdu2rCNdWpPvsoWDMYHZ+CJWpw2dTovB7uIf/vSTvPnOCA8+9BSf2rGBq9sthMfHeCcYQS+W6CplKFVq+f0v7kSXjfN//2EvEKGosaEqVkCtJhmNKFNbTjMnxkKEYlkC4RS39tRK1qpaVpuCMSk6nJ7Jo9ZWeHsqh8+h4bd6NWg1M9R5x/DVNAM57I3ttAHRuTjdXi0atVE8dC5z0WmtPCWSraie3B9mcjxEqVTGU9dIy+Zr6FnfytarmvjRwdPEyhasTju37Ohj14P3c/Ltk3z+d/6Mp771r6iNNqqa2qh1mLGalge/ch3LCceJpRnRWW+nxmMlFMsq37Va/Sry8+k806m8ajye58n9YZ4/PMmpk2dYPH+ais6E2qjD3tiO2+XgM9sbCUYzl2dhmfRn/s8BceBffpdENIK7toEtv/UJjDYXxWKR775wmFqHAYdVj9dmolQusaO3mW3Xr2P4rUEGXxvglm3d+NZtUNbZSgvD6oSj/3ofJ4KzBMIpOuvtlCsayuUirdUmgrEMWqMZcmlMKsREriKJiOfy4p8/c5KvF+BTnxYomT3obU5sDW3cvL2LrMbC3z4/fFGP/Z6q5Z889mPOj44iCAJqtZr1v3E19+7owe2w8EZwkbGZHL+5vZM/+oP7uf+BfgLhFF974hBqtZHmapNCNBmNAPDG7p/w8F98hyODIwyORgnFsuzq30xbRwuy72ipMlMRBFw2HXqdDq3RTKevjnb3shZuUiFGshXVyHxJ9RfPneShv/4hibHTCPkSRoOBuqZW7rhhPSCJGWtaWLZycrEgTp09j9t7AmdjI+fOjNLc6uVzd/WRfPYNKpUyLx8IUHN0jIMjcxTLKrZtbuXzD9zK0//0AsHgNLfdvhWQEo1kPEFLlZnB0SiBcIqH7uslGJzm0QOvKc/t9tfwy8kRKqJ2SR5azsu9Hj0g5fDj84g5EdVEoqR6cn8Yvf5N8c8/Z0Df0EZJJaLXVvjmZ9fx7MGzBKOlCxKS9xTxhiMVTgRncXhC+ACxWCJfLOF2GHnw3qv5+2eP0OaVdKpbdlxDg7+T6WCAvS++Qo3HyuBoFHgTv78BxkNKCAJ44uE7pYeMhfjtj3UstYW2jhb8J8PEEmVq7TomA0VlPA6LCtATjRdpdy+TBjhwbJqNPzvKXf1mtCYDequTzVd1Ul1bzff+4xTZMwsigDzFL6pa7hueodtfQ8rlwGiTBDghX+Lank76fjnOMwfGFA/7+PcOAijhRbbm4GiU/ut9zMYX6b/eR//vPABIubjDkyQ6n1HW78t7B3EYNCQ0Bemaz0dgMoJDBeFYAYtJD0iScfsKSw/NllQngjPibbk8zRu6sVXncSfi1NRLMVnUjnDg5PylLTydyqs+vtEjXtXXq6SD5VIGAT1qinymv49MbkAK9PvD/OXOTu7bdTcObx3JaIR0PMrxwSHFG9/18T423nATgLKuk/EEg6NROusltTMUyyovbHLRSOeSdG0xg8WkJ5MrYjFDNKnG6xBoB07GpTavn0ny7eZ6ypk86bkp3A0dCDo1W7ZYaax1ceAr/0GNAXG2gOqiFg6EU0yOh7hxSZlIRiOUS5LL12o1bOuqoqwS+elQikefD+D3H+XG/juV/g6Pk9DAJKHYJP1AfOEnJOMJTgRnqfFYlcRjV/9mPC4Hj3/vIKFYllcCRTp9klfXljMK2Ux2ibxOIJqUfe1yNaezmNi39zUGjx7jrk/uwN/ZTkZvxtfWzFfu6eKpn45AQbi83UOQ4mkutaxXHRtf4KdDkva8FM747t89pVg3GJym/3ofLVVm2jpa6Om7dtVa7vbX0H+9D197i6KIvLK0bnt7ughMRpRny2Trqwz0dTuxSBsB+Oxq0WdXiwCFeJTF+TneeGeaf/v+qwRHTqEqZolMz/DtH58kW5D6XNTCMuQ4Klc7w4NHcdisJBelwU2n8iqZ9KPPB8TB0SgtVWZqPFZu/PittHUEeHnvINuWSO3q38yhI6OKF0/NJwgGpxWyO++6laHhk4BkzcySwpLJQnCqABQksrVaJmfKyjh/9NIhburrZOBUhLeOTbL1qvM4jWqOHQ8Cl+G0gFXq40r88GdvU0BLlcPMdCqvXI9kK6q9IxkRMrQ7Z4CXlB2HZ3cfo2+d5A9CsSzfe/ZVuv01ROczPHNgjE6fj96eLgACkxG05Qz+dqloCMcKbGp3AjB4QhpTJlekyalj66Zanjs8zYuvjWLVwlQ0Q1LQoNVUOPzOOF/+5+FVY79ozlln1oh/ubOT227fqjguebruOXKWhbKWHx2dec/+dWaNqDWaKeez3NEjDXTPcIKNG9rf81m9PV1svm4rx956k+df3oe2LPkKX62W1nqz0m7wRAKLWbJ2PKfBX6WmojERXvIHbquKmUUdepZDWrYgsDLruqSFZ+OL7ymei6LIwGjiov0i2Yrqlg11IoB9QxdDwyf5b/ffxM4HvsDY6EmOvfUmAEPDJwlMRvjGY48D8MRffxV/lZ5oXFpvDouKs+HsUhxeDTnfXszmAJhMCarJFEDlUpQuTXjf8Ax3fVz67PDWkY5Hic5Lb18oX7oWOxOc4v77PsHm66S1uvOBLwDQsa7rgraPfPVLTATHsOjAYoK+bienxhMEpwr4mw0kM1KW6PVIyQdIhcYvRhYuOYb3wppOS0YyGlFEdHlncC28+pMXOX54N8GYgaHhk3zjsccvsPBiNEA0qcaiE/B69EtOysymdicLyZxCOhyTnJXFDAaVDoBbNrpI5su8fTZLb41GHJpdW7K9KOFItqIihrhShPO4HCTdCTrr7QRjCerMmotKKtOpvEpvV4ut9Wai8QSluTyPfPVL0gubjFBvSSvZk9chUF9lWOopXVtI5nA5TPR1m1hIStM2k4VMSc0tG+30rfNSESq8HYzTUW0hOHt5RrhsC6fjUexuJ20d8EhfL7vGQxw6MsqT+8MXJT2TFlhI5hTLddiiLCRz1FsKSptMVpqqLodUZbkccGo8ofyezIhE41KWZTGDW6WRXpLbQnQ+g9NmAAosJXVr4pKJh79KzRt7963aAIsvJHn1Z2/ia2+h21+z5gOSGVFxOrLVNrU7qa8y4LCo8DcbiMaLnBpPsJDMsZDMSdlVFmXtZkpqMllpKsv5u+xLOusdl8d0CZe0cDAm0NYhbWAnoxGefPwZJVO67falCqdqiMjUxT1jNF4kk5PyYXkduhwmXA4TZ8NZWuvN+JulpEJKLFb39Xr0eB0C3Q0e+q/3KURlC8sp6gdCeCVWqhaBcIrUfIKNN9zEQ/eFCP7jsfec1jkRVaakFskKZLKSd5VJyzgbztLmtlHVaVt1fSAgiXZt7uXr0fnMkpS83O5KCa+ZS6/c+ZOFt4fu6+XlvYMkoxGlIroYJlOCKlNSkylJj5KnqjxdQSonmz0matx65e/uLfVYzNLLPRKM07fOi9/fsCr7e7cULOfVl8KaFn529zFlb+j//e8v8MbefcpO4D2fe2yt7grpLo8kuXypfwMAPxgYJxovssXvAZYUj4BUw7rMFhayGTbUerl7WzPR+Qxb+jYCF6a7sgjY5NRwLlGh02kQA4mLH4hZM25tb9aJnfX2Cwr444ND/O0LQwDK0aW1IJ822LZlHbAs6Pn9DUqbYHAadBqmIvMMjGX54p1ddLTWKOdF5E2/lZDLTlkf02r1NLhM/Py0lJisXG5rWvj1qZLq9ak4e4YT4u6BSUCqeOSpLGvIl4MlKVgMxbJ86bM78N3esiptTcejOGxW3jw2AUChmOP4xAIbNrYuH45Z2vR7N2lYLep3+2u4sauawdEoe4YTio+54h30dx9A+1WOHjTYjSLAM1/bpiwX5X6xNMcHjnBmIszYTJ65RYEn/qQfb0PTqnsMDx5VPifj0taNLCk5PE48LgcTYyF2D0wSCKcIxgQi2YrqsgWAlQRX/l1pf1iuoX/7m4fY/cpRpoMB0vGoVI0NHOHVX55nal6gqcZFRSgTT2SVXECOFvLRiZVoqTIrZOMLkmYmW1zGZYelDxoy6b95MSD+zYvSkQuhXOLW3mp+744uFhMpzHYrR4Oz5PIFpWqTBQn5BchT+93hKRlP4HVb8LothGJZgrEE8J9IWMZ0Kq+qM2vEV751N0cGR7jt9q1MjoewOiVxz2nS8+MDZ9i53QdLe9gg6d0rj1DIZ00A5eSBjJYqM/6qFJGpyuVrWh8m/FVqjgyOKFaSQ08ynuDv/+oBFtMZpuZyxBeSpOYTinVl8jK8bsuqvivRWW+XhIkPk8iVQCYry7vbPE5+8PoEgXCSXC7Hv/5UCoH/894+ahaS+D0Nq/rLoS0YnGY2vkiNx0pbhyQQLls/8Z8/pUEKfcFYWATwL8XSfcMzBGMC4bn06jj/4qAI8OiK/g6PU4nF8r6VcpAmHlWs7a9Sf/SO9F/uAfQdfqsIMDot1cqydvbIl+++QIOT84c9w4mPxhpeicsNdweDi6qDwUWl7Z7hBLv6N2PzeJXQdXxQWgYrQ9NHYkp/EHjqf2ymp+9a0vEow4NHlWRElollWeojZ+FfFSeCs0wHA0yOh1YdYXZ4nKtC1q8NYVmYkJ2Xr12q6Dwux6r/Z/FrMaXlw3XxhSRX9fWye+AlAGXveXA0quTSvxaEQaragsFpevquBeCBh/8dYFXhAL9CtfRRxvZm6ej+u0vWlV7//wP0b7hd34nZHwAAAABJRU5ErkJggg==',
+    hunter: 'iVBORw0KGgoAAAANSUhEUgAAACEAAAAfCAYAAABplKSyAAAFNklEQVR4nLWXa2xTVRzAf7e1G1tL13tH98jGtrDuiWO6MGAsipjFRFASE0DEKGAwygczMRANGj8ZYyK+Ej64hMgI0Q+agNEYQoKiCYM9AIFFXu0AYcs6urXbWAdt6Y4fTtvbrt1kDP5f7uPc8///zv91zlWYgWhGRcQ/e8NCmcn8qSSlEqMijWUZEt+vf/MtcnJyALBarXz6/s6HAvJYKoBFT9RgMpkIhUIJYy0tLXyydSlH2pxUP71utrZjkrDWKICq2rBYzJhMJkwmE6pqw2w2U19fx8d7O/jr0K7YnMkhehBJcKVRUURD47Kkj4LBIEDMM+fPdgMyXN9sSqd5f2BWYVGixrMMkFdRgaappKWZCAZD+P1+VNUGwNiYn1AoRCAQxGIxc7rrTFLORGWmQAajoojwDulRi8UcGwgGg/T3DzA25k+a1NV1BoAqh6ChVrChSVDlEHjfE2QvKAWYUYhiaxmZkMr9fmk0atzjGcTtvpUwqb6+jiwDlOVDsT1RodPp4tjnq6Mg9wWTUB319XWEQiHa20/R6JjL9rdfIF+bQ+81Fx/sa6e83MH5s91kGWBDk9RvTk+t+NSB7dx2X2Hlzt8EBiAduJO6JRjCQijG3XLsdNcZhodHyMiYQ3HFQl5a9RSV5Q4W11XTvKqEGzd6+eiVRRTmKIwHUhsvK3Mwv6YJm72ImhXrOHVgO7wOvAwYUnvGABAWQgkLoYRVQUZGBgAFpiHa27uwaSpun6yOvbvWkp+bB0BmuvSCPwAnLkPbGij72YHT6eJm91Fsmgog59pTmdYlIRxGn8IFLrG+AvYcgf2Raq0sd5CnpvHr4T84dKyb+fkTgASIl6uuHhblG/jz715W7tsMjwPFkcFOoAGMJxQRFonVk9QnAMKqoNEOmem5NG9dS56axm33FZq/PMxc6wRl+cS8ce669IJxtxIrWW9YQDWwBOmFf4F5cYa+BSZ020kQAx37yF26hfAOQeMvcHtUbwaVJRMU23UPRAEajjdw8uZJsILxokJkpYJCwAqUAAvjDH0xDcRUIFNJ2xoo/A56cwGZApTdcnDV1UNYCEWzIEb8CgscpTgbXXpu/B9EFCT8vMB4WCG8Q8DkfhXpaTGAEsAC/AivNuTxQ7sb1aBM7pwCDbhDUqkm7aIAmmbDU+IjvE3AP1DYoY/Fl2ZvUQQgR39XmuVDNUNVgeCiSxFxIAreVNYm7aJJqx2XtwFUAqj05oK3CLy14B0DLkQgMoFW6QVrht4KmpaI+9plp9xo7Nmq8Lzog1tg71DxDPkUe7YqPEM+AL5+51m0sRNsaQ0wgWDjsjxKs3zsOR5gzeJEjx3tTArN/UEAoCHsigSIgn248Um8zjZ6RlRaDg7g6oHvP1tAjb2Pd3+6S1UBFGi6ij4vtBlBuzw1yIzPAPZsVQx6pTf2b54Te7+p9S7Ly6G2RD4PjsZBzAN8U4OkTMzpJBqW1TU+NrXe1SFWyOu56zpInxfaaoG+6XXOGCJetj2n35+7Lrf2Ak3eQwQgIoXXZJ5rxoSKAR4gHFGJZn10Sx8PgLNfjrVfUQgXCFiOrJxOCdGUC51ecPsTwzLr4/rkEnyjVPCVMwJhBUahehSWaOC/ByeH5HfjQR3kofy8TIaKggBUzBU8YwdPQAcAKMqES8MSZFY5MZ28Vizw34ODfQpuP+SZdYdZTfJaaRNcGlbEI4PINMJApHi8YaHgV0SlLXXzfOjhAD1PRibkqS0aIoDBoMwNgN/7H2E4UjWkwSDMS9M91OF5hIk5lUz3R/8fu+Ec4Bg56scAAAAASUVORK5CYII=',
+};
+const ART = {};
+for (const k in SPRITE_DATA) {
+    const img = new Image();
+    img.src = 'data:image/png;base64,' + SPRITE_DATA[k];
+    ART[k] = img;
+}
+
+/* ── Canvas ── */
+const canvas = document.getElementById('field');
+const ctx = canvas.getContext('2d');
+const W = 1004, H = 565;
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+canvas.width = W * DPR; canvas.height = H * DPR;
+ctx.scale(DPR, DPR);
+ctx.imageSmoothingEnabled = false;   /* crisp pixel sprites */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Background image (shipped as a repo asset) */
+const bg = new Image();
+let bgReady = false;
+bg.onload = () => { bgReady = true; };
+bg.src = 'img/game/vandura_battlefield.webp';
+
+/* ── The supply road, as normalized waypoints from cave-mouth to gate ──
+   Traced by eye from the painting: enters top-right at the tunnel, winds
+   down through the valley, crosses toward the bridge area, and ends at the
+   foot of the castle steps on the lower left. x,y are fractions of W,H. */
+const PATH = [
+    [0.90,  0.625], /* cave-mouth on the right ridge */
+    [0.865, 0.66],
+    [0.83,  0.70],
+    [0.80,  0.735],
+    [0.755, 0.755],
+    [0.71,  0.76],
+    [0.665, 0.75],
+    [0.63,  0.77],
+    [0.59,  0.80],
+    [0.55,  0.83],
+    [0.50,  0.855],
+    [0.455, 0.865],
+    [0.415, 0.855],
+    [0.385, 0.83],
+    [0.355, 0.815], /* stone steps / gate approach */
+    [0.315, 0.825],
+    [0.275, 0.85],
+    [0.245, 0.875], /* the gate */
+].map(([x, y]) => ({ x: x * W, y: y * H }));
+
+/* Precompute cumulative length so trolls move at constant speed along it */
+const SEG = [];
+let PATH_LEN = 0;
+for (let i = 0; i < PATH.length - 1; i++) {
+    const a = PATH[i], b = PATH[i + 1];
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    SEG.push({ a, b, len, start: PATH_LEN });
+    PATH_LEN += len;
+}
+const GATE = PATH[PATH.length - 1];
+/* position (x,y) and facing at a given distance travelled from the cave */
+function pathAt(dist) {
+    if (dist <= 0) return { x: PATH[0].x, y: PATH[0].y, dx: -1, dy: 0 };
+    if (dist >= PATH_LEN) return { x: GATE.x, y: GATE.y, dx: -1, dy: 0 };
+    for (const s of SEG) {
+        if (dist <= s.start + s.len) {
+            const t = (dist - s.start) / s.len;
+            const dx = (s.b.x - s.a.x) / s.len, dy = (s.b.y - s.a.y) / s.len;
+            return { x: s.a.x + (s.b.x - s.a.x) * t, y: s.a.y + (s.b.y - s.a.y) * t, dx, dy };
+        }
+    }
+    return { x: GATE.x, y: GATE.y, dx: -1, dy: 0 };
+}
+/* perspective scale: sprites are smaller far up the path (top), larger near the gate */
+function depthScale(y) {
+    const t = Math.max(0, Math.min(1, (y / H - 0.62) / 0.26)); /* 0 at cave, 1 at gate */
+    return 0.55 + 0.6 * t;
+}
+
+/* ── Hunter posts on the castle wall (normalized) ── */
+const HUNTER_SLOTS = [
+    [0.175, 0.19], [0.135, 0.44], [0.075, 0.52],
+    [0.20, 0.50], [0.155, 0.60], [0.115, 0.36],
+].map(([x, y]) => ({ x: x * W, y: y * H }));
+
+/* ── Troll types ── */
+const TROLL_POSES = ['troll_a', 'troll_b', 'troll_c', 'troll_d'];
+const TYPES = {
+    troll:   { art: 'troll_a', name: 'a troll',        hp: 24,  speed: 26, gold: [3, 8],   exp: 15,  h: 46, weight: 64, wallDmg: 4, boss: false },
+    frost:   { art: 'frost', name: 'a frost troll',    hp: 17,  speed: 46, gold: [5, 11],  exp: 25,  h: 44, weight: 26, wallDmg: 3, boss: false },
+    cyclops: { art: 'cyclops', name: 'a cyclops',      hp: 260, speed: 15, gold: [45, 80], exp: 140, h: 78, weight: 0,  wallDmg: 18, boss: true },
+};
+const GRUNTS = ['Groar!', 'Hmmm!', 'Grrr!', 'Ugh ugh!', 'Brawr!'];
+const RARE_LOOT = {
+    troll:   ['a wooden club', 'a rope', 'leather boots', 'a piece of meat'],
+    frost:   ['a shard of ice', 'a fur cap', 'a fishing rod'],
+    cyclops: ['a cyclops toe', 'a heavy mace', 'a battle shield', 'a chain armor', 'a strong health potion'],
+};
+const RANKS = [
+    { exp: 0,     key: 'ward',         name: 'Ward' },
+    { exp: 400,   key: 'initiate',     name: 'Initiate' },
+    { exp: 1100,  key: 'shieldbearer', name: 'Shieldbearer' },
+    { exp: 2400,  key: 'oathsworn',    name: 'Oathsworn' },
+    { exp: 4500,  key: 'sentinel',     name: 'Sentinel' },
+    { exp: 8000,  key: 'enlightened',  name: 'Enlightened' },
+];
+
+/* ── Upgrades ── */
+const UP = {
+    hunter: { name: 'Hire hunter',    base: 55,  mult: 1.8,  max: HUNTER_SLOTS.length, desc: n => n + ' on the wall' },
+    bolts:  { name: 'Sharper bolts',  base: 60,  mult: 1.6,  max: 25, desc: n => 'bolt damage ' + boltDmg(n) },
+    speed:  { name: 'Rapid reload',   base: 90,  mult: 1.7,  max: 10, desc: n => 'a bolt every ' + (hunterCd(n) / 1000).toFixed(1) + 's' },
+    blade:  { name: 'Sharpen blade',  base: 30,  mult: 1.5,  max: 40, desc: n => 'your strike deals ' + bladeDmg(n) },
+    wall:   { name: 'Reinforce wall', base: 75,  mult: 1.6,  max: 25, desc: n => 'repairs and adds stone' },
+};
+function bladeDmg(n)  { return Math.round(12 * Math.pow(1.35, n)); }
+function boltDmg(n)   { return Math.round(7  * Math.pow(1.28, n)); }
+function hunterCd(n)  { return Math.max(350, 1400 * Math.pow(0.88, n)); }
+function wallMax(n)   { return 100 + n * 45; }
+function upCost(key)  { const u = UP[key]; return Math.round(u.base * Math.pow(u.mult, S.up[key])); }
+
+/* ── State ── */
+const S = {
+    running: false, gold: 0, exp: 0, kills: 0,
+    wave: 0, spawnLeft: 0, spawnTimer: 0, waveRest: 2.4, bossPending: false,
+    wall: wallMax(0), breach: 0,
+    up: { hunter: 0, bolts: 0, speed: 0, blade: 0, wall: 0 },
+    rankIdx: 0,
+};
+let trolls = [], bolts = [], parts = [], floats = [], hunters = [];
+let mobSeq = 0;
+
+const $ = id => document.getElementById(id);
+const logEl = $('log');
+function log(text, cls) {
+    const p = document.createElement('p');
+    if (cls) p.className = cls;
+    p.textContent = text;
+    logEl.appendChild(p);
+    while (logEl.children.length > 6) logEl.removeChild(logEl.firstChild);
+}
+const fmt = n => n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(Math.round(n));
+
+/* ── Shop ── */
+const shopEl = $('shop');
+for (const key of Object.keys(UP)) {
+    const b = document.createElement('button');
+    b.className = 'shop-btn'; b.dataset.key = key;
+    b.innerHTML = '<span class="shop-name"></span><span class="shop-lvl"></span><span class="shop-cost"></span>';
+    b.addEventListener('click', () => buy(key));
+    shopEl.appendChild(b);
+}
+function buy(key) {
+    if (S.up[key] >= UP[key].max) return;
+    const cost = upCost(key);
+    if (S.gold < cost) return;
+    S.gold -= cost; S.up[key]++;
+    if (key === 'hunter') {
+        const slot = HUNTER_SLOTS[S.up.hunter - 1];
+        hunters.push({ x: slot.x, y: slot.y, cd: Math.random() * 400 });
+        log('A hunter of the Order takes position on the wall.', 'status');
+    } else if (key === 'wall') {
+        S.wall = wallMax(S.up.wall);
+        log('Masons reinforce the wall with fresh stone.', 'status');
+    }
+    renderShop(); renderHUD();
+}
+function romanNum(n) {
+    const R = [['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+    let s = ''; for (const [r, v] of R) while (n >= v) { s += r; n -= v; }
+    return s;
+}
+function renderShop() {
+    for (const b of shopEl.children) {
+        const key = b.dataset.key, u = UP[key], lvl = S.up[key];
+        const maxed = lvl >= u.max;
+        b.querySelector('.shop-name').textContent = u.name + (key === 'hunter' ? '' : ' ' + romanNum(lvl + 1));
+        b.querySelector('.shop-lvl').textContent = u.desc(maxed ? lvl : lvl + 1);
+        const costEl = b.querySelector('.shop-cost');
+        if (maxed) { costEl.textContent = 'At full strength'; costEl.classList.add('maxed'); b.disabled = true; }
+        else {
+            const cost = upCost(key);
+            costEl.textContent = fmt(cost) + ' gold';
+            costEl.classList.remove('maxed');
+            b.disabled = S.gold < cost;
+        }
+    }
+}
+
+/* ── HUD ── */
+function renderHUD() {
+    $('hud-gold').textContent  = fmt(S.gold);
+    $('hud-wave').textContent  = Math.max(1, S.wave);
+    $('hud-kills').textContent = fmt(S.kills);
+    const fill = $('wall-fill');
+    const pct = Math.max(0, S.wall / wallMax(S.up.wall));
+    fill.style.width = (pct * 100) + '%';
+    fill.classList.toggle('hurt', pct < 0.35);
+    let idx = 0;
+    for (let i = 0; i < RANKS.length; i++) if (S.exp >= RANKS[i].exp) idx = i;
+    if (idx !== S.rankIdx) {
+        S.rankIdx = idx;
+        log('For your deeds, the Order names you ' + RANKS[idx].name + '.', 'status');
+        const badge = $('hud-badge');
+        badge.style.display = '';
+        badge.src = 'img/ranks/ranks_' + RANKS[idx].key + '_rankbadge.png';
+    }
+    $('hud-rank').textContent = RANKS[S.rankIdx].name;
+}
+
+/* ── Waves ── */
+function waveHpScale(w)   { return Math.pow(1.17, w - 1); }
+function waveGoldScale(w) { return 1 + (w - 1) * 0.16; }
+function startWave() {
+    S.wave++;
+    S.spawnLeft = 4 + Math.floor(S.wave * 1.4);
+    S.spawnTimer = 0.4;
+    S.bossPending = (S.wave % 5 === 0);
+    log('Wave ' + S.wave + ' descends the mountain path.', 'status');
+    if (S.bossPending) log('The ground shakes — a cyclops leads this wave!', 'bad');
+}
+function pickType() {
+    const pool = Object.entries(TYPES).filter(([k, t]) => !t.boss && (k !== 'frost' || S.wave >= 2));
+    const total = pool.reduce((s, [, t]) => s + t.weight, 0);
+    let r = Math.random() * total;
+    for (const [k, t] of pool) { r -= t.weight; if (r <= 0) return k; }
+    return 'troll';
+}
+function spawnTroll(forceType) {
+    const key = forceType || pickType(), t = TYPES[key];
+    trolls.push({
+        id: ++mobSeq, key,
+        art: key === 'troll' ? TROLL_POSES[Math.floor(Math.random() * TROLL_POSES.length)] : t.art,
+        dist: -Math.random() * 30,           /* stagger just off-screen at the cave */
+        offset: (Math.random() - 0.5) * 14,  /* small lateral scatter on the road */
+        hp: Math.round(t.hp * waveHpScale(S.wave)),
+        maxHp: Math.round(t.hp * waveHpScale(S.wave)),
+        speed: t.speed * (0.9 + Math.random() * 0.2),
+        atkCd: 0, flash: 0, burn: 0, burnDps: 0, bob: Math.random() * 6.28,
+    });
+    if (Math.random() < 0.12) log(GRUNTS[Math.floor(Math.random() * GRUNTS.length)]);
+}
+
+/* ── Combat ── */
+function trollScreen(tr) {
+    const p = pathAt(tr.dist);
+    return { x: p.x, y: p.y + tr.offset, sc: depthScale(p.y + tr.offset), dx: p.dx };
+}
+function damageTroll(tr, dmg, source) {
+    tr.hp -= dmg;
+    tr.flash = 0.12;
+    const s = trollScreen(tr);
+    const th = TYPES[tr.key].h * s.sc;
+    addFloat(s.x, s.y - th - 4, String(Math.round(dmg)), source === 'blade' ? '#ffe9b0' : '#ffb070');
+    if (tr.hp <= 0) killTroll(tr);
+}
+function killTroll(tr) {
+    if (tr.dead) return;
+    tr.dead = true; S.kills++;
+    const t = TYPES[tr.key];
+    const g = Math.round((t.gold[0] + Math.random() * (t.gold[1] - t.gold[0])) * waveGoldScale(S.wave));
+    S.gold += g; S.exp += t.exp;
+    const s = trollScreen(tr);
+    addFloat(s.x, s.y - t.h * s.sc + 6, '+' + g, '#ffd27a', true);
+    burst(s.x, s.y - t.h * s.sc * 0.5, '#ffd27a', t.boss ? 16 : 6);
+    if (t.boss) {
+        log('The cyclops falls! Loot: ' + g + ' gold coins, ' + RARE_LOOT.cyclops[Math.floor(Math.random() * RARE_LOOT.cyclops.length)] + '.', 'loot');
+    } else if (Math.random() < 0.22) {
+        const rare = Math.random() < 0.18 ? ', ' + RARE_LOOT[tr.key][Math.floor(Math.random() * RARE_LOOT[tr.key].length)] : '';
+        log('Loot of ' + t.name + ': ' + g + ' gold coins' + rare + '.', 'loot');
+    }
+    renderHUD(); renderShop();
+}
+function breachWall() {
+    const stolen = Math.floor(S.gold * 0.25);
+    S.gold -= stolen; S.breach = 3.2;
+    trolls.forEach(tr => { tr.dead = true; });
+    burst(GATE.x, GATE.y - 20, '#e07050', 24);
+    log('The gate is breached! Trolls plunder ' + stolen + ' gold before the Order drives them back.', 'bad');
+    renderHUD(); renderShop();
+}
+function addFloat(x, y, text, color, big) { floats.push({ x, y, text, color, big, t: 0 }); }
+function burst(x, y, color, n) {
+    if (REDUCED) n = Math.min(n, 4);
+    for (let i = 0; i < n; i++) {
+        const a = Math.random() * 6.28, sp = 30 + Math.random() * 60;
+        parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, t: 0, life: 0.5 + Math.random() * 0.3, color, r: 1.5 + Math.random() * 2 });
+    }
+}
+
+/* ── Player strike ── */
+canvas.addEventListener('pointerdown', e => {
+    if (!S.running) return;
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) * (W / r.width);
+    const y = (e.clientY - r.top)  * (H / r.height);
+    let hit = null, hitD = 1e9;
+    for (const tr of trolls) {
+        if (tr.dead) continue;
+        const s = trollScreen(tr);
+        const th = TYPES[tr.key].h * s.sc, tw = th * 0.7;
+        if (x > s.x - tw / 2 && x < s.x + tw / 2 && y > s.y - th && y < s.y + 6) {
+            const d = Math.abs(x - s.x) + Math.abs(y - (s.y - th / 2));
+            if (d < hitD) { hitD = d; hit = tr; }
+        }
+    }
+    if (hit) { damageTroll(hit, bladeDmg(S.up.blade), 'blade'); burst(x, y, '#ffe9b0', 4); }
+});
+
+/* ── Loop ── */
+let last = 0;
+function frame(ts) {
+    requestAnimationFrame(frame);
+    if (!S.running) { last = ts; return; }
+    let dt = (ts - last) / 1000; last = ts;
+    if (dt > 0.1) dt = 0.1;
+    update(dt); draw(ts / 1000);
+}
+requestAnimationFrame(frame);
+
+function update(dt) {
+    if (S.breach > 0) {
+        S.breach -= dt;
+        if (S.breach <= 0) { S.wall = wallMax(S.up.wall); log('The wall stands again. The Gryphon endures.', 'status'); renderHUD(); }
+    }
+    if (S.breach <= 0) {
+        if (S.spawnLeft > 0) {
+            S.spawnTimer -= dt;
+            if (S.spawnTimer <= 0) {
+                if (S.bossPending && S.spawnLeft === 1) { spawnTroll('cyclops'); S.bossPending = false; }
+                else spawnTroll();
+                S.spawnLeft--;
+                S.spawnTimer = Math.max(0.35, 1.4 - S.wave * 0.05) * (0.7 + Math.random() * 0.6);
+            }
+        } else if (!trolls.some(t => !t.dead)) {
+            S.waveRest -= dt;
+            if (S.waveRest <= 0) { S.waveRest = 2.4; startWave(); renderHUD(); }
+        }
+    }
+    let wallUnderAttack = false;
+    for (const tr of trolls) {
+        if (tr.dead) continue;
+        tr.flash = Math.max(0, tr.flash - dt);
+        tr.bob += dt * 7;
+        if (tr.burn > 0) {
+            tr.burn -= dt; tr.hp -= tr.burnDps * dt;
+            const s = trollScreen(tr);
+            if (Math.random() < dt * 8) parts.push({ x: s.x + (Math.random() - 0.5) * 12, y: s.y - TYPES[tr.key].h * s.sc * 0.7, vx: 0, vy: -30, t: 0, life: 0.4, color: '#ff9040', r: 2 });
+            if (tr.hp <= 0) { killTroll(tr); continue; }
+        }
+        if (tr.dist < PATH_LEN) {
+            tr.dist += tr.speed * dt;
+        } else {
+            wallUnderAttack = true;
+            tr.atkCd -= dt;
+            if (tr.atkCd <= 0) {
+                tr.atkCd = 1.1;
+                S.wall -= TYPES[tr.key].wallDmg;
+                burst(GATE.x + 8, GATE.y - 16, '#8a7a60', 3);
+                renderHUD();
+                if (S.wall <= 0) { breachWall(); break; }
+            }
+        }
+    }
+    if (!wallUnderAttack && S.wall < wallMax(S.up.wall) && S.breach <= 0) {
+        S.wall = Math.min(wallMax(S.up.wall), S.wall + 1.5 * dt);
+    }
+    trolls = trolls.filter(t => !t.dead);
+
+    for (const hn of hunters) {
+        hn.cd -= dt * 1000;
+        if (hn.cd <= 0) {
+            let best = null, bestD = -1;
+            for (const tr of trolls) if (!tr.dead && tr.dist > bestD) { bestD = tr.dist; best = tr; }
+            if (best) {
+                hn.cd = hunterCd(S.up.speed) * (0.9 + Math.random() * 0.2);
+                const s = trollScreen(best);
+                const sx = hn.x + 6, sy = hn.y - 18;
+                const tx = s.x, ty = s.y - TYPES[best.key].h * s.sc * 0.55;
+                const d = Math.hypot(tx - sx, ty - sy) || 1;
+                const sp = 420;
+                bolts.push({ x: sx, y: sy, vx: (tx - sx) / d * sp, vy: (ty - sy) / d * sp - 20 });
+            } else hn.cd = 150;
+        }
+    }
+    for (const bo of bolts) {
+        bo.vy += 80 * dt;
+        bo.x += bo.vx * dt; bo.y += bo.vy * dt;
+        if (!REDUCED && Math.random() < dt * 20) parts.push({ x: bo.x, y: bo.y, vx: -bo.vx * 0.04, vy: -8, t: 0, life: 0.2, color: '#c9b070', r: 1.3 });
+        for (const tr of trolls) {
+            if (tr.dead) continue;
+            const s = trollScreen(tr);
+            const th = TYPES[tr.key].h * s.sc;
+            if (Math.abs(bo.x - s.x) < th * 0.32 && bo.y > s.y - th && bo.y < s.y) {
+                bo.dead = true;
+                const dmg = boltDmg(S.up.bolts);
+                damageTroll(tr, dmg, 'bolt');
+                burst(bo.x, bo.y, '#e0c080', 3);
+                break;
+            }
+        }
+        if (bo.x > W + 20 || bo.y > H + 20 || bo.x < -20) bo.dead = true;
+    }
+    bolts = bolts.filter(b => !b.dead);
+
+    for (const p of parts) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 80 * dt; }
+    parts = parts.filter(p => p.t < p.life);
+    for (const f of floats) f.t += dt;
+    floats = floats.filter(f => f.t < 0.8);
+}
+
+/* ── Draw ── */
+function draw(time) {
+    ctx.clearRect(0, 0, W, H);
+    if (bgReady) ctx.drawImage(bg, 0, 0, W, H);
+    else { ctx.fillStyle = '#3a5a2a'; ctx.fillRect(0, 0, W, H); }
+
+    if (S.breach > 0) {
+        ctx.fillStyle = 'rgba(160, 50, 30, ' + (0.10 + 0.07 * Math.sin(time * 10)) + ')';
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    /* hunters on the wall */
+    for (const hn of hunters) {
+        const img = ART.hunter;
+        if (img.complete && img.naturalWidth) {
+            const h = 40, w = h * (img.naturalWidth / img.naturalHeight);
+            ctx.drawImage(img, hn.x - w / 2, hn.y - h, w, h);
+        }
+    }
+
+    /* trolls, sorted so nearer (lower on screen) draw on top */
+    const drawList = trolls.map(tr => ({ tr, s: trollScreen(tr) })).sort((a, b) => a.s.y - b.s.y);
+    for (const { tr, s } of drawList) {
+        const t = TYPES[tr.key];
+        const img = ART[tr.art || t.art];
+        const h = t.h * s.sc;
+        const w = img.naturalWidth ? h * (img.naturalWidth / img.naturalHeight) : h * 0.8;
+        const bob = Math.sin(tr.bob) * 1.5 * s.sc;
+        /* shadow */
+        ctx.fillStyle = 'rgba(0,0,0,0.30)';
+        ctx.beginPath(); ctx.ellipse(s.x, s.y + 1, w * 0.42, 4 * s.sc, 0, 0, 6.29); ctx.fill();
+        if (img.complete && img.naturalWidth) {
+            ctx.save();
+            /* trolls face left (toward castle); sprite already faces left */
+            if (tr.flash > 0) {
+                ctx.drawImage(img, s.x - w / 2, s.y - h + bob, w, h);
+                ctx.globalCompositeOperation = 'source-atop';
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.fillRect(s.x - w / 2, s.y - h + bob, w, h);
+            } else {
+                ctx.drawImage(img, s.x - w / 2, s.y - h + bob, w, h);
+            }
+            ctx.restore();
+        }
+        if (tr.burn > 0) {
+            ctx.fillStyle = 'rgba(255,120,40,0.15)';
+            ctx.beginPath(); ctx.ellipse(s.x, s.y - h * 0.5, w * 0.5, h * 0.55, 0, 0, 6.29); ctx.fill();
+        }
+        if (tr.hp < tr.maxHp) {
+            const bw = w * 0.8;
+            ctx.fillStyle = 'rgba(0,0,0,0.55)';
+            ctx.fillRect(s.x - bw / 2, s.y - h - 7, bw, 4);
+            ctx.fillStyle = tr.hp / tr.maxHp > 0.4 ? '#8ee08e' : '#e07050';
+            ctx.fillRect(s.x - bw / 2, s.y - h - 7, bw * Math.max(0, tr.hp / tr.maxHp), 4);
+        }
+    }
+
+    /* bolts */
+    for (const bo of bolts) {
+        const ang = Math.atan2(bo.vy, bo.vx);
+        ctx.save(); ctx.translate(bo.x, bo.y); ctx.rotate(ang);
+        ctx.strokeStyle = '#e8dcb0'; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(4, 0); ctx.stroke();
+        ctx.fillStyle = '#7a5a30';
+        ctx.beginPath(); ctx.arc(4, 0, 1.8, 0, 6.29); ctx.fill();
+        ctx.restore();
+    }
+    for (const p of parts) {
+        ctx.globalAlpha = 1 - p.t / p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.29); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    for (const f of floats) {
+        ctx.globalAlpha = 1 - f.t / 0.8;
+        ctx.font = (f.big ? '700 15px ' : '600 12px ') + 'Cinzel, Georgia, serif';
+        ctx.fillStyle = f.color; ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 3;
+        ctx.fillText(f.text, f.x, f.y - f.t * 26);
+        ctx.shadowBlur = 0;
+    }
+    ctx.globalAlpha = 1;
+}
+
+/* ── Start ── */
+function startGame() {
+    S.running = true;
+    $('start-overlay').hidden = true;
+    log('The horns sound from the keep. To the wall!', 'status');
+    startWave(); renderHUD(); renderShop();
+}
+$('btn-start').addEventListener('click', startGame);
+
+try {
+    const best = parseInt(localStorage.getItem('ag-siege-bestwave') || '0', 10);
+    if (best > 0) { $('best-line').textContent = 'Your finest defense so far reached wave ' + best + '.'; $('best-line').hidden = false; }
+} catch (e) {}
+setInterval(() => {
+    if (!S.running) return;
+    try {
+        const best = parseInt(localStorage.getItem('ag-siege-bestwave') || '0', 10);
+        if (S.wave > best) localStorage.setItem('ag-siege-bestwave', String(S.wave));
+    } catch (e) {}
+}, 5000);
+
+renderHUD(); renderShop();
+</script>
+</body>
+</html>
