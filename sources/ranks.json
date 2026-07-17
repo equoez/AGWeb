@@ -45,6 +45,11 @@
       "name": "Wayfarer",
       "key": "ward",
       "desc": "Wayfarers are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay."
+    },
+    {
+      "name": "Stonehaze Emmisary",
+      "key": "emissary",
+      "desc": "The Circle of Stonehaze's ambassador to the Argent Gryphon, ensuring both allies stand united against Zathroth."
     }
   ]
 }
