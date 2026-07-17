@@ -178,11 +178,6 @@
     "points": 0
   },
   {
-    "name": "Crazy Stonehaze",
-    "rank": "Wayfarer",
-    "points": 0
-  },
-  {
     "name": "Raejk",
     "rank": "Wayfarer",
     "points": 0
@@ -190,6 +185,11 @@
   {
     "name": "Lilly Thundershade",
     "rank": "Wayfarer",
+    "points": 0
+  },
+  {
+    "name": "Crazy Stonehaze",
+    "rank": "Stonehaze Emmisary",
     "points": 0
   }
 ]
