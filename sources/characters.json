@@ -117,6 +117,11 @@
     }
   },
   {
+    "name": "Crazy Stonehaze",
+    "rank": "Stonehaze Emmisary",
+    "points": 0
+  },
+  {
     "name": "Sidney Beauclair",
     "rank": "Sentinel",
     "points": 0,
@@ -185,11 +190,6 @@
   {
     "name": "Lilly Thundershade",
     "rank": "Wayfarer",
-    "points": 0
-  },
-  {
-    "name": "Crazy Stonehaze",
-    "rank": "Stonehaze Emmisary",
     "points": 0
   }
 ]
