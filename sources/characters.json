@@ -65,9 +65,14 @@
     "points": 3
   },
   {
-    "name": "Wizard Ceori",
+    "name": "Amelia Lillywhite",
     "rank": "Initiate",
-    "points": 15
+    "points": 0
+  },
+  {
+    "name": "Devil'Arrow",
+    "rank": "Initiate",
+    "points": 0
   },
   {
     "name": "Digi der Greif",
@@ -75,7 +80,7 @@
     "points": 12
   },
   {
-    "name": "Amelia Lillywhite",
+    "name": "Emperor Palpertines",
     "rank": "Initiate",
     "points": 0
   },
@@ -115,6 +120,11 @@
       "portrait": "characters/may_ag.png",
       "bio": "<div><b>Name:</b> Mayleea Blackheart&nbsp;</div><div><b>Race:</b> Elf&nbsp;</div><div><b>Gender:</b> Female</div><div><b>Spouse:</b> Tiases Blackheart</div><div><b>Age:</b> 19</div><div><b>Culture:</b> Cenath&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,71m&nbsp;</div><p><b>Personality:</b> caring, good, fair</p><div><br></div><h3>History:</h3><div><div>She was born far from the old great elven wars in one of the leading castes of Ab'Dendriel. As the daughter of Shiriel, she delved into the secrets of white magic and druidry from a young age. Her father was strict with her, but he knew that she would eventually grow into a strong woman who could command the elements of nature.</div><div><br></div><div>In her free time, she delighted in helping others, tending the gardens within the fortress and learning new potion ingredients in the city library. Her father kept a close-eye on her and carefully selected her companions so that she would prioritize her own development over fun.</div><div><br></div><div>However, a young man – Tiases Blackheart - she had known him since childhood was wandering around the city. He might have been crosseyed, but he was helpful and cheerful for everyone around. As she strolled, she glanced at him with joy in her heart, yet she knew that if she mentioned this at home - her father would never forgive her.</div><div><br></div><div>An unfortunate event, however, helped her – beloved young boy became an honorary member of the elven royal guards and the biggest „hottie” in the whole fortress – after drinking a magical elixir. She knew this was her chance - she took the advantage of during the evening feast - where he made her laugh until she cried, and she fell in love with him.</div><div><br></div><div>Thus, she became a member of the noble Blackheart family. The royal couple themselves attended their wedding, offering them their own undertown-cottage in return for her husband's honorable service.</div><div><br></div><div>They lived in harmony and had two lovely children. She supported her husband in his quests, expeditions, cared for the household and children, while also cultivating the magic of her caste.</div><div><br></div><div>One day, however, she was speechless when her husband told her he had found his biological mother. Seeing the deep-flames in his eyes, she said without hesitation, \"I see you want it! We can even move tonight!\"</div><div><br></div><div>They did - as they had agreed- packing everything they owned and setting off on a sea voyage to the shores of Liberty Bay. This is how their new story began, built within the walls of the Order of the Argent Gryphon – Mayleea fulfilled herself there as a mother and supported the Order with the magic force of of nature.</div></div>"
     }
+  },
+  {
+    "name": "Wizard Ceori",
+    "rank": "Initiate",
+    "points": 15
   },
   {
     "name": "Crazy Stonehaze",
