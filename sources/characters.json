@@ -48,7 +48,7 @@
   {
     "name": "Volgowrath",
     "rank": "Shieldbearer",
-    "points": 6
+    "points": 9
   },
   {
     "name": "Mighty Micu",
@@ -72,7 +72,7 @@
   {
     "name": "Devil'Arrow",
     "rank": "Initiate",
-    "points": 0
+    "points": 1
   },
   {
     "name": "Digi der Greif",
@@ -82,7 +82,10 @@
   {
     "name": "Emperor Palpertines",
     "rank": "Initiate",
-    "points": 0
+    "points": 4,
+    "sheet": {
+      "bio": "<div><b>Name:</b> Emperor Palpertines</div><div><b>Titles:</b> Emperor; formerly Senator, Lord, Darth</div><div><b>Race:</b> Human</div><div><b>Gender:</b> Male</div><div><b>Age:</b> 119</div><div><b>Height:</b> 5'10\"</div><div><b>Build:</b> Frail, thin, deeply wrinkled — a body long past its prime.</div><div><b>Profession:</b> Politician and hunter</div><div><b>Origin:</b> Greenshore Village</div><div><b>Allegiance:</b> Himself</div><div><b>Languages:</b> Common, Orcish</div><div><br></div><div>Born in the quiet mists of Greenshore Village, Palpertines rose swiftly through the ranks of Thais, becoming a trusted hand to King Tibianus. With a silver tongue and a mind sharpened by ambition, he shaped royal policy from the shadows, guiding the kingdom with subtle influence and whispered counsel.</div><div><br></div><div>Yet beneath the marble halls, he pursued a darker education — secretly studying the forbidden arts under Ferumbras himself. When the archmage abandoned him for a younger, golden‑haired apprentice, Palpertines’ loyalty curdled into bitterness.</div><div><br></div><div>His guidance twisted. Policies became weapons. His influence drove Thais toward conflict until the city finally turned on him, hunting the frail old statesman from its gates.</div><div><br></div><div>Now, at 119, confused and withering, Palpertines hides in the cold hills of Vandura, serving quietly among the Argent Gryphon — a fallen emperor clinging to the last embers of forbidden power.</div>"
+    }
   },
   {
     "name": "Myrenthil",
@@ -106,7 +109,7 @@
   {
     "name": "Tiases Blackheart",
     "rank": "Initiate",
-    "points": 6,
+    "points": 7,
     "sheet": {
       "portrait": "characters/tias_ag.png",
       "bio": "<div><b>Name:</b> Tiases Blackheart</div><div><b>Race:</b> Human&nbsp;</div><div><b>Gender:</b> Male</div><div><b>Wife:</b> Mayleea Blackheart</div><div><b>Age:</b> 22&nbsp;</div><div><b>Culture:</b> Deraisim&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,66m&nbsp;</div><div><b>Personality:</b> persistent, cheerful, helpful</div><div><br></div><h3>History:</h3><div><div>He was born crosseyed in harsh conditions. Abandoned by his father due to his disability, in the forests surrounding Mount Sternum, where he was found by patrolling elven scouts whos helps him and took with them because they belive that no one deserved such a fate.</div><div><br></div><div>As he grew older, he helped local shopkeepers in Ab'Dendriel, but he especially loved helping the blacksmith and weapons dealer - Shanar. In gratitude, Shanar regularly took him to the royal family so he could delve into the books, learning the basics of honorable combat and respect for nature and other races.</div><div><br></div><div>One day, when almost all the elves had left the fortress, either hunting or patrolling, a sudden attack by wild, bloodthirsty animals occurred. They sowed such chaos that the guards the entrance, unable to cope, blew their horns, calling everyone to battle. Initially, Tiases and the weaker elves were supposed to remain in the underground tunnels, awaiting reinforcements.</div><div><br></div><div>However, out of nowhere, the young, crosseyed man felt so much strength in himself that he broke out from the elves guarding him, grabbed a random stick, and rushed into battle. Running to the main gate, he had only one thing in mind: to save the lives of the elves who had saved and raised him!</div><div><br></div><div>Unfortunately, while trying to help Faluae, who was fighting in close combat, he tripped over a protruding blueberry bush. However, in the midst of this unfortunate event, he stabbed the Alpha-wolf leading the attack—directly and fatally in his eye, causing it to fall instantly. The other animals surrendered without a fight, seeing the fate that had befallen on their Alpha.</div><div><br></div><div>The royal family, seeing his bravery, decided to reward him with a special surprise. For months, Tiases and Othelen traveled the Tibian lands, gathering ingredients for the druids, but unaware of their purpose.</div><div><br></div><div>When the next fullmoon phase arrived, he was invited with his friends to an ancient stone circle near Carlin, where it turned out they had offered him an inconspicuous vial to drink. After tasting it, the druids immediately began reciting ancient elven spells, and Tiases, gazing in amazement, realized that his body was changing. He gained muscle, the strength of 100 wild horses, and most importantly, his crosseyed gone forever.</div><div><br></div><div>He was accepted as an honorary member of the royal guards when all back to town. His life changed completely—he traveled to Shadowthorn for training, spent time with ladies—who suddenly became more willing to approach him. However, he didn't forget his old friends, whom he gladly visited in his every free time.</div><div><br></div><div>At one evening feast, he met Shiriel's beautiful daughter - Mayleea, whom he delighted in with his sense of humor. Despite the general opposition to human-elven marriages, they were the only exception to succeed. Blessed by the king and queen themselves, they settled in one of the undertown-cottages where they had children. His wife tended the household and studied white magic, while Tiases helped with trade expeditions.</div><div><br></div><div>On one of these expeditions, he met his real mother - Valkera, who, despite his completely different appearance, sensed her blood within him with the magic she wielded. At this moment she was a great Lady Warden of of the Argent Gryphon. She showed him her fortress and Surroundings and promised him that if he ever forgave her, there would always be a place for him there.</div><div><br></div><div>Returning home, he kept thinking about this meeting. They also discussed it at length with his wife – but at the end – they ultimately moving to aid the Order of the Argent Gryphon with sword and magic.</div></div>"
