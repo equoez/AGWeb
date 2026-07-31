@@ -209,5 +209,22 @@
         "body": "<div>For truth and justice.</div><div>For order and prosperity.</div><div><br></div><div>One mind, one soul.</div><div>One kind, one goal.</div><div><br></div><div>Together through times of chaos.</div><div>Together through times of peace.</div><div><br></div><div>With wisdom and honor.</div><div>With strength and valor.</div><div><br></div><div>Devotion to our belief.</div><div>Devotion to our codex.</div><div><br></div><div>We are the Followers of&nbsp;<span style=\"font-size: 0.95rem;\">the White Dragon.</span></div>"
       }
     ]
+  },
+  {
+    "name": "Argent Ordinances",
+    "entries": [
+      {
+        "title": "On Admission",
+        "body": "<div>1. New Initiates shall be announced to the Order by a Warden.</div><div>&nbsp;</div><div>2. The Wardens' Council may, at its discretion, refer an application to the Order before admitting a new Initiate.</div><div>&nbsp;</div><div>3. Wayfarers require no announcement, as they are guests of the Order rather than members.</div>"
+      },
+      {
+        "title": "On Conduct",
+        "body": "<div>1. Every member of the Order, regardless of background or rank, shall feel welcome and at home.</div><div>&nbsp;</div><div>2. Disagreements must be resolved respectfully, and hostility has no place between members of the Order.</div><div>&nbsp;</div><div>3. Every member bears responsibility for upholding the reputation of the Order through their words and deeds.</div>"
+      },
+      {
+        "title": "On Exclusion",
+        "body": "<div>1. Any member may report concerns regarding the conduct of another member to the Wardens' Council.</div><div>&nbsp;</div><div>2. Exclusion shall be considered only when it causes less harm to the Order than any reasonable alternative.</div><div>&nbsp;</div><div>3. The Wardens' Council must report exclusions to the Order together with the reason for the decision, unless doing so would endanger the privacy of those involved.</div>"
+      }
+    ]
   }
 ]
