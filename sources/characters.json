@@ -101,6 +101,15 @@
     }
   },
   {
+    "name": "Lilly Thundershade",
+    "rank": "Initiate",
+    "points": 3,
+    "sheet": {
+      "portrait": "characters/Lilly.webp",
+      "bio": "<div>No one knows who left the little girl behind in the frozen caves beneath the island of Folda. For twenty long years, she lived alone in darkness, surviving on instinct, underground streams, and whatever the caves provided. With no family, no name, and no memory of the world above, she grew into a quiet woman with dark brown hair, always wrapped in a worn, sagging black dress. The silence of the caverns became her only companion.</div><div><br></div><div>When she finally found the courage to climb toward the light, fate greeted her in the form of Ferryman Anderson. Seeing the frightened woman emerge from the caves, he brought her across the sea to the peaceful island of Senja. There she met Scott, the cheerful barkeeper, who welcomed her without questions and gave her the name Lilly. For many years she worked beside him, serving sailors, sharing countless mugs of beer, and listening to stories from every corner of Tibia.</div><div><br></div><div>One tale captured her imagination above all others. A forgotten treasure hidden beneath the underground city of Mintwallin, blessed by the gods themselves. Driven by curiosity, Lilly left the only home she had ever known and spent the next two years searching endlessly for the city's secret entrance. The labyrinth of caves tested her resolve, and the minotaurs guarding Mintwallin forced her to move like a shadow to avoid certain death.</div><div><br></div><div><div>At last, she reached the city's hidden shore. Digging where the old sailors had described, she uncovered an ancient chest. The moment she lifted its lid, brilliant light flooded every cavern surrounding Mintwallin. Resting within was the legendary Thunder Hammer. As her fingers closed around its handle, divine power surged through her body. In that instant, Lilly was transformed into a knight of extraordinary strength. The minotaurs bowed before her as she walked unharmed through their city, no longer as prey, but as a feared champion.</div><div><br></div><div>Her travels eventually led her to Liberty Bay, where sailors spoke of the noble guild known as Argent Gryphon, hidden among the nearby mountains. There, Lilly found something she had never possessed before: friendship, belonging, and a family that welcomed her without hesitation. Though she now calls Argent Gryphon her home, she has not forgotten the people who shaped her journey. One day, she will return to Senja to share another drink with her old friend Scott and tell him how the nameless girl from the caves of Folda found the Thunder Hammer. Until then, her greatest adventures are still waiting beyond the horizon.</div></div>"
+    }
+  },
+  {
     "name": "Renai Thunderstrike",
     "rank": "Initiate",
     "points": 3
@@ -197,15 +206,6 @@
     "name": "Outlaw Mike",
     "rank": "Sentinel",
     "points": 0
-  },
-  {
-    "name": "Lilly Thundershade",
-    "rank": "Wayfarer",
-    "points": 3,
-    "sheet": {
-      "portrait": "characters/Lilly.webp",
-      "bio": "<div>No one knows who left the little girl behind in the frozen caves beneath the island of Folda. For twenty long years, she lived alone in darkness, surviving on instinct, underground streams, and whatever the caves provided. With no family, no name, and no memory of the world above, she grew into a quiet woman with dark brown hair, always wrapped in a worn, sagging black dress. The silence of the caverns became her only companion.</div><div><br></div><div>When she finally found the courage to climb toward the light, fate greeted her in the form of Ferryman Anderson. Seeing the frightened woman emerge from the caves, he brought her across the sea to the peaceful island of Senja. There she met Scott, the cheerful barkeeper, who welcomed her without questions and gave her the name Lilly. For many years she worked beside him, serving sailors, sharing countless mugs of beer, and listening to stories from every corner of Tibia.</div><div><br></div><div>One tale captured her imagination above all others. A forgotten treasure hidden beneath the underground city of Mintwallin, blessed by the gods themselves. Driven by curiosity, Lilly left the only home she had ever known and spent the next two years searching endlessly for the city's secret entrance. The labyrinth of caves tested her resolve, and the minotaurs guarding Mintwallin forced her to move like a shadow to avoid certain death.</div><div><br></div><div><div>At last, she reached the city's hidden shore. Digging where the old sailors had described, she uncovered an ancient chest. The moment she lifted its lid, brilliant light flooded every cavern surrounding Mintwallin. Resting within was the legendary Thunder Hammer. As her fingers closed around its handle, divine power surged through her body. In that instant, Lilly was transformed into a knight of extraordinary strength. The minotaurs bowed before her as she walked unharmed through their city, no longer as prey, but as a feared champion.</div><div><br></div><div>Her travels eventually led her to Liberty Bay, where sailors spoke of the noble guild known as Argent Gryphon, hidden among the nearby mountains. There, Lilly found something she had never possessed before: friendship, belonging, and a family that welcomed her without hesitation. Though she now calls Argent Gryphon her home, she has not forgotten the people who shaped her journey. One day, she will return to Senja to share another drink with her old friend Scott and tell him how the nameless girl from the caves of Folda found the Thunder Hammer. Until then, her greatest adventures are still waiting beyond the horizon.</div></div>"
-    }
   },
   {
     "name": "Vuzufune",
