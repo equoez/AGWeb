@@ -27,14 +27,14 @@
       "desc": "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."
     },
     {
-      "name": "Shieldbearer",
-      "key": "shieldbearer",
-      "desc": "Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties."
+      "name": "Vanguard",
+      "key": "vanguard",
+      "desc": "Vanguards are Shieldbearers who have earned distinction through trial and are entrusted with official duties in service to the Order."
     },
     {
-      "name": "Initiate",
-      "key": "initiate",
-      "desc": "Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order."
+      "name": "Shieldbearer",
+      "key": "shieldbearer",
+      "desc": "Shieldbearers are sworn members of the Argent Gryphon, proven worthy to bear the Griffin Shield and uphold the purpose of the Order."
     },
     {
       "name": "Stonehaze Emmisary",
@@ -45,12 +45,6 @@
       "name": "Sentinel",
       "key": "sentinel",
       "desc": "Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay."
-    },
-    {
-      "name": "Wayfarer",
-      "key": "ward",
-      "desc": "Wayfarers are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay."
     }
   ]
 }
-
