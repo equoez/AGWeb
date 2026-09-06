@@ -64,7 +64,7 @@
     }
   },
   {
-    "name": "Adaelina Blackheart",
+    "name": "Dama Blackheart",
     "rank": "Shieldbearer",
     "points": 3
   },
@@ -132,6 +132,26 @@
     "name": "Wizard Ceori",
     "rank": "Initiate",
     "points": 15
+  },
+  {
+    "name": "Vuzufune",
+    "rank": "Initiate",
+    "points": 0
+  },
+  {
+    "name": "Regin of Rosebud",
+    "rank": "Initiate",
+    "points": 0
+  },
+  {
+    "name": "Beregorn",
+    "rank": "Initiate",
+    "points": 0
+  },
+  {
+    "name": "Raejk",
+    "rank": "Initiate",
+    "points": 0
   },
   {
     "name": "Crazy Stonehaze",
@@ -208,23 +228,8 @@
     "points": 0
   },
   {
-    "name": "Vuzufune",
-    "rank": "Wayfarer",
-    "points": 0
-  },
-  {
-    "name": "Regin of Rosebud",
-    "rank": "Wayfarer",
-    "points": 0
-  },
-  {
-    "name": "Beregorn",
-    "rank": "Wayfarer",
-    "points": 0
-  },
-  {
-    "name": "Raejk",
-    "rank": "Wayfarer",
+    "name": "Rasputin Balin",
+    "rank": "Sentinel",
     "points": 0
   }
 ]
