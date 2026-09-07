@@ -9,12 +9,12 @@
     }
   },
   {
-    "name": "Elara Blackthorn",
+    "name": "Elara Beauclair",
     "rank": "Warden",
     "points": 3,
     "sheet": {
       "portrait": "characters/elara.webp",
-      "bio": "<h3>Overview</h3><div><b>Name:</b> Elara Blackthorn</div><div><b>Race:</b> Human</div><div><b>Gender:</b> Female</div><div><b>Age:</b> 29</div><p><b>Place of Birth:</b> Edron</p><div><br></div><h3>Appearance</h3><div>Elara appears tall and slender, her straight jet-black hair falls long, right below the waist line. Thin face with pronounced cheekbones, sunken black coloured eyes and wild brows. She prefers to wear long garnet satin dresses and low heels. A small burn scar mark on the left side of her neck.</div><div><br></div><h3>Personality traits</h3><div>Quiet at first, Elara tends to listen and then speak with friendly tone. She appreciates creativity and art. She follows her own moral compass and is not afraid to bend rules to achieve what she desires.</div><div><br></div><h3>Background</h3><div>\"Always remember the light of Banor, my daughter. Even when the night seem endless.\"&nbsp;</div><div>- Faloria Blackthorn, at Cormaya's tunnels</div><div><br></div><div>Elara grew up in the busy streets of Edron, daughter of two devoted servants of Daniel Steelsoul. They carried hope into Cormaya, with the task to stop the Curse that deformed citizens into&nbsp; werebeasts. It crawled through flesh like cold iron, turning once known friendly faces into blood-hungry monsters. Her parents managed to contain it at Cormaya's dungeons, temporaly holding the darkness at bay. But they never returned to hold her again. In the silence left behind, she felt anger and hatred towards those who sent her parents away.&nbsp;</div><div><br></div><div>She was taken by her grandfather Alexander, the local rune craftsman of Edron. At his workshop, between tall piles of carved Daramian glyphs and grey blank runes, she learned to listen for the flow of mana inside every living creature. Every day she sat beside old Alexander, on a comfortable pillow, as he infused oak snake-shaped rods with strands of energy so fine that reminded her of water dancing down through a creek. From that moment she felt in her heart a great hunger to master that art herself. And he taught her everything he knew.&nbsp;</div><div><br></div><div>“Mana listens to the intent behind the hand that wields it.”</div><div>- Alexander</div><div><br></div><div>When she was old enough, Elara began adventuring into Edron's old forest when the sun was down, carefully planning routes and tracing paths, looking between moss-covered trunks in search of the perfect branch. She learned how to channel mana into every little form of organic plant matter. Merchants and collectors travelled from Thais, Carlin and even distant Svargrond to place their orders. Her wands were carved with perfection for the needs of healers and summoners, each piece bearing her touch and adding to her reputation. Yet, with every praise and gold coin, a new void opened inside her heart. There was no cure for the emptiness she carried. She wanted something more. She wanted to be feared.&nbsp;</div><div><br></div><div>That emptiness found a voice when she first met with Raelthar. He moved through the shadows at the tavern like a question unanswered, speaking of sorceries that one could only dream of. He offered Elara more than fame or coin: he promised that her name would be spoken in thunder, that her magic could grow strong enough to make those who caused her pain to pay the ultimate price. When she left Edron beside him, her silhoute alligned against the rising moon, and she felt the sentiment of terrible purpose.</div>"
+      "bio": "<h3>Overview</h3><div><b>Name:</b> Elara Beauclair</div><div><b>Race:</b> Human</div><div><b>Gender:</b> Female</div><div><b>Age:</b> 29</div><p><b>Place of Birth:</b> Edron</p><div><br></div><h3>Appearance</h3><div>Elara appears tall and slender, her straight jet-black hair falls long, right below the waist line. Thin face with pronounced cheekbones, sunken black coloured eyes and wild brows. She prefers to wear long garnet satin dresses and low heels. A small burn scar mark on the left side of her neck.</div><div><br></div><h3>Personality traits</h3><div>Quiet at first, Elara tends to listen and then speak with friendly tone. She appreciates creativity and art. She follows her own moral compass and is not afraid to bend rules to achieve what she desires.</div><div><br></div><h3>Background</h3><div>\"Always remember the light of Banor, my daughter. Even when the night seem endless.\"&nbsp;</div><div>- Faloria Blackthorn, at Cormaya's tunnels</div><div><br></div><div>Elara grew up in the busy streets of Edron, daughter of two devoted servants of Daniel Steelsoul. They carried hope into Cormaya, with the task to stop the Curse that deformed citizens into&nbsp; werebeasts. It crawled through flesh like cold iron, turning once known friendly faces into blood-hungry monsters. Her parents managed to contain it at Cormaya's dungeons, temporaly holding the darkness at bay. But they never returned to hold her again. In the silence left behind, she felt anger and hatred towards those who sent her parents away.&nbsp;</div><div><br></div><div>She was taken by her grandfather Alexander, the local rune craftsman of Edron. At his workshop, between tall piles of carved Daramian glyphs and grey blank runes, she learned to listen for the flow of mana inside every living creature. Every day she sat beside old Alexander, on a comfortable pillow, as he infused oak snake-shaped rods with strands of energy so fine that reminded her of water dancing down through a creek. From that moment she felt in her heart a great hunger to master that art herself. And he taught her everything he knew.&nbsp;</div><div><br></div><div>“Mana listens to the intent behind the hand that wields it.”</div><div>- Alexander</div><div><br></div><div>When she was old enough, Elara began adventuring into Edron's old forest when the sun was down, carefully planning routes and tracing paths, looking between moss-covered trunks in search of the perfect branch. She learned how to channel mana into every little form of organic plant matter. Merchants and collectors travelled from Thais, Carlin and even distant Svargrond to place their orders. Her wands were carved with perfection for the needs of healers and summoners, each piece bearing her touch and adding to her reputation. Yet, with every praise and gold coin, a new void opened inside her heart. There was no cure for the emptiness she carried. She wanted something more. She wanted to be feared.&nbsp;</div><div><br></div><div>That emptiness found a voice when she first met with Raelthar. He moved through the shadows at the tavern like a question unanswered, speaking of sorceries that one could only dream of. He offered Elara more than fame or coin: he promised that her name would be spoken in thunder, that her magic could grow strong enough to make those who caused her pain to pay the ultimate price. When she left Edron beside him, her silhoute alligned against the rising moon, and she felt the sentiment of terrible purpose.</div>"
     }
   },
   {
@@ -32,18 +32,23 @@
     "points": 0
   },
   {
-    "name": "Gravesight",
-    "rank": "Warden",
-    "points": 0
-  },
-  {
     "name": "Valarya",
-    "rank": "Oathsworn",
+    "rank": "Warden",
     "points": 3,
     "sheet": {
       "portrait": "characters/valarya.webp",
       "bio": "<p>Valarya is a human knight of the Argent Gryphon bearing the rank of Oathsworn, though whispers place his name among the remnants of the ancient <b>Order of the Black Knights</b> — an order long buried beneath myth, denial, and deliberate forgetting.</p><p>He is not a man who appears cruel at first meeting. Valarya carries himself with restraint uncommon among knights. He speaks little unless spoken to directly, listens with unsettling attentiveness, and rarely wastes emotion on displays of anger, pride, or zeal. Most remember him first as calm. Reasonable. Measured. The sort of man capable of standing unmoved while others lose themselves to fear or outrage.</p><p>That stillness is what draws people toward him. He possesses a talent for understanding what others need to hear, particularly in moments of uncertainty. To the doubtful, he offers certainty. To the ashamed, absolution. To the ambitious, purpose. He does not manipulate through charm so much as through permission — an ability to make people feel their worst instincts are not weaknesses, but necessary truths they were too frightened to admit aloud.</p><p>He believes deeply that every institution eventually rots beneath the weight of its own ideals. Honour becomes vanity. Faith becomes control. Mercy becomes weakness exploited by the merciless. Where others react to this decay with outrage or despair, Valarya accepts it with near religious calm. In his view, corruption is not a failure of mankind, but its most honest state.</p><p>Despite this, he is neither reckless nor openly sadistic. Violence is a tool he employs without hesitation, but rarely without purpose. He dislikes spectacle, distrusts fanaticism, and views emotional cruelty as wasteful indulgence. What unsettles others most is not brutality, but the absence of visible hatred behind it. Valarya can condemn a man with the same composure another knight might use to discuss the weather.</p><p>Among the Argent Gryphon, his influence is difficult to measure because it rarely appears forceful. Decisions made around him simply tend to drift toward harsher conclusions. Compromises become ultimatums. Necessary evils become accepted practice. Over time, men who once considered themselves virtuous find themselves defending acts they would previously have condemned, often without remembering precisely when their thinking changed.</p><p>Whether this is deliberate manipulation or merely the consequence of Valarya's presence is unclear. Even his loyalties remain uncertain. Some believe the vows he carries as Oathsworn bind him utterly to the Argent Gryphon. Others suspect those oaths conceal an older allegiance to the forgotten doctrines of the Black Knights. Valarya himself has never clarified the matter, and those few who pressed him on it rarely found the answers comforting.</p><p>He has the unnerving habit of speaking about ruin the same way other men speak about winter — not with excitement, nor fear, but with quiet acceptance of something inevitable.</p>"
     }
+  },
+  {
+    "name": "Gravesight",
+    "rank": "Warden",
+    "points": 0
+  },
+  {
+    "name": "Seraphine Duskvale",
+    "rank": "Oathsworn",
+    "points": 0
   },
   {
     "name": "Tiases Blackheart",
@@ -134,22 +139,12 @@
     "points": 15
   },
   {
-    "name": "Vuzufune",
-    "rank": "Initiate",
-    "points": 0
-  },
-  {
-    "name": "Regin of Rosebud",
-    "rank": "Initiate",
-    "points": 0
-  },
-  {
-    "name": "Beregorn",
-    "rank": "Initiate",
-    "points": 0
-  },
-  {
     "name": "Raejk",
+    "rank": "Initiate",
+    "points": 0
+  },
+  {
+    "name": "Yt",
     "rank": "Initiate",
     "points": 0
   },
@@ -230,6 +225,31 @@
   {
     "name": "Rasputin Balin",
     "rank": "Sentinel",
+    "points": 0
+  },
+  {
+    "name": "Beregorn",
+    "rank": "Wayfarer",
+    "points": 0
+  },
+  {
+    "name": "Ib",
+    "rank": "Wayfarer",
+    "points": 0
+  },
+  {
+    "name": "Vuzufune",
+    "rank": "Wayfarer",
+    "points": 0
+  },
+  {
+    "name": "Regin of Rosebud",
+    "rank": "Wayfarer",
+    "points": 0
+  },
+  {
+    "name": "Zaminno",
+    "rank": "Wayfarer",
     "points": 0
   }
 ]
