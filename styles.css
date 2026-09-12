@@ -502,11 +502,12 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .rank-paths {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 1fr;
+    grid-template-rows: auto repeat(3, minmax(158px, 1fr));
     column-gap: 22px;
     row-gap: 8px;
     margin-bottom: 10px;
     position: relative;
+    align-items: stretch;
 }
 
 /* Central "fork" divider between the two paths */
