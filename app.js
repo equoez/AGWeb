@@ -182,29 +182,55 @@ function loadRanks() {
                 <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
             </div>`;
 
-        const chancery  = ranks.filter(r => r.branch === 'chancery');
-        const legion    = ranks.filter(r => r.branch === 'legion');
+        // Path config comes from JSON so all labels are editable without code changes.
+        // Expected shape:
+        //   "paths": {
+        //     "columns": [{ "branch": "chancery", "label": "The Chancery" },
+        //                 { "branch": "legion",   "label": "The Legion" }],
+        //     "affiliateLabel": "Affiliate",
+        //     "note": "Members choose one path to follow"
+        //   }
+        const pathCfg = d.paths || {};
+        const columns = (pathCfg.columns && pathCfg.columns.length)
+            ? pathCfg.columns
+            : [
+                { branch: 'chancery', label: 'The Chancery' },
+                { branch: 'legion',   label: 'The Legion' }
+              ];
+        const affiliateLabel = pathCfg.affiliateLabel || 'Affiliate';
+        const pathsNote = pathCfg.note || d.pathsNote || '';
+
+        // Bucket ranks by the branches named in the column config
+        const colRanks = columns.map(c => ranks.filter(r => r.branch === c.branch));
+        const branchNames = columns.map(c => c.branch);
         const affiliate = ranks.filter(r => r.branch === 'affiliate');
 
-        // Spine ranks above and below the two paths
-        const iShield = ranks.findIndex(r => r.branch === 'none' && r.key === 'shieldbearer');
-        const topSpine    = ranks.filter((r, i) => r.branch === 'none' && (iShield === -1 || i < iShield));
-        const bottomSpine = ranks.filter((r, i) => r.branch === 'none' && iShield !== -1 && i >= iShield);
+        // Spine ranks: anything not in a path column and not affiliate
+        const isSpine = r => !branchNames.includes(r.branch) && r.branch !== 'affiliate';
+        const iShield = ranks.findIndex(r => isSpine(r) && r.key === 'shieldbearer');
+        const topSpine    = ranks.filter((r, i) => isSpine(r) && (iShield === -1 || i < iShield));
+        const bottomSpine = ranks.filter((r, i) => isSpine(r) && iShield !== -1 && i >= iShield);
 
         // Both paths share ONE grid so rows align across columns regardless of text length
-        const pathRows = Math.max(chancery.length, legion.length);
+        const pathRows = Math.max(0, ...colRanks.map(col => col.length));
         let pathsHTML = '';
         if (pathRows > 0) {
             let cells = '';
             for (let i = 0; i < pathRows; i++) {
-                cells += chancery[i] ? rankCard(chancery[i]) : '<div class="rank-item rank-item-empty"></div>';
-                cells += legion[i]   ? rankCard(legion[i])   : '<div class="rank-item rank-item-empty"></div>';
+                for (const col of colRanks) {
+                    cells += col[i] ? rankCard(col[i]) : '<div class="rank-item rank-item-empty"></div>';
+                }
             }
+            const noteHTML = pathsNote
+                ? `<div class="rank-fork-note">${pathsNote}</div>`
+                : '';
+            const headerHTML = columns
+                .map(c => `<div class="rank-path-header">${c.label}</div>`)
+                .join('');
             pathsHTML =
-                `<div class="rank-fork-note">Members choose one path to follow</div>
-                <div class="rank-paths">
-                    <div class="rank-path-header">The Chancery</div>
-                    <div class="rank-path-header">The Legion</div>
+                noteHTML +
+                `<div class="rank-paths" style="--rank-cols:${columns.length}">
+                    ${headerHTML}
                     ${cells}
                 </div>`;
         }
@@ -214,7 +240,7 @@ function loadRanks() {
             + pathsHTML
             + bottomSpine.map(rankCard).join('')
             + (affiliate.length
-                ? `<div class="rank-affiliate-label">Affiliate</div>` + affiliate.map(rankCard).join('')
+                ? `<div class="rank-affiliate-label">${affiliateLabel}</div>` + affiliate.map(rankCard).join('')
                 : '');
     }, () => loadError('ranks-content', 'ranks.json'));
 }
