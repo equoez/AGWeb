@@ -1,1020 +1,147 @@
-/* ============================================================
-   Argent Gryphon — styles.css
-   ============================================================ */
-
-/* --- Google Fonts loaded via <link> in index.html <head> --- */
-
-/* --- CSS Variables --- */
-:root {
-    --color-bg-panel:       rgba(10, 8, 4, 0.72);
-    --color-gold:           #ffd27a;
-    --color-gold-light:     #ffe9b0;
-    --color-gold-dim:       #c9a040;
-    --color-text:           #e8dfc8;
-    --color-text-muted:     #b0a080;
-    --color-nav-bg:         rgba(5, 4, 2, 0.75);
-    --color-nav-btn:        rgba(235, 220, 185, 0.92);
-    --color-nav-btn-hover:  #ffd27a;
-
-    --font-display:         'Cinzel', 'Georgia', serif;
-    --font-body:            'EB Garamond', 'Georgia', serif;
-
-    --radius-panel:         16px;
-    --radius-btn:           8px;
-    --radius-nav:           14px;
-
-    --blur-panel:           blur(8px);
-    --transition-fast:      0.2s ease;
-
-    --panel-width:          640px;
-    --panel-padding:        36px 40px;
-}
-
-/* ============================================================
-   Reset & Base
-   ============================================================ */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    -webkit-text-size-adjust: 100%;
-    -moz-text-size-adjust:    100%;
-    text-size-adjust:         100%;
-}
-
-body {
-    font-family: var(--font-body);
-    font-size: 17px;
-    line-height: 1.7;
-    color: var(--color-text);
-    min-height: 100vh;
-}
-
-/* ============================================================
-   Fixed Background
-   ============================================================ */
-.bg-fixed {
-    position: fixed;
-    top:    -5%;
-    left:   -5%;
-    width:  110%;
-    height: 110%;
-    z-index: -1;
-    background: url("img/main/AGbg.webp") no-repeat center center;
-    background-size: cover;
-    transition: filter 0.4s ease;
-}
-
-.bg-fixed::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url("img/main/AGbgd.webp") no-repeat center center;
-    background-size: cover;
-    opacity: 0;
-    filter: brightness(1) contrast(1) saturate(1);
-    transition: opacity 0.5s ease, filter 1.2s ease;
-}
-
-/* ============================================================
-   Dark Magic — Background States
-   ============================================================ */
-.bg-fixed.dark-magic::after {
-    opacity: 1;
-    filter: brightness(1) contrast(1) saturate(1);
-}
-
-.bg-fixed.dark-magic-anim {
-    animation: darkPulse 1.6s infinite;
-}
-
-.bg-fixed.dark-magic-anim::after {
-    transition: opacity 0.5s ease;
-    animation: darkBgFlicker 1.6s infinite;
-}
-
-@keyframes darkBgFlicker {
-    0%   { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
-    15%  { opacity: 0.88; filter: brightness(0.88) contrast(1.22) saturate(1.35) hue-rotate(-8deg); }
-    30%  { opacity: 0.96; filter: brightness(1.0)  contrast(1.05) saturate(1.15); }
-    50%  { opacity: 0.85; filter: brightness(0.85) contrast(1.28) saturate(1.45) hue-rotate(-12deg); }
-    65%  { opacity: 0.93; filter: brightness(0.95) contrast(1.08) saturate(1.2); }
-    80%  { opacity: 0.82; filter: brightness(0.83) contrast(1.25) saturate(1.4)  hue-rotate(-10deg); }
-    100% { opacity: 1;    filter: brightness(1.0)  contrast(1.1)  saturate(1.2); }
-}
-
-@keyframes darkPulse {
-    0%   { filter: brightness(0.95) contrast(1.05); }
-    25%  { filter: brightness(0.85) contrast(1.12); }
-    50%  { filter: brightness(0.92) contrast(1.0); }
-    75%  { filter: brightness(0.84) contrast(1.14); }
-    100% { filter: brightness(0.95) contrast(1.05); }
-}
-
-/* ============================================================
-   Dark Magic — Scroll Icon (shake + glow while hovering)
-   ============================================================ */
-.dark-magic-active .member-points-icon {
-    animation: scrollShake 0.25s infinite, scrollGlow 1.6s infinite;
-}
-
-@keyframes scrollShake {
-    0%   { transform: translate(0, 0)      rotate(0deg); }
-    20%  { transform: translate(-2px, 1px) rotate(-3deg); }
-    40%  { transform: translate(2px, -1px) rotate(3deg); }
-    60%  { transform: translate(-1px, 2px) rotate(-2deg); }
-    80%  { transform: translate(1px, -2px) rotate(2deg); }
-    100% { transform: translate(0, 0)      rotate(0deg); }
-}
-
-@keyframes scrollGlow {
-    0%   { filter: drop-shadow(0 0 4px  rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
-    25%  { filter: drop-shadow(0 0 8px  rgba(180, 0, 255, 0.9)) drop-shadow(0 0 16px rgba(100, 0, 180, 0.5)); }
-    50%  { filter: drop-shadow(0 0 5px  rgba(80,  0, 160, 0.7)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
-    75%  { filter: drop-shadow(0 0 10px rgba(200, 50, 255, 1.0)) drop-shadow(0 0 20px rgba(120, 0, 200, 0.6)); }
-    100% { filter: drop-shadow(0 0 4px  rgba(120, 0, 200, 0.6)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)); }
-}
-
-/* ============================================================
-   Layout
-   ============================================================ */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 28px 16px 48px;
-}
-
-/* ============================================================
-   Logo
-   ============================================================ */
-.logo {
-    width: 180px;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.7));
-}
-
-/* ============================================================
-   Navigation Bar
-   ============================================================ */
-.navbar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    background: var(--color-nav-bg);
-    padding: 14px 28px;
-    border-radius: var(--radius-nav);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
-    border: 1px solid rgba(255, 210, 122, 0.15);
-    margin-bottom: 24px;
-    /* Sit above the content box: .content-box uses backdrop-filter, which
-       creates its own stacking context and would otherwise paint over the
-       dropdown menu that overflows out of the navbar. */
-    position: relative;
-    z-index: 100;
-}
-
-/* ============================================================
-   Discord link (always visible, under the navbar)
-   ============================================================ */
-.discord-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    margin: -16px auto 16px;
-    padding: 4px 12px 4px 6px;
-    border-radius: var(--radius-btn);
-    border: none;
-    background: var(--color-nav-bg);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
-    color: var(--color-gold-light);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    font-family: var(--font-display);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-}
-.discord-link:hover {
-    color: #fff;
-    transform: translateY(-1px);
-}
-.discord-icon {
-    width: 22px;
-    height: 22px;
-    display: block;
-    object-fit: contain;
-    flex-shrink: 0;
-}
-
-/* ============================================================
-   Navigation Buttons
-   ============================================================ */
-.nav-button {
-    padding: 9px 20px;
-    border: none;
-    border-radius: var(--radius-btn);
-    cursor: pointer;
-    background: var(--color-nav-btn);
-    color: #1a1208;
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-}
-
-.nav-button:hover {
-    background: var(--color-nav-btn-hover);
-    color: #0d0900;
-    transform: translateY(-1px);
-}
-
-.nav-button:active {
-    transform: translateY(0);
-}
-
-/* Active page — filled buttons stay gold; show a subtle ring so the
-   current destination reads at a glance without changing the layout. */
-.nav-button.active {
-    background: var(--color-nav-btn-hover);
-    color: #0d0900;
-    box-shadow: 0 0 0 1px var(--color-gold-dim), 0 0 14px rgba(255, 210, 122, 0.25);
-}
-
-/* ============================================================
-   Navbar dropdown group ("Chronicle")
-   ============================================================ */
-.nav-group {
-    position: relative;
-    display: inline-flex;
-}
-
-.nav-group-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.nav-caret {
-    font-size: 0.7em;
-    line-height: 1;
-    transition: transform var(--transition-fast);
-}
-.nav-group.open .nav-caret {
-    transform: rotate(180deg);
-}
-
-.nav-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-6px);
-    min-width: 180px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px;
-    background: var(--color-nav-bg);
-    border: 1px solid rgba(255, 210, 122, 0.2);
-    border-radius: var(--radius-btn);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
-    z-index: 50;
-}
-.nav-group.open .nav-menu {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* Menu rows read as quiet text links, not bright filled pills */
-.nav-menu-item {
-    text-align: left;
-    padding: 9px 14px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--color-text);
-    font-family: var(--font-display);
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast);
-    white-space: nowrap;
-}
-.nav-menu-item:hover {
-    background: rgba(255, 210, 122, 0.12);
-    color: var(--color-gold-light);
-}
-.nav-menu-item.active {
-    background: rgba(255, 210, 122, 0.16);
-    color: var(--color-gold);
-}
-
-/* ============================================================
-   Content Panel
-   ============================================================ */
-.content-box {
-    background: var(--color-bg-panel);
-    padding: var(--panel-padding);
-    border-radius: var(--radius-panel);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
-    border: 1px solid rgba(255, 210, 122, 0.12);
-    width: var(--panel-width);
-    max-width: 96vw;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
-}
-
-/* ============================================================
-   Pages (show/hide)
-   ============================================================ */
-.page        { display: none; }
-.page.active { display: block; }
-
-/* ============================================================
-   Typography
-   ============================================================ */
-h2 {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--color-gold);
-    letter-spacing: 0.06em;
-    margin-bottom: 16px;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-}
-
-h3 {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-gold-light);
-    letter-spacing: 0.04em;
-    margin: 0 0 8px;
-}
-
-p {
-    margin-bottom: 14px;
-    color: var(--color-text);
-}
-
-p:last-child { margin-bottom: 0; }
-
-em     { color: var(--color-text-muted); font-style: italic; }
-strong { color: var(--color-gold-light); font-weight: 500; }
-
-/* Status messages: failed loads and empty sections */
-.load-error { color: #ff8888; }
-.empty-note { color: var(--color-text-muted); font-style: italic; }
-
-/* ============================================================
-   Section Divider
-   ============================================================ */
-.section {
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.12);
-}
-
-.section:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-/* ============================================================
-   Shared — Row Card (Codex, Ranks, Members)
-   ============================================================ */
-.codex-item,
-.rank-item,
-.member-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background: rgba(255, 210, 122, 0.04);
-    border: 1px solid rgba(255, 210, 122, 0.08);
-    width: 100%;
-    transition: background var(--transition-fast);
-}
-
-.codex-item:last-child,
-.rank-item:last-child,
-.member-card:last-child { margin-bottom: 0; }
-
-.codex-item:hover,
-.rank-item:hover,
-.member-card:hover { background: rgba(255, 210, 122, 0.08); }
-
-/* Shared — Badge / Icon */
-.rank-icon,
-.member-badge {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    object-fit: contain;
-    flex-shrink: 0;
-    flex-grow: 0;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-/* Shared — Text column */
-.rank-text,
-.member-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
-    min-width: 0;
-}
-
-/* ============================================================
-   Codex
-   ============================================================ */
-.codex-item {
-    align-items: flex-start;
-    padding: 12px 14px;
-    margin-bottom: 18px;
-}
-
-.codex-icon {
-    width: 44px;
-    height: 44px;
-    margin-top: 3px;
-    opacity: 0.9;
-    flex-shrink: 0;
-}
-
-.codex-item strong {
-    display: block;
-    margin-bottom: 2px;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    letter-spacing: 0.03em;
-}
-
-/* ============================================================
-   Diplomacy — Treaty Block
-   ============================================================ */
-
-/* ============================================================
-   Ranks
-   ============================================================ */
-.rank-text strong {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    letter-spacing: 0.03em;
-    color: var(--color-gold-light);
-    margin-bottom: 1px;
-}
-
-.rank-text span {
-    display: block;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: var(--color-text);
-    line-height: 1.4;
-    overflow-wrap: break-word;
-}
-
-/* Ranks — Branching paths (Chancery / Legion) */
-.rank-paths {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.rank-path {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.rank-path-header {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-align: center;
-    color: var(--color-gold);
-    padding-bottom: 8px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.18);
-}
-
-.rank-affiliate-label {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-align: center;
-    color: var(--color-gold-dim);
-    margin: 8px 0 10px;
-}
-
-/* ============================================================
-   Members
-   ============================================================ */
-.member-name {
-    font-family: var(--font-display);
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--color-gold-light);
-    letter-spacing: 0.02em;
-    line-height: 1.3;
-    overflow-wrap: break-word;
-}
-
-.member-rank-label {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    color: var(--color-gold-dim);
-    line-height: 1.4;
-}
-
-.member-points {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-shrink: 0;
-}
-
-.member-points-number {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-gold);
-    line-height: 1;
-}
-
-.member-points-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-    flex-shrink: 0;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
-}
-
-/* Sheet icon — binder icon linking to character sheet */
-.sheet-icon-link {
-    display: inline-flex;
-    align-items: center;
-    margin-left: 8px;
-    vertical-align: middle;
-    opacity: 0.7;
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
-}
-
-.sheet-icon-link:hover {
-    opacity: 1;
-    transform: scale(1.12);
-}
-
-.sheet-icon {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-    image-rendering: pixelated;
-}
-
-/* ============================================================
-   Journal
-   ============================================================ */
-
-.journal-entry-title {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-gold);
-    letter-spacing: 0.05em;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.12);
-}
-
-.journal-entry-body p {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.75;
-    color: var(--color-text);
-    margin-bottom: 12px;
-}
-
-.journal-entry-body p:last-child { margin-bottom: 0; }
-
-/* ============================================================
-   Character Sheet
-   ============================================================ */
-.char-back {
-    display: inline-block;
-    margin-bottom: 24px;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    letter-spacing: 0.07em;
-    color: var(--color-gold-dim);
-    text-decoration: none;
-    opacity: 0.7;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
-}
-
-.char-back::before { content: '‹ '; }
-
-.char-back:hover {
-    opacity: 1;
-    color: var(--color-gold);
-}
-
-.char-header { margin-bottom: 24px; }
-
-.char-name {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--color-gold);
-    letter-spacing: 0.08em;
-    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
-    margin-bottom: 4px;
-}
-
-.char-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-}
-
-.char-badge {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    flex-shrink: 0;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-.char-rank {
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    letter-spacing: 0.07em;
-    color: var(--color-gold-dim);
-}
-
-.char-separator {
-    color: rgba(255, 210, 122, 0.25);
-    font-size: 0.75rem;
-}
-
-.char-order {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: 0.88rem;
-    color: var(--color-text-muted);
-}
-
-.char-portrait-wrap {
-    width: 100%;
-    margin-bottom: 28px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 210, 122, 0.14);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
-    line-height: 0;
-}
-
-.char-portrait {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-}
-
-.char-rule {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right,
-        transparent,
-        rgba(255, 210, 122, 0.25) 20%,
-        rgba(255, 210, 122, 0.25) 80%,
-        transparent);
-    margin: 24px 0;
-}
-
-.char-body p {
-    margin-bottom: 16px;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--color-text);
-}
-
-.char-body p:last-child { margin-bottom: 0; }
-
-/* ============================================================
-   Homepage Blocks
-   ============================================================ */
-.home-figure {
-    margin: 16px 0;
-    text-align: center;
-    line-height: 0;
-}
-
-.home-img-wrap {
-    position: relative;
-    display: inline-block;
-    max-width: 100%;
-}
-
-.home-img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 210, 122, 0.14);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
-    cursor: crosshair;
-    touch-action: none; /* lets JS handle touch so page won't scroll during zoom */
-}
-
-/* Magnifier lens */
-.map-magnifier {
-    position: fixed;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    border: 2px solid var(--color-gold-dim);
-    box-shadow:
-        0 0 0 1px rgba(0,0,0,0.6),
-        0 0 28px rgba(0,0,0,0.7),
-        inset 0 0 12px rgba(0,0,0,0.4);
-    pointer-events: none;
-    display: none;
-    overflow: hidden;
-    z-index: 9999;
-    background-repeat: no-repeat;
-}
-
-/* Crosshair lines */
-.map-magnifier::before,
-.map-magnifier::after {
-    content: '';
-    position: absolute;
-    background: rgba(255, 210, 122, 0.3);
-    pointer-events: none;
-    z-index: 2;
-}
-.map-magnifier::before {
-    width: 100%;
-    height: 1px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-}
-.map-magnifier::after {
-    width: 1px;
-    height: 100%;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-}
-
-.home-img-caption {
-    display: block;
-    margin-top: 10px;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-style: italic;
-    color: var(--color-text-muted);
-    text-align: center;
-    line-height: 1.4;
-}
-
-.home-quote {
-    margin: 20px 0;
-    padding: 14px 20px;
-    border-left: 3px solid var(--color-gold-dim);
-    background: rgba(255, 210, 122, 0.04);
-    border-radius: 0 8px 8px 0;
-}
-
-.home-quote p {
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin-bottom: 6px;
-}
-
-.home-quote cite {
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    letter-spacing: 0.04em;
-    color: var(--color-gold-dim);
-    font-style: normal;
-}
-
-/* ============================================================
-   Responsive
-   ============================================================ */
-@media (max-width: 680px) {
-    :root { --panel-padding: 20px 16px; }
-
-    h2 { font-size: 1.4rem; }
-
-    .navbar { padding: 12px 16px; }
-
-    .nav-button {
-        font-size: 13px;
-        padding: 8px 14px;
-    }
-
-    /* Keep the dropdown from running off-screen on narrow viewports */
-    .nav-menu {
-        min-width: 160px;
-        max-width: calc(100vw - 32px);
-    }
-    .nav-menu-item {
-        font-size: 13px;
-        padding: 10px 14px;
-    }
-
-    .rank-icon,
-    .member-badge {
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
-        min-height: 38px;
-    }
-
-    .rank-text strong,
-    .member-name { font-size: 0.82rem; }
-
-    .rank-text span,
-    .member-rank-label { font-size: 0.78rem; }
-
-    .rank-paths {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
-    .rank-path { margin-bottom: 10px; }
-    .rank-path:last-child { margin-bottom: 0; }
-    .rank-path-header { font-size: 0.82rem; }
-
-    .member-points-number { font-size: 0.95rem; }
-
-    .member-points-icon {
-        width: 17px;
-        height: 17px;
-    }
-
-    .journal-entry-title { font-size: 0.9rem; }
-
-    .journal-entry-body p { font-size: 0.93rem; }
-
-    .char-name { font-size: 1.55rem; }
-}
-
-/* ============================================================
-   Library
-   ============================================================ */
-
-/* ── Series grid ── */
-.library-intro {
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin-bottom: 20px;
-    font-size: 0.95rem;
-}
-
-.library-series-item { cursor: pointer; }
-
-.library-series-count {
-    font-family: var(--font-body);
-    font-size: 0.82em;
-    font-style: italic;
-    color: var(--color-text-muted);
-}
-
-/* ── Series reader ── */
-.lib-reader {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1em;
-}
-
-.lib-reader-bigbook,
-.lib-series-bigbook {
-    width: 56px;
-    height: 56px;
-    object-fit: contain;
-    flex-shrink: 0;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-/* ── Book shelf ── */
-.lib-shelf {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55em;
-    align-items: flex-end;
-    padding: 0.6em 0;
-}
-
-.lib-book-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    border-radius: 4px;
-    position: relative;
-    display: inline-block;
-    transition: transform var(--transition-fast);
-}
-
-.lib-book-btn img {
-    width: 40px;
-    height: 40px;
-    display: block;
-    filter: brightness(0.85);
-    transition: filter var(--transition-fast);
-}
-
-.lib-book-btn:hover img { filter: brightness(1); }
-
-.lib-book-btn.active img {
-    filter: brightness(1.15) drop-shadow(0 0 5px rgba(255, 210, 122, 0.7));
-}
-
-.lib-book-btn:hover  { transform: translateY(-3px); }
-.lib-book-btn.active { transform: translateY(-4px); }
-
-/* ── Book shelf wrapper ── */
-.lib-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-}
-
-/* ============================================================
-   Diplomacy
-   ============================================================ */
-
-.dip-category-pill {
-    color: var(--color-gold-dim);
-    font-style: italic;
-}
-
-.dip-doc-thumb {
-    width: 44px;
-    height: 44px;
-    object-fit: contain;
-    flex-shrink: 0;
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-.dip-article {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.dip-article-desc {
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin-bottom: 18px;
-    font-size: 0.95rem;
-}
-
-.dip-category-badge {
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-gold-dim);
-    background: rgba(255, 210, 122, 0.08);
-    border: 1px solid rgba(255, 210, 122, 0.2);
-    border-radius: 4px;
-    padding: 2px 10px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argent Gryphon</title>
+    <meta name="description" content="Homepage of the Order of the Argent Gryphon — a militaristic and esoteric order guarding its lands in the mountains of Vandura.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Order of the Argent Gryphon">
+    <meta property="og:description" content="A militaristic and esoteric order guarding its lands in the mountains of Vandura.">
+    <meta property="og:url" content="https://www.argentgryphon.com/">
+    <meta property="og:image" content="https://www.argentgryphon.com/img/main/AGlogo.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/main/AG2_Shield_32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/main/AG2_Shield_16x16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+<div class="bg-fixed"></div>
+<div class="container">
+    <img src="img/main/AGlogo.webp" alt="Argent Gryphon crest" class="logo">
+    <nav class="navbar" id="navbar"></nav>
+    <a class="discord-link" id="discord-link" href="https://discord.gg/D9m9p2pp3V" target="_blank" rel="noopener noreferrer">
+        <img src="img/main/discord.webp" alt="" class="discord-icon" width="32" height="32">
+        <span id="discord-label">Join our Discord</span>
+    </a>
+    <main class="content-box">
+
+        <section data-page="home"      class="page active"><div id="home-content"></div></section>
+        <section data-page="codex"     class="page"><div id="codex-content"></div></section>
+        <section data-page="enlist"    class="page"><div id="enlist-content"></div></section>
+
+        <!-- ══ LIBRARY ══ -->
+        <section data-page="library" class="page">
+
+            <!-- Series list -->
+            <div id="lib-shelf-view">
+                <h2>The Stories</h2>
+                <p class="library-intro">Tomes, chronicles and records kept within the fortress archive.</p>
+                <div id="lib-series-grid"></div>
+            </div>
+
+            <!-- Series reader (hidden until a series is opened) -->
+            <div id="lib-reader-view" style="display:none;">
+                <a class="char-back" role="button" tabindex="0" onclick="libShowShelf(); return false;" onkeydown="activateOnKey(event)">Return to the Stories</a>
+                <div class="lib-reader">
+                    <div class="char-header">
+                        <div class="char-name" id="lib-series-title"></div>
+                        <div class="char-meta">
+                            <img class="lib-reader-bigbook" src="img/main/quill.png" alt="">
+                            <span class="char-order">The Stories</span>
+                        </div>
+                    </div>
+                    <div class="lib-nav">
+                        <div class="lib-shelf" id="lib-book-shelf"></div>
+                    </div>
+                    <div class="journal-entry-title" id="lib-chapter-title"></div>
+                    <div class="journal-entry-body"  id="lib-chapter-body"></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- ══ /LIBRARY ══ -->
+
+        <!-- ══ DIPLOMACY ══ -->
+        <section data-page="diplomacy" class="page">
+
+            <!-- Document list -->
+            <div id="dip-shelf-view">
+                <h2>Diplomacy</h2>
+                <p class="library-intro">Accords, treaties and pacts forged by the Order.</p>
+                <div id="dip-doc-grid"></div>
+            </div>
+
+            <!-- Article view (hidden until a document is opened) -->
+            <div id="dip-article-view" style="display:none;">
+                <a class="char-back" role="button" tabindex="0" onclick="dipShowShelf(); return false;" onkeydown="activateOnKey(event)">Return to Diplomacy</a>
+                <div class="dip-article">
+                    <div class="char-header">
+                        <div class="char-name" id="dip-article-title"></div>
+                        <div class="char-meta">
+                            <img class="lib-reader-bigbook" src="img/main/diplomacy_treaties_parchment.png" alt="">
+                            <span class="dip-category-badge" id="dip-article-category"></span>
+                        </div>
+                    </div>
+                    <div class="char-rule"></div>
+                    <p id="dip-article-desc" class="dip-article-desc" style="display:none;"></p>
+                    <div class="journal-entry-body" id="dip-article-body"></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- ══ /DIPLOMACY ══ -->
+
+        <!-- ══ MISSION ══ -->
+        <section data-page="missions" class="page">
+
+            <!-- Document list -->
+            <div id="mis-shelf-view">
+                <h2>Missions</h2>
+                <p class="library-intro">Orders, objectives and directives issued by the Order.</p>
+                <div id="mis-doc-grid"></div>
+            </div>
+
+            <!-- Article view (hidden until a document is opened) -->
+            <div id="mis-article-view" style="display:none;">
+                <a class="char-back" role="button" tabindex="0" onclick="misShowShelf(); return false;" onkeydown="activateOnKey(event)">Return to Missions</a>
+                <div class="dip-article">
+                    <div class="char-header">
+                        <div class="char-name" id="mis-article-title"></div>
+                        <div class="char-meta">
+                            <img class="lib-reader-bigbook" src="img/main/diplomacy_treaties_parchment.png" alt="">
+                            <span class="dip-category-badge" id="mis-article-category"></span>
+                        </div>
+                    </div>
+                    <div class="char-rule"></div>
+                    <p id="mis-article-desc" class="dip-article-desc" style="display:none;"></p>
+                    <div class="journal-entry-body" id="mis-article-body"></div>
+                </div>
+            </div>
+
+        </section>
+        <!-- ══ /MISSION ══ -->
+
+        <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
+
+        <section data-page="members" class="page">
+            <h2>Members</h2>
+            <p id="members-error" class="load-error" style="display:none;">Could not load member data. Make sure <em>sources/characters.json</em> is in place.</p>
+            <div id="members-list"></div>
+        </section>
+
+        <section data-page="character" class="page">
+            <a class="char-back" href="#members" onclick="showPage('members');return false;">Return to the Order</a>
+            <div id="char-sheet-content"></div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
