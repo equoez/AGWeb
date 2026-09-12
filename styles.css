@@ -501,7 +501,7 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 /* Ranks — Branching paths (Chancery / Legion) */
 .rank-paths {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(var(--rank-cols, 2), 1fr);
     grid-template-rows: auto repeat(3, minmax(158px, 1fr));
     column-gap: 22px;
     row-gap: 8px;
