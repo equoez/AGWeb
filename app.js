@@ -191,21 +191,21 @@ function loadRanks() {
         const topSpine    = ranks.filter((r, i) => r.branch === 'none' && (iShield === -1 || i < iShield));
         const bottomSpine = ranks.filter((r, i) => r.branch === 'none' && iShield !== -1 && i >= iShield);
 
-        // The two paths run side by side; pad the shorter column so rows line up
+        // Both paths share ONE grid so rows align across columns regardless of text length
         const pathRows = Math.max(chancery.length, legion.length);
         let pathsHTML = '';
         if (pathRows > 0) {
+            let cells = '';
+            for (let i = 0; i < pathRows; i++) {
+                cells += chancery[i] ? rankCard(chancery[i]) : '<div class="rank-item rank-item-empty"></div>';
+                cells += legion[i]   ? rankCard(legion[i])   : '<div class="rank-item rank-item-empty"></div>';
+            }
             pathsHTML =
                 `<div class="rank-fork-note">Members choose one path to follow</div>
                 <div class="rank-paths">
-                    <div class="rank-path">
-                        <div class="rank-path-header">The Chancery</div>
-                        ${chancery.map(rankCard).join('')}
-                    </div>
-                    <div class="rank-path">
-                        <div class="rank-path-header">The Legion</div>
-                        ${legion.map(rankCard).join('')}
-                    </div>
+                    <div class="rank-path-header">The Chancery</div>
+                    <div class="rank-path-header">The Legion</div>
+                    ${cells}
                 </div>`;
         }
 
