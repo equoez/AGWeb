@@ -196,7 +196,8 @@ function loadRanks() {
         let pathsHTML = '';
         if (pathRows > 0) {
             pathsHTML =
-                `<div class="rank-paths">
+                `<div class="rank-fork-note">Members choose one path to follow</div>
+                <div class="rank-paths">
                     <div class="rank-path">
                         <div class="rank-path-header">The Chancery</div>
                         ${chancery.map(rankCard).join('')}
