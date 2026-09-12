@@ -169,16 +169,12 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    background: var(--color-nav-bg);
+    background: rgba(5, 4, 2, 0.9);
     padding: 14px 28px;
     border-radius: var(--radius-nav);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
     border: 1px solid rgba(255, 210, 122, 0.15);
     margin-bottom: 24px;
-    /* Sit above the content box: .content-box uses backdrop-filter, which
-       creates its own stacking context and would otherwise paint over the
-       dropdown menu that overflows out of the navbar. */
+    /* Sit above the content box so the dropdown menu overflows cleanly. */
     position: relative;
     z-index: 100;
 }
@@ -194,9 +190,7 @@ body {
     padding: 4px 12px 4px 6px;
     border-radius: var(--radius-btn);
     border: none;
-    background: var(--color-nav-bg);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
+    background: rgba(5, 4, 2, 0.9);
     color: var(--color-gold-light);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     font-family: var(--font-display);
@@ -286,11 +280,9 @@ body {
     flex-direction: column;
     gap: 2px;
     padding: 8px;
-    background: var(--color-nav-bg);
+    background: rgba(20, 15, 8, 0.97);
     border: 1px solid rgba(255, 210, 122, 0.2);
     border-radius: var(--radius-btn);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
