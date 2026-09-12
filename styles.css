@@ -334,11 +334,9 @@ body {
    Content Panel
    ============================================================ */
 .content-box {
-    background: var(--color-bg-panel);
+    background: rgba(10, 8, 4, 0.86);
     padding: var(--panel-padding);
     border-radius: var(--radius-panel);
-    -webkit-backdrop-filter: var(--blur-panel);
-    backdrop-filter: var(--blur-panel);
     border: 1px solid rgba(255, 210, 122, 0.12);
     width: var(--panel-width);
     max-width: 96vw;
