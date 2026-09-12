@@ -921,11 +921,23 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     .rank-text span,
     .member-rank-label { font-size: 0.78rem; }
 
+    /* Phones: keep the two paths side by side, but stack each card vertically
+       (badge on top, text below) so descriptions get the full column width. */
     .rank-paths {
         column-gap: 10px;
-        row-gap: 6px;
+        row-gap: 8px;
     }
-    .rank-path-header { font-size: 0.74rem; letter-spacing: 0.04em; }
+    .rank-paths .rank-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 6px;
+        padding: 12px 10px;
+    }
+    .rank-paths .rank-item .rank-text {
+        align-items: center;
+    }
+    .rank-path-header { font-size: 0.74rem; letter-spacing: 0.03em; }
     .rank-path-header::before,
     .rank-path-header::after { margin: 0 3px; }
 
