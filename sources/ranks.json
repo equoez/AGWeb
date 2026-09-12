@@ -50,6 +50,11 @@
       "name": "Companion",
       "key": "companion",
       "desc": "Companions are welcomed friends of the Argent Gryphon who dwell among its members, whether or not they ultimately choose to join the Order."
+    },
+    {
+      "name": "Emissary",
+      "key": "emissary",
+      "desc": "The Emissary represents the another guild within the Argent Gryphon, ensuring both allies stand united against Zathroth."
     }
   ]
 }
