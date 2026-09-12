@@ -502,27 +502,73 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .rank-paths {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 22px;
     margin-bottom: 10px;
+    position: relative;
+}
+
+/* Central "fork" divider between the two paths */
+.rank-paths::before {
+    content: "";
+    position: absolute;
+    top: 8%;
+    bottom: 8%;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 210, 122, 0.28) 20%,
+        rgba(255, 210, 122, 0.28) 80%,
+        transparent
+    );
+    pointer-events: none;
 }
 
 .rank-path {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    padding: 14px 14px 6px;
+    border-radius: 12px;
+    background: rgba(255, 210, 122, 0.05);
+    border: 1px solid rgba(255, 210, 122, 0.16);
 }
 
 .rank-path-header {
     font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     text-align: center;
     color: var(--color-gold);
-    padding-bottom: 8px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 210, 122, 0.18);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.22);
+}
+
+/* Small glyph flanking each path header */
+.rank-path-header::before,
+.rank-path-header::after {
+    content: "✦";
+    display: inline-block;
+    margin: 0 8px;
+    color: var(--color-gold-dim);
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+
+/* Cards inside a path sit flush to the panel edges */
+.rank-path .rank-item {
+    background: transparent;
+    border-color: transparent;
+    padding: 8px 4px;
+    margin-bottom: 6px;
+}
+.rank-path .rank-item:hover {
+    background: rgba(255, 210, 122, 0.06);
 }
 
 .rank-affiliate-label {
@@ -534,6 +580,15 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     text-align: center;
     color: var(--color-gold-dim);
     margin: 8px 0 10px;
+}
+
+.rank-fork-note {
+    text-align: center;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.86rem;
+    color: var(--color-text-muted);
+    margin: 4px 0 12px;
 }
 
 /* ============================================================
@@ -874,10 +929,10 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 
     .rank-paths {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 12px;
     }
-    .rank-path { margin-bottom: 10px; }
-    .rank-path:last-child { margin-bottom: 0; }
+    .rank-paths::before { display: none; }
+    .rank-path { margin-bottom: 0; }
     .rank-path-header { font-size: 0.82rem; }
 
     .member-points-number { font-size: 0.95rem; }
