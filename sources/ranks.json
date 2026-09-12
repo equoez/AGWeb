@@ -14,42 +14,42 @@
     {
       "name": "Oathsworn",
       "key": "oathsworn",
-      "desc": "Oathsworn are those entrusted with the Order's deepest lore, bound to carry both its purpose and its peril."
+      "desc": "Oathsworn have mastered the Order's lore and sworn themselves to preserve its traditions and uphold its ancient oaths."
     },
     {
       "name": "Silverheart",
       "key": "silverheart",
-      "desc": "Enlightened understands the significance of the Order's old oaths and the inherited wisdom upon which the Order stands."
+      "desc": "Silverhearts have shown exceptional prowess in battle and stand among the finest warriors of the Argent Gryphon."
     },
     {
       "name": "Lorekeeper",
       "key": "lorekeeper",
-      "desc": "Shieldbearers have earned distinction through trial, worthy of bearing the Griffin Shield and are entrusted with official duties."
+      "desc": "Lorekeepers possess a deep knowledge of the Order's history and traditions, entrusted with preserving its lore and passing it on."
     },
     {
       "name": "Chevalier",
       "key": "chevalier",
-      "desc": "Initiates are sworn aspirants, committed to proving their worth in hopes of earning a place in the Order."
+      "desc": "Chevaliers are seasoned warriors whose skill and experience have earned them the distinction of fighting beneath the Gryphon's banner."
     },
     {
       "name": "Illuminated",
       "key": "illuminated",
-      "desc": "The Circle of Stonehaze's ambassador to the Argent Gryphon, ensuring both allies stand united against Zathroth."
+      "desc": "The Illuminated have begun to uncover the history, traditions and hidden knowledge upon which the Order stands."
     },
     {
       "name": "Vanguard",
       "key": "vanguard",
-      "desc": "Sentinels are men-at-arms and retinues who serve the Order as skilled agents, honour guards or captains, in exchange for obligation or pay."
+      "desc": "Vanguards have proven their prowess in battle and earned their place among those who take up arms for the Argent Gryphon."
     },
     {
       "name": "Shieldbearer",
       "key": "shieldbearer",
-      "desc": "Wayfarers are guests of the castle, bound by no oath beyond the pledge to keep the peace during their stay."
+      "desc": "Shieldbearers are full members of the Order, having proven themselves worthy to bear the Griffin Shield and stand among their fellow Gryphons."
     },
     {
       "name": "Companion",
       "key": "companion",
-      "desc": "123"
+      "desc": "Companions are welcomed friends of the Argent Gryphon who dwell among its members, whether or not they ultimately choose to join the Order."
     }
   ]
 }
