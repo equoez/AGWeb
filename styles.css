@@ -326,13 +326,19 @@ body {
    Content Panel
    ============================================================ */
 .content-box {
-    background: rgba(10, 8, 4, 0.86);
+    background: rgba(10, 8, 4, 0.78);
     padding: var(--panel-padding);
     border-radius: var(--radius-panel);
     border: 1px solid rgba(255, 210, 122, 0.12);
     width: var(--panel-width);
     max-width: 96vw;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    /* Isolate this blur layer so switching pages doesn't re-composite the
+       whole background behind it (the Chromium/Firefox flicker source). */
+    isolation: isolate;
+    transform: translateZ(0);
 }
 
 /* ============================================================
