@@ -173,14 +173,48 @@ function loadRanks() {
     if (el.dataset.loaded) return;
     el.dataset.loaded = '1';
     json('sources/ranks.json', d => {
+        const ranks = (d.ranks || []).filter(r => r.desc);
         RANK_MAP = new Map((d.ranks || []).map(r => [r.name, r.key]));
+
+        const rankCard = r =>
+            `<div class="rank-item">
+                <img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge">
+                <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
+            </div>`;
+
+        const chancery  = ranks.filter(r => r.branch === 'chancery');
+        const legion    = ranks.filter(r => r.branch === 'legion');
+        const affiliate = ranks.filter(r => r.branch === 'affiliate');
+
+        // Spine ranks above and below the two paths
+        const iShield = ranks.findIndex(r => r.branch === 'none' && r.key === 'shieldbearer');
+        const topSpine    = ranks.filter((r, i) => r.branch === 'none' && (iShield === -1 || i < iShield));
+        const bottomSpine = ranks.filter((r, i) => r.branch === 'none' && iShield !== -1 && i >= iShield);
+
+        // The two paths run side by side; pad the shorter column so rows line up
+        const pathRows = Math.max(chancery.length, legion.length);
+        let pathsHTML = '';
+        if (pathRows > 0) {
+            pathsHTML =
+                `<div class="rank-paths">
+                    <div class="rank-path">
+                        <div class="rank-path-header">The Chancery</div>
+                        ${chancery.map(rankCard).join('')}
+                    </div>
+                    <div class="rank-path">
+                        <div class="rank-path-header">The Legion</div>
+                        ${legion.map(rankCard).join('')}
+                    </div>
+                </div>`;
+        }
+
         el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
-            + (d.ranks || []).filter(r => r.desc).map(r =>
-                `<div class="rank-item">
-                    <img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge">
-                    <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
-                </div>`
-            ).join('');
+            + topSpine.map(rankCard).join('')
+            + pathsHTML
+            + bottomSpine.map(rankCard).join('')
+            + (affiliate.length
+                ? `<div class="rank-affiliate-label">Affiliate</div>` + affiliate.map(rankCard).join('')
+                : '');
     }, () => loadError('ranks-content', 'ranks.json'));
 }
 
