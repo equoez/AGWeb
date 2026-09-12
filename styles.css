@@ -498,6 +498,44 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     overflow-wrap: break-word;
 }
 
+/* Ranks — Branching paths (Chancery / Legion) */
+.rank-paths {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rank-path {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.rank-path-header {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-gold);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 210, 122, 0.18);
+}
+
+.rank-affiliate-label {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-gold-dim);
+    margin: 8px 0 10px;
+}
+
 /* ============================================================
    Members
    ============================================================ */
@@ -833,6 +871,14 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 
     .rank-text span,
     .member-rank-label { font-size: 0.78rem; }
+
+    .rank-paths {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .rank-path { margin-bottom: 10px; }
+    .rank-path:last-child { margin-bottom: 0; }
+    .rank-path-header { font-size: 0.82rem; }
 
     .member-points-number { font-size: 0.95rem; }
 
