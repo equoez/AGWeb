@@ -502,7 +502,9 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .rank-paths {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px;
+    grid-auto-rows: 1fr;
+    column-gap: 22px;
+    row-gap: 8px;
     margin-bottom: 10px;
     position: relative;
 }
@@ -511,29 +513,19 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 .rank-paths::before {
     content: "";
     position: absolute;
-    top: 8%;
-    bottom: 8%;
+    top: 0;
+    bottom: 0;
     left: 50%;
     width: 1px;
     transform: translateX(-50%);
     background: linear-gradient(
         to bottom,
         transparent,
-        rgba(255, 210, 122, 0.28) 20%,
-        rgba(255, 210, 122, 0.28) 80%,
+        rgba(255, 210, 122, 0.28) 12%,
+        rgba(255, 210, 122, 0.28) 88%,
         transparent
     );
     pointer-events: none;
-}
-
-.rank-path {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding: 14px 14px 6px;
-    border-radius: 12px;
-    background: rgba(255, 210, 122, 0.05);
-    border: 1px solid rgba(255, 210, 122, 0.16);
 }
 
 .rank-path-header {
@@ -545,14 +537,14 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     text-align: center;
     color: var(--color-gold);
     padding-bottom: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 2px;
     border-bottom: 1px solid rgba(255, 210, 122, 0.22);
 }
 
 /* Small glyph flanking each path header */
 .rank-path-header::before,
 .rank-path-header::after {
-    content: "✦";
+    content: "\2726";
     display: inline-block;
     margin: 0 8px;
     color: var(--color-gold-dim);
@@ -560,15 +552,16 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     vertical-align: middle;
 }
 
-/* Cards inside a path sit flush to the panel edges */
-.rank-path .rank-item {
+/* Cards inside the paths stretch to fill their (uniform) grid row */
+.rank-paths .rank-item {
+    margin-bottom: 0;
+    height: 100%;
+    align-items: flex-start;
+}
+
+.rank-item-empty {
     background: transparent;
     border-color: transparent;
-    padding: 8px 4px;
-    margin-bottom: 6px;
-}
-.rank-path .rank-item:hover {
-    background: rgba(255, 210, 122, 0.06);
 }
 
 .rank-affiliate-label {
@@ -928,12 +921,12 @@ strong { color: var(--color-gold-light); font-weight: 500; }
     .member-rank-label { font-size: 0.78rem; }
 
     .rank-paths {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        column-gap: 10px;
+        row-gap: 6px;
     }
-    .rank-paths::before { display: none; }
-    .rank-path { margin-bottom: 0; }
-    .rank-path-header { font-size: 0.82rem; }
+    .rank-path-header { font-size: 0.74rem; letter-spacing: 0.04em; }
+    .rank-path-header::before,
+    .rank-path-header::after { margin: 0 3px; }
 
     .member-points-number { font-size: 0.95rem; }
 
