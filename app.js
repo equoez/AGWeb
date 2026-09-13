@@ -178,7 +178,7 @@ function loadRanks() {
 
         const rankCard = r =>
             `<div class="rank-item">
-                <img src="img/ranks/ranks_${r.key}_rankbadge.png" class="rank-icon" alt="${r.name} badge">
+                <img src="img/ranks/ranks_${r.key}_rankbadge.webp" class="rank-icon" alt="${r.name} badge" onerror="this.onerror=null;this.src=this.src.replace('.webp','.png')">
                 <div class="rank-text"><strong>${r.name}</strong><span>${r.desc}</span></div>
             </div>`;
 
@@ -251,7 +251,7 @@ function loadRanks() {
     }, () => loadError('ranks-content', 'ranks.json'));
 }
 
-const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.png`;
+const badgeSrc = rank => `img/ranks/ranks_${RANK_MAP.get(rank) || 'initiate'}_rankbadge.webp`;
 
 /* ============================================================
    Members
@@ -272,7 +272,7 @@ function loadMembers() {
                    </a>`
                 : '';
             return `<div class="member-card">
-                <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge" loading="lazy" decoding="async">
+                <img class="member-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.src.replace('.webp','.png')">
                 <div class="member-info">
                     <div class="member-name">${c.name}${icon}</div>
                     <div class="member-rank-label">${c.rank}</div>
@@ -296,7 +296,7 @@ function showCharacterSheet(index) {
         <div class="char-header">
             <div class="char-name">${c.name}</div>
             <div class="char-meta">
-                <img class="char-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge">
+                <img class="char-badge" src="${badgeSrc(c.rank)}" alt="${c.rank} badge" onerror="this.onerror=null;this.src=this.src.replace('.webp','.png')">
                 <span class="char-rank">${c.rank}</span>
                 <span class="char-separator">·</span>
                 <span class="char-order">Order of the Argent Gryphon</span>
