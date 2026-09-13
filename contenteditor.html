@@ -291,7 +291,7 @@ let CHAR_RANKS = [
     ['Initiate','initiate'],['Sentinel','sentinel'],['Wayfarer','ward'],
 ];
 let RANK_MAP   = new Map(CHAR_RANKS.map(([n,k])=>[n,k]));
-const badgeSrc = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge.png`;
+const badgeSrc = r => `img/ranks/ranks_${RANK_MAP.get(r)||'initiate'}_rankbadge.webp`;
 
 /* Pull the live rank names + badge keys from ranks.json so the character
    dropdown never drifts from the Ranks tab. Silently keeps the fallback list
@@ -579,8 +579,7 @@ function buildCharCard(c,i) {
     card.innerHTML=`
         <div class="card-head" onclick="toggleCard(this)">
             <span class="drag-handle">&#8942;&#8942;</span>
-            <img class="card-head-badge" src="${badgeSrc(c.rank)}" alt="">
-            <div class="card-head-info">
+            <img class="card-head-badge" src="${badgeSrc(c.rank)}" alt="" onerror="this.onerror=null;this.src=this.src.replace('.webp','.png')">            <div class="card-head-info">
                 <div class="card-head-name">${esc(c.name)||'<em>Unnamed</em>'}</div>
                 <div class="card-head-rank">${esc(c.rank)||'—'}</div>
             </div>
