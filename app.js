@@ -624,6 +624,55 @@ else                       { history.replaceState({ page: 'home' }, '', '/#home'
 window.scrollTo(0, 0);
 
 /* ============================================================
+   Prefetch — warm the HTTP cache for other pages once the
+   current page has settled, so navigation feels instant.
+
+   This only fetches the JSON into the browser cache; it does
+   NOT run any page loader or touch the DOM. Each page's own
+   loader still runs on click exactly as before, but its
+   fetch() now resolves from cache instead of the network.
+   ============================================================ */
+(function prefetchPages() {
+    // Every data file the site can load, in rough order of likely use.
+    const DATA_FILES = [
+        'homepage.json', 'enlist.json', 'ranks.json', 'codex.json',
+        'characters.json', 'journal.json', 'diplomacy.json',
+        'mission.json', 'social.json'
+    ];
+
+    let started = false;
+    const run = () => {
+        if (started) return;          // only ever once
+        started = true;
+        const warm = i => {
+            if (i >= DATA_FILES.length) return;
+            // low-priority, cache-only; failures are harmless (real
+            // load will retry and surface its own error if needed).
+            fetch('sources/' + DATA_FILES[i], { priority: 'low' })
+                .catch(() => {})
+                .finally(() => {
+                    // Space the requests out so they never contend with
+                    // whatever the user is actively doing.
+                    const next = () => warm(i + 1);
+                    ('requestIdleCallback' in window)
+                        ? requestIdleCallback(next, { timeout: 1500 })
+                        : setTimeout(next, 200);
+                });
+        };
+        warm(0);
+    };
+
+    // Wait until the page has finished its initial work, then idle.
+    const kick = () => ('requestIdleCallback' in window)
+        ? requestIdleCallback(run, { timeout: 3000 })
+        : setTimeout(run, 1200);
+
+    (document.readyState === 'complete')
+        ? kick()
+        : window.addEventListener('load', kick, { once: true });
+})();
+
+/* ============================================================
    Map magnifier
    ============================================================ */
 const ZOOM = 3, LENS_SIZE = 220, HALF = LENS_SIZE / 2;
