@@ -199,6 +199,7 @@ function loadRanks() {
               ];
         const affiliateLabel = pathCfg.affiliateLabel || 'Affiliate';
         const pathsNote = pathCfg.note || d.pathsNote || '';
+        const spineNote = pathCfg.spineNote || '';
 
         // Bucket ranks by the branches named in the column config
         const colRanks = columns.map(c => ranks.filter(r => r.branch === c.branch));
@@ -225,7 +226,7 @@ function loadRanks() {
                 ? `<div class="rank-fork-note">${pathsNote}</div>`
                 : '';
             const headerHTML = columns
-                .map(c => `<div class="rank-path-header">${c.label}</div>`)
+                .map(c => `<div class="rank-path-header"><span class="rank-path-label">${c.label}</span>${c.sublabel ? `<span class="rank-path-sublabel">${c.sublabel}</span>` : ''}</div>`)
                 .join('');
             pathsHTML =
                 noteHTML +
@@ -235,9 +236,14 @@ function loadRanks() {
                 </div>`;
         }
 
+        const spineNoteHTML = (spineNote && bottomSpine.length)
+            ? `<div class="rank-fork-note">${spineNote}</div>`
+            : '';
+
         el.innerHTML = (d.title ? `<h2>${d.title}</h2>` : '')
             + topSpine.map(rankCard).join('')
             + pathsHTML
+            + spineNoteHTML
             + bottomSpine.map(rankCard).join('')
             + (affiliate.length
                 ? `<div class="rank-affiliate-label">${affiliateLabel}</div>` + affiliate.map(rankCard).join('')
