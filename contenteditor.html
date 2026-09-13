@@ -118,8 +118,8 @@
         .flat-fields { flex:1; display:flex; gap:10px; flex-wrap:wrap; }
         .flat-field { display:flex; flex-direction:column; gap:4px; }
         .flat-field label { font-family:var(--font-display); font-size:10px; letter-spacing:0.06em; color:var(--color-gold-dim); }
-        .flat-field input,.flat-field textarea { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:5px; color:var(--color-text); font-family:var(--font-body); font-size:0.88rem; padding:6px 9px; outline:none; transition:border-color 0.2s; }
-        .flat-field input:focus,.flat-field textarea:focus { border-color:var(--color-input-focus); }
+        .flat-field input,.flat-field textarea,.flat-field select { background:var(--color-input-bg); border:1px solid var(--color-input-border); border-radius:5px; color:var(--color-text); font-family:var(--font-body); font-size:0.88rem; padding:6px 9px; outline:none; transition:border-color 0.2s; }
+        .flat-field input:focus,.flat-field textarea:focus,.flat-field select:focus { border-color:var(--color-input-focus); }
         .flat-field textarea { resize:vertical; min-height:60px; }
 
         /* ── Drag handle ── */
@@ -215,7 +215,18 @@
             <div class="editor-panel" id="panel-ranks">
                 <label class="field-label" for="ranks-title">Page Title</label>
                 <input class="field-input" type="text" id="ranks-title">
-                <label class="field-label">Ranks</label>
+
+                <label class="field-label" style="margin-top:18px;">Paths &amp; Labels</label>
+                <div class="flat-card" style="flex-wrap:wrap;">
+                    <div class="flat-fields" style="flex-wrap:wrap;">
+                        <div class="flat-field" style="flex:1 1 100%;"><label>Note above columns</label><input type="text" id="ranks-note" placeholder="(optional) e.g. Choose your path" oninput="ranksPaths.note=this.value;generateOutput()"></div>
+                        <div class="flat-field" style="flex:1 1 100%;"><label>Note below columns (above spine)</label><input type="text" id="ranks-spinenote" placeholder="(optional) e.g. Choose your rank" oninput="ranksPaths.spineNote=this.value;generateOutput()"></div>
+                        <div class="flat-field" style="flex:0 0 160px;"><label>Affiliate label</label><input type="text" id="ranks-affiliatelabel" placeholder="Affiliate" oninput="ranksPaths.affiliateLabel=this.value;generateOutput()"></div>
+                    </div>
+                </div>
+                <div id="ranks-columns-list"></div>
+
+                <label class="field-label" style="margin-top:18px;">Ranks</label>
                 <div id="ranks-items-list"></div>
                 <div class="add-row"><button class="btn btn-sm" onclick="addRankItem()">+ Add rank</button></div>
             </div>
@@ -314,6 +325,7 @@ const esc       = s => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 
 let currentPage  = PAGES_CONFIG[0];
 let codexItems   = [], rankItems = [], characters = [], libSeries = [], dipDocs = [];
+let ranksPaths   = {};
 let codexDrag    = null, rankDrag = null, charDrag = null;
 
 /* ── Unsaved-changes tracking ──
@@ -430,6 +442,22 @@ function loadData(data) {
     } else if (m==='ranks') {
         document.getElementById('ranks-title').value = data.title||'';
         rankItems = (data.ranks||[]).map(r=>({...r}));
+        // Preserve the full paths config so it survives a save round-trip.
+        const p = data.paths ? JSON.parse(JSON.stringify(data.paths)) : {};
+        if (!Array.isArray(p.columns) || !p.columns.length) {
+            p.columns = [
+                { branch:'chancery', label:'The Chancery' },
+                { branch:'legion',   label:'The Legion' }
+            ];
+        }
+        if (p.affiliateLabel == null) p.affiliateLabel = 'Affiliate';
+        if (p.note == null)      p.note = '';
+        if (p.spineNote == null) p.spineNote = '';
+        ranksPaths = p;
+        document.getElementById('ranks-note').value           = p.note || '';
+        document.getElementById('ranks-spinenote').value      = p.spineNote || '';
+        document.getElementById('ranks-affiliatelabel').value = p.affiliateLabel || '';
+        renderRankColumns();
         renderRankItems();
     } else if (m==='characters') {
         characters = data.map ? data.map(c=>({...c})) : [];
@@ -465,7 +493,7 @@ function generateOutput() {
     } else if (m==='codex') {
         out = { title:document.getElementById('codex-title').value.trim(), intro:document.getElementById('codex-intro').value.trim(), items:codexItems };
     } else if (m==='ranks') {
-        out = { title:document.getElementById('ranks-title').value.trim(), ranks:rankItems };
+        out = { title:document.getElementById('ranks-title').value.trim(), paths:ranksPaths, ranks:rankItems };
     } else if (m==='characters') {
         characters.forEach((c,i)=>{ const e=document.getElementById('rte-char-'+i); if(e&&c.sheet) c.sheet.bio=e.innerHTML; });
         out = characters.map(c => {
@@ -527,21 +555,41 @@ function addCodexItem() { codexItems.push({title:'',text:''}); renderCodexItems(
 /* ═══════════════════════════════════════════
    RANK ITEMS
 ═══════════════════════════════════════════ */
+/* ── Path columns (label + sublabel per column) ── */
+function renderRankColumns() {
+    const list = document.getElementById('ranks-columns-list');
+    if (!list) return;
+    const cols = ranksPaths.columns || [];
+    list.innerHTML = cols.map((c,i) => `
+        <div class="flat-card">
+            <div class="flat-fields">
+                <div class="flat-field" style="flex:0 0 120px;"><label>Column ${i+1} branch</label><input type="text" value="${esc(c.branch||'')}" placeholder="chancery" oninput="ranksPaths.columns[${i}].branch=this.value;renderRankItems();generateOutput()"></div>
+                <div class="flat-field" style="flex:1;min-width:140px;"><label>Header label</label><input type="text" value="${esc(c.label||'')}" placeholder="The Chancery" oninput="ranksPaths.columns[${i}].label=this.value;generateOutput()"></div>
+                <div class="flat-field" style="flex:1;min-width:140px;"><label>Sub-label</label><input type="text" value="${esc(c.sublabel||'')}" placeholder="(optional) e.g. for lore" oninput="ranksPaths.columns[${i}].sublabel=this.value;generateOutput()"></div>
+            </div>
+        </div>`).join('');
+}
+
 function renderRankItems() {
     const list = document.getElementById('ranks-items-list');
     list.innerHTML = '';
+    // Branch options: the configured column branches plus the standard fixed ones.
+    const colBranches = (ranksPaths.columns||[]).map(c=>c.branch).filter(Boolean);
+    const branchOpts = [...new Set(['none', ...colBranches, 'affiliate'])];
     rankItems.forEach((r,i) => {
         const card = mkFlatCard(i,'rank',rankItems,rankDrag,v=>{rankDrag=v;},renderRankItems);
+        const opts = branchOpts.map(b => `<option value="${esc(b)}"${(r.branch||'none')===b?' selected':''}>${esc(b)}</option>`).join('');
         card.querySelector('.flat-fields').innerHTML = `
             <div class="flat-field" style="flex:0 0 150px;"><label>Name</label><input type="text" value="${esc(r.name||'')}" oninput="rankItems[${i}].name=this.value"></div>
             <div class="flat-field" style="flex:0 0 130px;"><label>Badge key</label><input type="text" value="${esc(r.key||'')}" placeholder="e.g. wardens" oninput="rankItems[${i}].key=this.value"></div>
+            <div class="flat-field" style="flex:0 0 120px;"><label>Branch</label><select oninput="rankItems[${i}].branch=this.value;generateOutput()" onchange="rankItems[${i}].branch=this.value;generateOutput()">${opts}</select></div>
             <div class="flat-field" style="flex:1;min-width:180px;"><label>Description</label><textarea oninput="rankItems[${i}].desc=this.value">${esc(r.desc||'')}</textarea></div>
         `;
         card.querySelector('.remove-btn').onclick = () => { rankItems.splice(i,1); renderRankItems(); };
         list.appendChild(card);
     });
 }
-function addRankItem() { rankItems.push({name:'',key:'',desc:''}); renderRankItems(); }
+function addRankItem() { rankItems.push({name:'',key:'',desc:'',branch:'none'}); renderRankItems(); }
 
 /* ── Shared flat card factory ── */
 function mkFlatCard(i, prefix, arr, dragRef, setDrag, rerender) {
