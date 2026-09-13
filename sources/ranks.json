@@ -2,11 +2,19 @@
   "title": "Ranks",
   "paths": {
     "columns": [
-      { "branch": "chancery", "label": "The Chancery", "sublabel": "for lore" },
-      { "branch": "legion", "label": "The Legion", "sublabel": "for hunting" }
+      {
+        "branch": "chancery",
+        "label": "The Chancery",
+        "sublabel": "for lore"
+      },
+      {
+        "branch": "legion",
+        "label": "The Legion",
+        "sublabel": "for hunting"
+      }
     ],
     "affiliateLabel": "Affiliate",
-    "note": "",
+    "note": "2 ways to play",
     "spineNote": "Choose your rank"
   },
   "ranks": [
