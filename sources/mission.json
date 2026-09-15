@@ -1,9 +1,23 @@
 [
   {
-    "title": "Vanguard Mission",
+    "title": "Promotion to Vanguard",
     "category": "Mission",
     "image": "img/icons/vanguard.webp",
     "description": "Requirements for promotion to the rank of Vanguard.",
     "body": "<div>To advance from Shieldbearer to Vanguard, you must first earn <b>8 Scrolls of Heroic Deeds</b> while having served as Shieldbearer.</div><div><br></div><div>Once the required deeds have been earned, a Warden will announce your advancement and issue you your Vanguard mission. Your mission must be declared in the Great Hall before you may begin.</div><div><br></div><div>Complete one of the following:</div><div>- Together with at least one other Gryphon, defeat a boss that presents a reasonable challenge for your character's level.</div><div>or...</div><div><span style=\"font-size: 0.95rem;\">- Fully unlock the bestiary entries of three creatures appropriate to your character's level. This challenge may be undertaken alone.</span></div><div><br></div><div>Upon completion, return to the Great Hall and present a screenshot as proof of your deeds. You may then be promoted to Vanguard.&nbsp;</div>"
+  },
+  {
+    "title": "Promotion to Chevalier",
+    "category": "Mission",
+    "image": "img/icons/chevalier.webp",
+    "description": "Requirements for promotion to the rank of Chevalier.",
+    "body": "<div>To advance from Vanguard to Chevalier, you must first earn <b>12 Scrolls of Heroic Deeds</b> while serving as a Vanguard.</div><div><br></div><div>Once the required deeds have been earned, a Warden will announce your advancement and issue you your Chevalier mission.</div><div><br></div><div>Every Chevalier must earn an outfit worthy of a warrior of the Argent Gryphon. Before setting out, announce your chosen outfit in the Great Hall.</div><div><br></div><div>Complete one of the following:</div><div>- Choose an outfit whose quest presents a reasonable challenge for your character's level, and complete the necessary deeds to obtain it.</div><div><span style=\"font-size: 0.95rem;\">or...</span></div><div>- If you already have an outfit in mind that perfectly embodies how you imagine a Chevalier of the Argent Gryphon should look, you may choose that instead, regardless of the difficulty involved in obtaining it. Upon acquiring the outfit, write a short roleplaying story convincing your fellow Gryphons why this raiment is truly worthy of a Chevalier.</div><div><br></div><div>Upon completion, return to the Great Hall and present a screenshot of yourself wearing your chosen outfit as proof of your deed. You may then be promoted to Chevalier.&nbsp;</div>"
+  },
+  {
+    "title": "Promotion to Silverheart",
+    "category": "Mission",
+    "image": "img/icons/silverheart.webp",
+    "description": "Requirements for promotion to the rank of Silverheart.",
+    "body": "<div>To advance from Chevalier to Silverheart, you must first earn <b>16 Scrolls of Heroic Deeds</b> while serving as a Chevalier.</div><div><br></div><div>Once the required deeds have been earned, a Warden will announce your advancement and issue you your Silverheart mission.</div><div><br></div><div>Your final charge is to earn the Gryphon mount.</div><div><br></div><div>Before setting out, announce your challenge in the Great Hall. You must then complete the necessary deeds to earn the Gryphon's trust and claim it as your mount.</div><div><br></div><div>Upon completion, return to the Great Hall and present a screenshot of yourself riding your Gryphon as proof of your deed. You may then be promoted to Silverheart.</div>"
   }
 ]
