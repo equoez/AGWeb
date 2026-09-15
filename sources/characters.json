@@ -99,7 +99,7 @@
   {
     "name": "Pontus Blackheart",
     "rank": "Companion",
-    "points": 7
+    "points": 10
   },
   {
     "name": "Emperor Palpertines",
@@ -267,6 +267,11 @@
   },
   {
     "name": "Zaminno",
+    "rank": "Companion",
+    "points": 0
+  },
+  {
+    "name": "Chala",
     "rank": "Companion",
     "points": 0
   },
