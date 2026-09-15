@@ -2,7 +2,7 @@
   {
     "title": "Vanguard Mission",
     "category": "Mission",
-    "image": "img/ranks/ranks_vanguard_rankbadge.webp",
+    "image": "img/icons/vanguard.webp",
     "description": "Requirements for promotion to the rank of Vanguard.",
     "body": "<div>To advance from Shieldbearer to Vanguard, you must first earn <b>8 Scrolls of Heroic Deeds</b> while having served as Shieldbearer.</div><div><br></div><div>Once the required deeds have been earned, a Warden will announce your advancement and issue you your Vanguard mission. Your mission must be declared in the Great Hall before you may begin.</div><div><br></div><div>Complete one of the following:</div><div>- Together with at least one other Gryphon, defeat a boss that presents a reasonable challenge for your character's level.</div><div>or...</div><div><span style=\"font-size: 0.95rem;\">- Fully unlock the bestiary entries of three creatures appropriate to your character's level. This challenge may be undertaken alone.</span></div><div><br></div><div>Upon completion, return to the Great Hall and present a screenshot as proof of your deeds. You may then be promoted to Vanguard.&nbsp;</div>"
   }
