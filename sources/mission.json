@@ -1,5 +1,12 @@
 [
   {
+    "title": "Promotion to Shieldbearer",
+    "category": "Mission",
+    "image": "img/icons/shieldbearer.webp",
+    "description": "Requirements for promotion to the rank of Shieldbearer.",
+    "body": "<div><span style=\"font-size: 0.95rem;\">To advance from Companion to Shieldbearer, you must first earn </span><b style=\"font-size: 0.95rem;\">8 Scrolls of Heroic Deeds</b><span style=\"font-size: 0.95rem;\">.</span></div><div><br></div><div>Once the required deeds have been earned, a Warden will announce your advancement and issue you your Shieldbearer mission in the Great Hall.</div><div><br></div><div><i>Long ago, a Shieldbearer of the Argent Gryphon ventured into the Maze of Lost Souls, never to return. You are charged with following in their footsteps and searching the depths of the maze for any trace of the missing Gryphon.</i></div><div><br></div><div><i>Should you find the Shieldbearer's remains, recover their Griffin Shield and return with it to the Argent Gryphon.</i></div><div><br></div><div>Upon completion, return to the Great Hall and present a screenshot of yourself with the recovered Griffin Shield as proof of your deed. You may then be promoted to Shieldbearer.</div>"
+  },
+  {
     "title": "Promotion to Vanguard",
     "category": "Mission",
     "image": "img/icons/vanguard.webp",
