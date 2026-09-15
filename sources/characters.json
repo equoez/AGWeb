@@ -55,15 +55,6 @@
     }
   },
   {
-    "name": "Tiases Blackheart",
-    "rank": "Shieldbearer",
-    "points": 0,
-    "sheet": {
-      "portrait": "characters/tias_ag.png",
-      "bio": "<div><b>Name:</b> Tiases Blackheart</div><div><b>Race:</b> Human&nbsp;</div><div><b>Gender:</b> Male</div><div><b>Wife:</b> Mayleea Blackheart</div><div><b>Age:</b> 22&nbsp;</div><div><b>Culture:</b> Deraisim&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,66m&nbsp;</div><div><b>Personality:</b> persistent, cheerful, helpful</div><div><br></div><h3>History:</h3><div><div>He was born crosseyed in harsh conditions. Abandoned by his father due to his disability, in the forests surrounding Mount Sternum, where he was found by patrolling elven scouts whos helps him and took with them because they belive that no one deserved such a fate.</div><div><br></div><div>As he grew older, he helped local shopkeepers in Ab'Dendriel, but he especially loved helping the blacksmith and weapons dealer - Shanar. In gratitude, Shanar regularly took him to the royal family so he could delve into the books, learning the basics of honorable combat and respect for nature and other races.</div><div><br></div><div>One day, when almost all the elves had left the fortress, either hunting or patrolling, a sudden attack by wild, bloodthirsty animals occurred. They sowed such chaos that the guards the entrance, unable to cope, blew their horns, calling everyone to battle. Initially, Tiases and the weaker elves were supposed to remain in the underground tunnels, awaiting reinforcements.</div><div><br></div><div>However, out of nowhere, the young, crosseyed man felt so much strength in himself that he broke out from the elves guarding him, grabbed a random stick, and rushed into battle. Running to the main gate, he had only one thing in mind: to save the lives of the elves who had saved and raised him!</div><div><br></div><div>Unfortunately, while trying to help Faluae, who was fighting in close combat, he tripped over a protruding blueberry bush. However, in the midst of this unfortunate event, he stabbed the Alpha-wolf leading the attack—directly and fatally in his eye, causing it to fall instantly. The other animals surrendered without a fight, seeing the fate that had befallen on their Alpha.</div><div><br></div><div>The royal family, seeing his bravery, decided to reward him with a special surprise. For months, Tiases and Othelen traveled the Tibian lands, gathering ingredients for the druids, but unaware of their purpose.</div><div><br></div><div>When the next fullmoon phase arrived, he was invited with his friends to an ancient stone circle near Carlin, where it turned out they had offered him an inconspicuous vial to drink. After tasting it, the druids immediately began reciting ancient elven spells, and Tiases, gazing in amazement, realized that his body was changing. He gained muscle, the strength of 100 wild horses, and most importantly, his crosseyed gone forever.</div><div><br></div><div>He was accepted as an honorary member of the royal guards when all back to town. His life changed completely—he traveled to Shadowthorn for training, spent time with ladies—who suddenly became more willing to approach him. However, he didn't forget his old friends, whom he gladly visited in his every free time.</div><div><br></div><div>At one evening feast, he met Shiriel's beautiful daughter - Mayleea, whom he delighted in with his sense of humor. Despite the general opposition to human-elven marriages, they were the only exception to succeed. Blessed by the king and queen themselves, they settled in one of the undertown-cottages where they had children. His wife tended the household and studied white magic, while Tiases helped with trade expeditions.</div><div><br></div><div>On one of these expeditions, he met his real mother - Valkera, who, despite his completely different appearance, sensed her blood within him with the magic she wielded. At this moment she was a great Lady Warden of of the Argent Gryphon. She showed him her fortress and Surroundings and promised him that if he ever forgave her, there would always be a place for him there.</div><div><br></div><div>Returning home, he kept thinking about this meeting. They also discussed it at length with his wife – but at the end – they ultimately moving to aid the Order of the Argent Gryphon with sword and magic.</div></div>"
-    }
-  },
-  {
     "name": "Mighty Micu",
     "rank": "Shieldbearer",
     "points": 15,
@@ -73,24 +64,42 @@
     }
   },
   {
+    "name": "Tiases Blackheart",
+    "rank": "Shieldbearer",
+    "points": 6,
+    "sheet": {
+      "portrait": "characters/tias_ag.png",
+      "bio": "<div><b>Name:</b> Tiases Blackheart</div><div><b>Race:</b> Human&nbsp;</div><div><b>Gender:</b> Male</div><div><b>Wife:</b> Mayleea Blackheart</div><div><b>Age:</b> 22&nbsp;</div><div><b>Culture:</b> Deraisim&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,66m&nbsp;</div><div><b>Personality:</b> persistent, cheerful, helpful</div><div><br></div><h3>History:</h3><div><div>He was born crosseyed in harsh conditions. Abandoned by his father due to his disability, in the forests surrounding Mount Sternum, where he was found by patrolling elven scouts whos helps him and took with them because they belive that no one deserved such a fate.</div><div><br></div><div>As he grew older, he helped local shopkeepers in Ab'Dendriel, but he especially loved helping the blacksmith and weapons dealer - Shanar. In gratitude, Shanar regularly took him to the royal family so he could delve into the books, learning the basics of honorable combat and respect for nature and other races.</div><div><br></div><div>One day, when almost all the elves had left the fortress, either hunting or patrolling, a sudden attack by wild, bloodthirsty animals occurred. They sowed such chaos that the guards the entrance, unable to cope, blew their horns, calling everyone to battle. Initially, Tiases and the weaker elves were supposed to remain in the underground tunnels, awaiting reinforcements.</div><div><br></div><div>However, out of nowhere, the young, crosseyed man felt so much strength in himself that he broke out from the elves guarding him, grabbed a random stick, and rushed into battle. Running to the main gate, he had only one thing in mind: to save the lives of the elves who had saved and raised him!</div><div><br></div><div>Unfortunately, while trying to help Faluae, who was fighting in close combat, he tripped over a protruding blueberry bush. However, in the midst of this unfortunate event, he stabbed the Alpha-wolf leading the attack—directly and fatally in his eye, causing it to fall instantly. The other animals surrendered without a fight, seeing the fate that had befallen on their Alpha.</div><div><br></div><div>The royal family, seeing his bravery, decided to reward him with a special surprise. For months, Tiases and Othelen traveled the Tibian lands, gathering ingredients for the druids, but unaware of their purpose.</div><div><br></div><div>When the next fullmoon phase arrived, he was invited with his friends to an ancient stone circle near Carlin, where it turned out they had offered him an inconspicuous vial to drink. After tasting it, the druids immediately began reciting ancient elven spells, and Tiases, gazing in amazement, realized that his body was changing. He gained muscle, the strength of 100 wild horses, and most importantly, his crosseyed gone forever.</div><div><br></div><div>He was accepted as an honorary member of the royal guards when all back to town. His life changed completely—he traveled to Shadowthorn for training, spent time with ladies—who suddenly became more willing to approach him. However, he didn't forget his old friends, whom he gladly visited in his every free time.</div><div><br></div><div>At one evening feast, he met Shiriel's beautiful daughter - Mayleea, whom he delighted in with his sense of humor. Despite the general opposition to human-elven marriages, they were the only exception to succeed. Blessed by the king and queen themselves, they settled in one of the undertown-cottages where they had children. His wife tended the household and studied white magic, while Tiases helped with trade expeditions.</div><div><br></div><div>On one of these expeditions, he met his real mother - Valkera, who, despite his completely different appearance, sensed her blood within him with the magic she wielded. At this moment she was a great Lady Warden of of the Argent Gryphon. She showed him her fortress and Surroundings and promised him that if he ever forgave her, there would always be a place for him there.</div><div><br></div><div>Returning home, he kept thinking about this meeting. They also discussed it at length with his wife – but at the end – they ultimately moving to aid the Order of the Argent Gryphon with sword and magic.</div></div>"
+    }
+  },
+  {
     "name": "Dama Blackheart",
     "rank": "Shieldbearer",
     "points": 3
   },
   {
-    "name": "Amelia Lillywhite",
+    "name": "Wizard Ceori",
     "rank": "Companion",
-    "points": 0
-  },
-  {
-    "name": "Pontus Blackheart",
-    "rank": "Companion",
-    "points": 4
+    "points": 15
   },
   {
     "name": "Valkyrja",
     "rank": "Companion",
     "points": 12
+  },
+  {
+    "name": "Mayleea Blackheart",
+    "rank": "Companion",
+    "points": 9,
+    "sheet": {
+      "portrait": "characters/may_ag.png",
+      "bio": "<div><b>Name:</b> Mayleea Blackheart&nbsp;</div><div><b>Race:</b> Elf&nbsp;</div><div><b>Gender:</b> Female</div><div><b>Spouse:</b> Tiases Blackheart</div><div><b>Age:</b> 19</div><div><b>Culture:</b> Cenath&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,71m&nbsp;</div><p><b>Personality:</b> caring, good, fair</p><div><br></div><h3>History:</h3><div><div>She was born far from the old great elven wars in one of the leading castes of Ab'Dendriel. As the daughter of Shiriel, she delved into the secrets of white magic and druidry from a young age. Her father was strict with her, but he knew that she would eventually grow into a strong woman who could command the elements of nature.</div><div><br></div><div>In her free time, she delighted in helping others, tending the gardens within the fortress and learning new potion ingredients in the city library. Her father kept a close-eye on her and carefully selected her companions so that she would prioritize her own development over fun.</div><div><br></div><div>However, a young man – Tiases Blackheart - she had known him since childhood was wandering around the city. He might have been crosseyed, but he was helpful and cheerful for everyone around. As she strolled, she glanced at him with joy in her heart, yet she knew that if she mentioned this at home - her father would never forgive her.</div><div><br></div><div>An unfortunate event, however, helped her – beloved young boy became an honorary member of the elven royal guards and the biggest „hottie” in the whole fortress – after drinking a magical elixir. She knew this was her chance - she took the advantage of during the evening feast - where he made her laugh until she cried, and she fell in love with him.</div><div><br></div><div>Thus, she became a member of the noble Blackheart family. The royal couple themselves attended their wedding, offering them their own undertown-cottage in return for her husband's honorable service.</div><div><br></div><div>They lived in harmony and had two lovely children. She supported her husband in his quests, expeditions, cared for the household and children, while also cultivating the magic of her caste.</div><div><br></div><div>One day, however, she was speechless when her husband told her he had found his biological mother. Seeing the deep-flames in his eyes, she said without hesitation, \"I see you want it! We can even move tonight!\"</div><div><br></div><div>They did - as they had agreed- packing everything they owned and setting off on a sea voyage to the shores of Liberty Bay. This is how their new story began, built within the walls of the Order of the Argent Gryphon – Mayleea fulfilled herself there as a mother and supported the Order with the magic force of of nature.</div></div>"
+    }
+  },
+  {
+    "name": "Pontus Blackheart",
+    "rank": "Companion",
+    "points": 7
   },
   {
     "name": "Emperor Palpertines",
@@ -103,7 +112,7 @@
   {
     "name": "Myrenthil",
     "rank": "Companion",
-    "points": 0,
+    "points": 3,
     "sheet": {
       "portrait": "characters/myrenthil.webp",
       "bio": "<h3>Overview</h3><b>Name</b>: Myrenthil<br><b>Race</b>: Human<br><b>Gender</b>: Male<br><b>Age</b>: Unkown<br><b>Culture</b>: Primordial<br><b>Personality</b>: calm, callous, unsettling<br><div><br></div><h3>Defining traits</h3><b>Disciple of the First Night</b><br>This character belongs to one of the last surviving remnants of an ancient order dating back to the Age of Chaos.<br><b>Voice of Collapse</b><br>This character believes destruction, decay, and catastrophe are natural forces necessary for renewal and transformation.<br><b>Unnerving Presence</b><br>This character has a subtle influence on others, drawing forth hidden resentment, doubt, ambition, and suppressed desires.<br><h3><br></h3><h3>Background</h3>Myrenthil is one of the last surviving druids of the Order of the First Night, an ancient sect most believe vanished long ago. Branded heretics created by Zathroth, the Order teaches that existence became flawed when Uman forged the Spiral of Time within the Void. To them, the Void was not emptiness, but infinite possibility untouched by permanence, destiny, or decay.<br><br>Unlike most druids who seek harmony between civilization and nature, Myrenthil believes prolonged stability breeds weakness. Kingdoms, forests, and even faiths must eventually collapse so that something stronger may emerge from their remains. He does not delight in suffering, yet neither does he fear destruction. Fire clears dead forests, rot nourishes new life, and fallen empires become fertile ground for transformation.<br><br>Myrenthil rarely raises his voice or acts with cruelty. Instead, his influence is quiet and deeply unsettling. In his presence, doubts harden into conviction and buried desires rise to the surface. He does not command others toward chaos; he merely strips away restraint and watches what emerges beneath.<br><br>To Myrenthil, the First Night is not evil darkness, but the memory of the Void before existence was chained by time and certainty. In abandoned ruins reclaimed by roots and stone worn smooth by centuries, he sees sacred reminders that nothing created by mortals or gods can resist change forever.&nbsp;"
@@ -117,40 +126,6 @@
       "portrait": "characters/lillyfinal.webp",
       "bio": "<div>No one knows who left the little girl behind in the frozen caves beneath the island of Folda. For twenty long years, she lived alone in darkness, surviving on instinct, underground streams, and whatever the caves provided. With no family, no name, and no memory of the world above, she grew into a quiet woman with dark brown hair, always wrapped in a worn, sagging black dress. The silence of the caverns became her only companion.</div><div><br></div><div>When she finally found the courage to climb toward the light, fate greeted her in the form of Ferryman Anderson. Seeing the frightened woman emerge from the caves, he brought her across the sea to the peaceful island of Senja. There she met Scott, the cheerful barkeeper, who welcomed her without questions and gave her the name Lilly. For many years she worked beside him, serving sailors, sharing countless mugs of beer, and listening to stories from every corner of Tibia.</div><div><br></div><div>One tale captured her imagination above all others. A forgotten treasure hidden beneath the underground city of Mintwallin, blessed by the gods themselves. Driven by curiosity, Lilly left the only home she had ever known and spent the next two years searching endlessly for the city's secret entrance. The labyrinth of caves tested her resolve, and the minotaurs guarding Mintwallin forced her to move like a shadow to avoid certain death.</div><div><br></div><div><div>At last, she reached the city's hidden shore. Digging where the old sailors had described, she uncovered an ancient chest. The moment she lifted its lid, brilliant light flooded every cavern surrounding Mintwallin. Resting within was the legendary Thunder Hammer. As her fingers closed around its handle, divine power surged through her body. In that instant, Lilly was transformed into a knight of extraordinary strength. The minotaurs bowed before her as she walked unharmed through their city, no longer as prey, but as a feared champion.</div><div><br></div><div>Her travels eventually led her to Liberty Bay, where sailors spoke of the noble guild known as Argent Gryphon, hidden among the nearby mountains. There, Lilly found something she had never possessed before: friendship, belonging, and a family that welcomed her without hesitation. Though she now calls Argent Gryphon her home, she has not forgotten the people who shaped her journey. One day, she will return to Senja to share another drink with her old friend Scott and tell him how the nameless girl from the caves of Folda found the Thunder Hammer. Until then, her greatest adventures are still waiting beyond the horizon.</div></div>"
     }
-  },
-  {
-    "name": "Renai Thunderstrike",
-    "rank": "Companion",
-    "points": 3
-  },
-  {
-    "name": "Ophelia Starwhisper",
-    "rank": "Companion",
-    "points": 0
-  },
-  {
-    "name": "Mayleea Blackheart",
-    "rank": "Companion",
-    "points": 9,
-    "sheet": {
-      "portrait": "characters/may_ag.png",
-      "bio": "<div><b>Name:</b> Mayleea Blackheart&nbsp;</div><div><b>Race:</b> Elf&nbsp;</div><div><b>Gender:</b> Female</div><div><b>Spouse:</b> Tiases Blackheart</div><div><b>Age:</b> 19</div><div><b>Culture:</b> Cenath&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,71m&nbsp;</div><p><b>Personality:</b> caring, good, fair</p><div><br></div><h3>History:</h3><div><div>She was born far from the old great elven wars in one of the leading castes of Ab'Dendriel. As the daughter of Shiriel, she delved into the secrets of white magic and druidry from a young age. Her father was strict with her, but he knew that she would eventually grow into a strong woman who could command the elements of nature.</div><div><br></div><div>In her free time, she delighted in helping others, tending the gardens within the fortress and learning new potion ingredients in the city library. Her father kept a close-eye on her and carefully selected her companions so that she would prioritize her own development over fun.</div><div><br></div><div>However, a young man – Tiases Blackheart - she had known him since childhood was wandering around the city. He might have been crosseyed, but he was helpful and cheerful for everyone around. As she strolled, she glanced at him with joy in her heart, yet she knew that if she mentioned this at home - her father would never forgive her.</div><div><br></div><div>An unfortunate event, however, helped her – beloved young boy became an honorary member of the elven royal guards and the biggest „hottie” in the whole fortress – after drinking a magical elixir. She knew this was her chance - she took the advantage of during the evening feast - where he made her laugh until she cried, and she fell in love with him.</div><div><br></div><div>Thus, she became a member of the noble Blackheart family. The royal couple themselves attended their wedding, offering them their own undertown-cottage in return for her husband's honorable service.</div><div><br></div><div>They lived in harmony and had two lovely children. She supported her husband in his quests, expeditions, cared for the household and children, while also cultivating the magic of her caste.</div><div><br></div><div>One day, however, she was speechless when her husband told her he had found his biological mother. Seeing the deep-flames in his eyes, she said without hesitation, \"I see you want it! We can even move tonight!\"</div><div><br></div><div>They did - as they had agreed- packing everything they owned and setting off on a sea voyage to the shores of Liberty Bay. This is how their new story began, built within the walls of the Order of the Argent Gryphon – Mayleea fulfilled herself there as a mother and supported the Order with the magic force of of nature.</div></div>"
-    }
-  },
-  {
-    "name": "Yt",
-    "rank": "Companion",
-    "points": 0
-  },
-  {
-    "name": "Wizard Ceori",
-    "rank": "Companion",
-    "points": 15
-  },
-  {
-    "name": "Raejk",
-    "rank": "Companion",
-    "points": 0
   },
   {
     "name": "Milva Khane",
@@ -171,9 +146,18 @@
     }
   },
   {
+    "name": "Kjartan of Senja",
+    "rank": "Companion",
+    "points": 3,
+    "sheet": {
+      "portrait": "characters/kjartan_miramis.webp",
+      "bio": "<div><b>Occupation</b></div><div>Sentinel of the Order of the Argent Gryphon in Senja.</div><div><b>Age</b></div><div>Late 40s.</div><div><b>Faith</b></div><div>Unknown.</div><div><b>Duties</b></div><div>- Patrolling the shores of Senja.</div><div>- Guards the Order's provisions.</div><div>- Protects the lady Miramis Blackheart, Castellan of&nbsp; Senja.</div><div><br></div><h3>Background</h3><div>Little is known of Kjartan's past, except for the harsh climate of the Ice Islands that breeds stoic men like him. Though he speaks little, his loyalty is beyond reproach. He is known to patrol through blizzards and darkness alike, ever watchful for raiders, quara, or anyone who might threaten the peaceful island. The reason he was chosen for this post is his strong connection to the village and its people.</div>"
+    }
+  },
+  {
     "name": "Myrwen Blackheart",
     "rank": "Companion",
-    "points": 0,
+    "points": 3,
     "sheet": {
       "portrait": "characters/pixel_myrwen_blackheart.webp",
       "bio": "<div><span style=\"font-size: 15.2px;\"><b>Education</b></span></div><div><span style=\"font-size: 15.2px;\">Novice healer.</span><span style=\"font-size: 0.95rem;\"></span></div><div><span style=\"font-size: 0.95rem;\"><b>Culture</b></span></div><div><span style=\"font-size: 0.95rem;\">Thaian.</span></div><div><b>Personality</b></div><div>Trusting, compassionate, forgiving.</div><div><span style=\"font-size: 0.95rem;\"><b>Personal coat-of-arms</b></span></div><div><span style=\"font-size: 0.95rem;\">Sable, an angel displayed Gules between three roundels of the same.</span></div><div><b>Faith</b></div><div>Apostate.</div><div><br></div><h3>Defining traits:</h3><div><div><b>Twin</b></div><div>This character was born a twin.</div><div><span style=\"font-size: 0.95rem;\"><b>Fenstalker</b></span></div><div><span style=\"font-size: 0.95rem;\">This character prefers travelling off the road under the guise of small critters.</span></div><div><span style=\"font-size: 0.95rem;\"><b>Accused of Witchery</b></span></div><div><span style=\"font-size: 0.95rem;\">This character is known for having colluded with witches and is under suspicion of dabbling with forbidden magic.</span></div><div><span style=\"font-size: 0.95rem;\"><b>Blackheart Widow</b></span></div><div><span style=\"font-size: 0.95rem;\">Having married into the House of Blackheart, this character carries its name proudly, though it no longer shields her as it once did.</span></div></div><div><span style=\"font-size: 0.95rem;\"><br></span></div><h3><span style=\"font-size: 0.95rem;\">Childhood</span></h3><div><div style=\"\">Born to a Blademaster of the <b>Guardian Nomads</b>, the twins Myrwen and <b>Sidney</b> were raised within the safety of Wolftower’s walls. Their upbringing was shaped by duty and religious doctrine, and they sometimes accompanied their father on his rangings to learn how to track and kill wild warriors who preyed on travelers of the roads.</div><div style=\"\"><br></div><div style=\"\">One fateful day, the three of them got captured in an ambush by a coven of witches in the Green Claw Swamp. How the twins escaped the ordeal was a mystery, but they returned to the Wolftower without their father, forever changed. While Sidney followed their late father’s path to knighthood, Myrwen chose to study the natural arts.</div><div style=\"\"><br></div><div style=\"\">The nomad king <b>Lonewolf</b>, their father’s liege, kept Sidney as his personal squire and sent Myrwen to the druids of Carlin. They offered no warmth or care, only ancient wisdom and knowledge in druidic magic, and she never felt at home in the stone-circled grove. Myrwen longed for what remained of her family.</div><div style=\"\"><br></div><div style=\"\">Despite the risk of excommunication, Myrwen chose to leave the druid's guild a decade later to search for the truth of what had happened in the swamp. When at last she found the aged woman commanding from atop a lonely hill, hosting an army of amazons and valkyries, she did not find a monster. She found a mother, still grief-stricken over the death of her lover after all these years.</div><div style=\"\"><br></div><div style=\"\">Long ago, a handsome young man came to visit the witch at night. It left her yearning for more. For years the witch courted her lover, offering gifts of life, immortality, and great fame. The handsome man readily took her gifts, but refused her hand in marriage. You are a creature of the dark, the handsome man said, I cannot.</div><div style=\"\"><br></div><div style=\"\">The next time he came to visit would be his last.</div><div style=\"\"><br></div><div style=\"\">It dawned on Myrwen then, though this woman had killed their father in anguish and despair, she was their mother after all. Was not blood thicker than water?</div><div style=\"\"><br></div><div style=\"\">And so, the young druid decided, and the witch's welcoming embrace was met by forgiveness and compassion.</div><div style=\"\"><br></div><div style=\"\">When Sidney came, eyes glowing with purpose, Myrwen stood beside her mother. She was excited to be reunited with her twin, believing at last the truth might mend what grief had torn apart.</div><div style=\"\"><br></div><div style=\"\">The witch made no move to harm the squire. She smiled and opened her arms in a warm welcome, ready to embrace the second child who had come home at last.</div><div style=\"\"><br></div><div style=\"\">The embrace was met by steel.</div><div style=\"\"><br></div><div style=\"\">When their mother fell, Sidney's eyes no longer glowed, they burned with hate and a resolve that left no room for truth or mercy.</div><div style=\"\"><br></div><div style=\"\">As the bloodied sword rose a second time, Myrwen turned and fled into the wild swamps. Heartbroken. Hunted.</div></div>"
@@ -182,7 +166,7 @@
   {
     "name": "Devil'Arrow",
     "rank": "Companion",
-    "points": 0,
+    "points": 3,
     "sheet": {
       "portrait": "characters/Soren_final.webp",
       "bio": "<div><b>Race:</b> Human</div><div><b>Vocation:</b> Paladin</div><div><b>Culture:</b> Venorean</div><div><b>Age:</b> 33</div><div><b>Height:</b> 1,75m</div><div><b>Born:</b> A hunting settlement north of Venore</div><div><b>Birth name:</b> Soren Greywatch, seldom used</div><div><b>Personality:</b> Vigilant, reserved, compassionate, dry-witted</div><div><br></div><h3>Scars and vows</h3><div><b>The Devil's Mark</b></div><div>A web of blackened scars runs from his right hand to his shoulder, left by something that should not have survived long enough to leave a mark. It grants him an early warning of demonkind. It also refuses to stay quiet.</div><div><br></div><div><b>Oath of the Last Arrow</b></div><div>One silver arrow rests apart from the rest, never spent. He has sworn it will fly for another life before it ever flies for his own. To break that vow would cost him more than the arrow.</div><div><br></div><div><b>Hunter without Glory</b></div><div>He keeps no trophies and volunteers no war stories. Killing, to him, is sometimes necessary and never cause for pride. Every kill is a weight carried, not a mark earned.</div><div><br></div><h3>Background</h3><div>He was born where the roads ran out and the marsh took over, a settlement north of Venore that most maps forgot to name. His mother pressed medicine from swamp herbs. His father guided merchants past bandits and worse. Soren learned early that a well-placed arrow was often the kindest thing a person could offer a suffering creature, and that the same was true of men.</div><div><br></div><div>A travelling order of paladins found him before he found them, and offered an education in letters and sacred discipline in exchange for his service. He accepted. For nearly a decade he escorted pilgrims, hunted the undead out of forgotten tombs, and carried medicine to settlements too small to have a healer. He was respected for his precision and quietly uncomfortable with the praise. He had never wanted the word hero. He had seen enough of what it did to men who wanted it too badly.</div><div><br></div><div>That service ended beneath a chapel no one had used in years, where he and six brothers found a cult mid-ritual instead of the missing villagers they had been sent to find. The summoning could not be stopped in time. Soren remembers fire that gave no warmth. He remembers a voice offering him strength, and refusing it. He does not know how many arrows he had left by then. He remembers loosing the last of them, and watching it end the thing his brothers could not.</div><div><br></div><div>He was the only one who walked out. The scars had already begun spreading past his wrist, and from that day he kept one arrow back from every quiver he filled: forged in silver, sworn never to fly for his own sake.</div><div><br></div><div>The brotherhood called it a holy victory and quietly began preparing to judge him for it. Soren left before they could decide what he was. He buried his birth name somewhere on that road and let the name the cultists gave him take its place. He had decided that a name you choose weighs less than one you are given.</div><div><br></div><div>In the years that followed he tracked rumours of missing people and corrupted places, moving wherever the scars led him. The trail eventually led him into the tunnels beneath Vandura's abandoned Mountain Hideout, tracking a cult he believed the Argent Gryphon was tied to. He was wrong about the Order, and that mistake very nearly got him killed before the truth caught up with him. When the expedition was ambushed he broke cover and fought at their side. Lady Valkera Blackheart saw what he was, both the discipline and what lived beneath the glove, and offered him a place instead of a cage.</div><div><br></div><div>He warned her the thing inside him might not stay patient forever. She told him that everyone in the Order carries something, and that wisdom lies in choosing what it gets used for. He has not regretted staying.</div><div><br></div><div>He is Initiate still: sworn in, unproven, and stranger to the feeling of being the least experienced man in any room by rank alone. A decade in another order's service and years of hunting alone earned him nothing here; rank in the Argent Gryphon is not carried in from elsewhere, and he is proving himself from the bottom same as any green recruit half his age. He keeps to the edges of the fortress out of old habit as much as new caution, and has not yet decided how much of what he carries he is willing to let the Order see.</div><div><br></div><div>When Roderic Rivershaw fell to his curse, the mark on Devil'Arrow's arm burned clean to the bone for the first time in years. Something inside him claimed to know the way into Roderic's mind. He has told no one. He is not certain the word of an Initiate would carry far enough to matter even if he did, and he does not yet know whether the voice is an offer worth trusting or a door he will regret opening.</div><div><br></div><div>The last arrow is still in the quiver. He no longer knows who it is meant for.</div>"
@@ -191,11 +175,26 @@
   {
     "name": "Sidney Beauclair",
     "rank": "Companion",
-    "points": 0,
+    "points": 3,
     "sheet": {
       "portrait": "characters/pixel_sidney_beauclair.webp",
       "bio": "<div><div style=\"font-size: 15.2px;\"><div style=\"font-size: 15.2px;\"><b>Education</b></div><div style=\"font-size: 15.2px;\">Blademaster.</div><div style=\"font-size: 15.2px;\"><b>Culture</b></div><div style=\"font-size: 15.2px;\">Thaian.</div><div style=\"font-size: 15.2px;\"><b>Personality</b></div><div style=\"font-size: 15.2px;\">Zealous, wrathful and callous.</div><div style=\"font-size: 15.2px;\"><b>Personal coat-of-arms</b></div><div style=\"font-size: 15.2px;\">Per pale Azure and Or, bearing a rose Gules.</div><div style=\"font-size: 15.2px;\"><b>Faith</b></div><div style=\"font-size: 15.2px;\">Banorism.</div></div></div><div><br></div><h3>Defining traits:</h3><div><div><b>Twin&nbsp;</b></div><div>This character was born a twin.</div><div><b>Faithful Blade</b></div><div>Burning with a devout fervor, this character will not rest until the world is cleansed of all Zathrothites.</div><div><b>Loyal Retainer</b></div><div>Lacking any personal estate, this character lives by the favor of patrons through steadfast service.</div><div><b>Familial Kinslayer</b></div><div>This character is known to have slain a family member before a formal trial took place.</div></div><div><br></div><h3>Childhood</h3><div><div>Born to a Blademaster of the <b>Guardian Nomads</b>, the twins Sidney and <b>Myrwen</b> were raised within the safety of Wolftower’s walls. Their upbringing was shaped by duty and religious doctrine, and they sometimes accompanied their father on his rangings to learn how to track and kill wild warriors who preyed on travelers of the roads.</div><div><br></div><div>One fateful day, the three of them got captured in an ambush by a coven of witches in the Green Claw Swamp. How the twins escaped the ordeal was a mystery, but they returned to the Wolftower without their father, forever changed. While Myrwen chose to study the natural arts, Sidney followed their late father’s path to knighthood.</div><div><br></div><div>The nomad king <b>Lonewolf</b>, their father’s liege, sent Myrwen to the druids of Carlin and kept Sidney as his personal squire. He offered no warmth or care, only discipline, and the young squire learned to harden in place of grieving. Outside battles and training yards, stories on Banor’s heroic deeds occupied most of Sidney’s time, who sought them for spiritual clarity rather than comfort.</div><div><br></div><div>A decade later, when the time came to earn the spurs of knighthood, Sidney chose to venture deep into the Green Claw Swamp to find the trail of the murderous witches. It led to an aged, lonely woman, commanding from atop a hill, hosting an army of amazons and valkyries. At the witch’s side stood Myrwen, excited to be reunited with her twin.</div><div><br></div><div>The witch made no move to harm the squire. Instead, she smiled and opened her arms in a warm welcome, ready to embrace her child who had come home at last.</div><div><br></div><div>Long ago, a handsome young man came to visit the witch at night. It left her yearning for more. For years the witch courted her lover, offering gifts of life, immortality and great fame. The handsome man readily took her gifts, but refused her hand in marriage. You are a creature of the dark, the handsome man said, I cannot.</div><div><br></div><div>The next time he came to visit would be his last.</div><div><br></div><div>It dawned on Sidney then, though this loathsome heretic had stained their honour, she was their mother after all. Was not blood thicker than water?</div><div><br></div><div>And so, the young squire decided, and the witch's welcoming embrace was met by the hard steel of the sanctified blade.</div><div><br></div><div>When the tear-streaked Myrwen saw Sidney’s burning eyes as the bloodied sword raised a second time, she turned and fled into the wild swamps.</div><div><br></div><div>With their <b>mother’s severed head</b> mounted on the wall of the Wolftower, Sidney knelt before the nomad king, shedding tears of joy to have completed the difficult test. The pleasure of being hailed as a knight in Banor’s service was exhilarating.</div><div><br></div><div>Time to follow Myrwen’s trail before it ran cold.</div></div>"
     }
+  },
+  {
+    "name": "Yt",
+    "rank": "Companion",
+    "points": 5
+  },
+  {
+    "name": "Renai Thunderstrike",
+    "rank": "Companion",
+    "points": 3
+  },
+  {
+    "name": "Spocone Piesci",
+    "rank": "Companion",
+    "points": 1
   },
   {
     "name": "Barnabus Runeholt",
@@ -207,6 +206,21 @@
     }
   },
   {
+    "name": "Ophelia Starwhisper",
+    "rank": "Companion",
+    "points": 0
+  },
+  {
+    "name": "Amelia Lillywhite",
+    "rank": "Companion",
+    "points": 0
+  },
+  {
+    "name": "Raejk",
+    "rank": "Companion",
+    "points": 0
+  },
+  {
     "name": "Allyn Lillywhite",
     "rank": "Companion",
     "points": 0
@@ -215,15 +229,6 @@
     "name": "Baelor Ironthorn",
     "rank": "Companion",
     "points": 0
-  },
-  {
-    "name": "Kjartan of Senja",
-    "rank": "Companion",
-    "points": 0,
-    "sheet": {
-      "portrait": "characters/kjartan_miramis.webp",
-      "bio": "<div><b>Occupation</b></div><div>Sentinel of the Order of the Argent Gryphon in Senja.</div><div><b>Age</b></div><div>Late 40s.</div><div><b>Faith</b></div><div>Unknown.</div><div><b>Duties</b></div><div>- Patrolling the shores of Senja.</div><div>- Guards the Order's provisions.</div><div>- Protects the lady Miramis Blackheart, Castellan of&nbsp; Senja.</div><div><br></div><h3>Background</h3><div>Little is known of Kjartan's past, except for the harsh climate of the Ice Islands that breeds stoic men like him. Though he speaks little, his loyalty is beyond reproach. He is known to patrol through blizzards and darkness alike, ever watchful for raiders, quara, or anyone who might threaten the peaceful island. The reason he was chosen for this post is his strong connection to the village and its people.</div>"
-    }
   },
   {
     "name": "Las the Arcane",
