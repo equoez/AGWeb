@@ -1,22 +1,5 @@
 [
   {
-    "name": "The Canticle of Scrolls",
-    "entries": [
-      {
-        "title": "Verse One - Shieldbearer",
-        "body": "<div>When first an Initiate takes the quill,</div><div>With fiery heart and ardent will,</div><div><b>One dozen</b> scrolls must be earned and sealed,</div><div>The Griffin Shield be theirs to wield.</div><div><br></div><div><span style=\"font-size: 0.95rem;\"><i>Source: 4:9, Rivershaw, Ghostlands</i></span></div>"
-      },
-      {
-        "title": "Verse Two - Enlightened",
-        "body": "<div>The Shieldbearer stands with guard and might,</div><div>Yet must press on in learning’s light;</div><div><b>Two score</b> scrolls by toil amassed,</div><div>The Enlightened grace be won at last.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 7:2, Blackthorn, Cormaya</i></div>"
-      },
-      {
-        "title": "Verse Three - Oathsworn",
-        "body": "<div>The Enlightened walks a hallowed road,</div><div>By wisdom’s flame and honour’s code;</div><div><b>Three quires</b> gathered, bound and sworn,</div><div>The Oathsworn rank in them be born.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 1:14, Blackheart, Wolftower</i></div>"
-      }
-    ]
-  },
-  {
     "name": "Valkera's Journal",
     "entries": [
       {
@@ -215,15 +198,36 @@
     "entries": [
       {
         "title": "On Admission",
-        "body": "<div>1. New Initiates shall be announced to the Order by a Warden.</div><div>&nbsp;</div><div>2. The Wardens' Council may, at its discretion, refer an application to the Order before admitting a new Initiate.</div><div>&nbsp;</div><div>3. Wayfarers require no announcement, as they are guests of the Order rather than members.</div>"
+        "body": "<div>1. New Companions shall be welcomed and announced to the Order by a Warden.</div><div>2. Companions are guests and friends of the Order and are under no obligation to seek membership.</div><div>3. Companions may submit a formal application to join the Order, but are not required to do so.</div><div>4. A Companion who wishes to join the Order may become a Shieldbearer by completing the requirements of membership.</div>"
       },
       {
         "title": "On Conduct",
-        "body": "<div>1. Every member of the Order, regardless of background or rank, shall feel welcome and at home.</div><div>&nbsp;</div><div>2. Disagreements must be resolved respectfully, and hostility has no place between members of the Order.</div><div>&nbsp;</div><div>3. Every member bears responsibility for upholding the reputation of the Order through their words and deeds.</div>"
+        "body": "<div>1. Every member of the Order, regardless of background or rank, shall feel welcome and at home.</div><div>2. Every member bears responsibility for upholding the reputation of the Order through their words and deeds.</div>"
       },
       {
         "title": "On Exclusion",
-        "body": "<div>1. Any member may report concerns regarding the conduct of another member to the Wardens' Council.</div><div>&nbsp;</div><div>2. Exclusion shall be considered only when it causes less harm to the Order than any reasonable alternative.</div><div>&nbsp;</div><div>3. The Wardens' Council must report exclusions to the Order together with the reason for the decision, unless doing so would endanger the privacy of those involved.</div>"
+        "body": "<div>1. Any member may report concerns regarding the conduct of another member to the Wardens' Council.</div><div>2. Exclusion shall be considered only when it causes less harm to the Order than any reasonable alternative.</div><div>3. The Wardens' Council must report exclusions to the Order together with the reason for the decision, unless doing so would endanger the privacy of those involved.</div>"
+      },
+      {
+        "title": "On Divisions and Deeds",
+        "body": "<div>1. Every Shieldbearer shall choose to serve in either the Chancery or the Legion.</div><div>2. Members may change their chosen division at any time.</div><div>3. Selfless acts performed for the benefit of the Order or its members may be recognised as deeds.</div>"
+      }
+    ]
+  },
+  {
+    "name": "The Canticle of Scrolls (relic)",
+    "entries": [
+      {
+        "title": "Verse One - Shieldbearer",
+        "body": "<div>When first an Initiate takes the quill,</div><div>With fiery heart and ardent will,</div><div><b>One dozen</b> scrolls must be earned and sealed,</div><div>The Griffin Shield be theirs to wield.</div><div><br></div><div><span style=\"font-size: 0.95rem;\"><i>Source: 4:9, Rivershaw, Ghostlands</i></span></div>"
+      },
+      {
+        "title": "Verse Two - Enlightened",
+        "body": "<div>The Shieldbearer stands with guard and might,</div><div>Yet must press on in learning’s light;</div><div><b>Two score</b> scrolls by toil amassed,</div><div>The Enlightened grace be won at last.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 7:2, Blackthorn, Cormaya</i></div>"
+      },
+      {
+        "title": "Verse Three - Oathsworn",
+        "body": "<div>The Enlightened walks a hallowed road,</div><div>By wisdom’s flame and honour’s code;</div><div><b>Three quires</b> gathered, bound and sworn,</div><div>The Oathsworn rank in them be born.</div><div><br></div><div><i style=\"font-size: 15.2px;\">Source: 1:14, Blackheart, Wolftower</i></div>"
       }
     ]
   }
