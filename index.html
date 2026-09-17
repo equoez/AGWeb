@@ -129,6 +129,13 @@
 
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
 
+        <section data-page="screenshots" class="page">
+            <h2>Screenshots</h2>
+            <p class="library-intro">Moments captured by members of the Order. Open one to browse them full size.</p>
+            <p id="ss-status" class="empty-note" style="display:none;"></p>
+            <div id="ss-grid" class="ss-grid"></div>
+        </section>
+
         <section data-page="highscores" class="page">
             <h2>Highscores</h2>
             <p class="hs-intro" id="hs-intro">Looking up the Order's roster…</p>
@@ -157,6 +164,20 @@
         </section>
 
     </main>
+</div>
+
+<!-- Screenshot viewer (full-screen overlay, opened from the Screenshots page) -->
+<div class="ss-viewer" id="ss-viewer" hidden role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+    <button class="ss-close" id="ss-close" type="button" aria-label="Close">&times;</button>
+    <button class="ss-nav ss-prev" id="ss-prev" type="button" aria-label="Previous screenshot">&#8249;</button>
+    <div class="ss-stage" id="ss-stage">
+        <img id="ss-img" src="" alt="" draggable="false">
+        <div class="ss-spinner" id="ss-spinner" hidden></div>
+    </div>
+    <button class="ss-nav ss-next" id="ss-next" type="button" aria-label="Next screenshot">&#8250;</button>
+    <div class="ss-bar">
+        <span class="ss-count" id="ss-count"></span>
+    </div>
 </div>
 
 </body>
