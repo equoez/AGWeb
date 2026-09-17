@@ -53,7 +53,7 @@ const NAV = [
     { type: 'link',  page: 'home',   label: 'Home'   },
     { type: 'link',  page: 'enlist', label: 'Enlist' },
     { type: 'link',  page: 'members', label: 'Members' },
-    { type: 'group', label: 'Library', pages: ['library','diplomacy','missions','ranks','codex','highscores'] },
+    { type: 'group', label: 'Library', pages: ['library','diplomacy','missions','ranks','codex','screenshots','highscores'] },
 ];
 /* Lookup: page id -> the group label it lives under (for active highlighting) */
 const PAGE_GROUP = {};
@@ -539,6 +539,7 @@ function showPage(pageId, pushHistory = true) {
     if (pageId === 'codex')     loadCodex();
     if (pageId === 'ranks')     loadRanks();
     if (pageId === 'highscores') loadHighscores();
+    if (pageId === 'screenshots') { loadScreenshots(); ssCloseViewer(false); }
     document.body.classList.toggle('wide-page', pageId === 'highscores');
     if (pageId === 'members')   loadMembers();
     if (pageId === 'library') {
@@ -590,6 +591,16 @@ window.addEventListener('popstate', e => {
         libShowShelf(false);
         return;
     }
+    if (st?.page === 'screenshots' && st.shot) {
+        showPage('screenshots', false);
+        loadScreenshots(() => ssOpenViewerByFile(st.shot, false));
+        return;
+    }
+    if (h.startsWith('screenshot-')) {
+        showPage('screenshots', false);
+        loadScreenshots(() => ssOpenViewerByFile(decodeURIComponent(h.slice(11)), false));
+        return;
+    }
     if (PAGES.includes(h)) showPage(h, false);
     else if (h)            tryOpenCharacterBySlug(h);
     else                   showPage('home', false);
@@ -618,9 +629,185 @@ document.addEventListener('keydown', e => {
     }
 });
 
+/* ============================================================
+   Screenshots
+   ------------------------------------------------------------
+   GitHub Pages can't list a folder, so the page asks the GitHub
+   API which files are in img/screenshot. Drop images there (or
+   delete them) and the gallery follows; there is nothing else to
+   maintain. The listing is cached per browser session.
+   ============================================================ */
+const SS_REPO   = 'equoez/AGWeb';
+const SS_BRANCH = 'main';
+const SS_DIR    = 'img/screenshot';
+const SS_EXT    = /\.(webp|png|jpe?g|gif|avif)$/i;
+const SS_CACHE  = 'ag-screenshots-v1';
+const SS_TTL    = 60 * 60 * 1000;
+
+let ssItems = [];            // [{ file, src }]
+let ssIndex = -1;
+let ssReady = false, ssLoading = false;
+const ssWaiters = [];
+
+function loadScreenshots(then) {
+    if (ssReady)   { if (then) then(); return; }
+    if (then) ssWaiters.push(then);
+    if (ssLoading) return;
+    ssLoading = true;
+
+    const status = document.getElementById('ss-status');
+    const say = (msg, isError) => {
+        status.textContent = msg; status.style.display = msg ? '' : 'none';
+        status.className = isError ? 'load-error' : 'empty-note';
+    };
+    say('Fetching the gallery…');
+
+    (async () => {
+        try {
+            const c = JSON.parse(sessionStorage.getItem(SS_CACHE));
+            if (c && Date.now() - c.ts < SS_TTL && Array.isArray(c.files)) return c.files;
+        } catch (e) {}
+        const res = await fetch(`https://api.github.com/repos/${SS_REPO}/contents/${SS_DIR}?ref=${SS_BRANCH}`,
+            { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) throw new Error('GitHub API ' + res.status);
+        const files = (await res.json()).filter(f => f.type === 'file').map(f => f.name);
+        try { sessionStorage.setItem(SS_CACHE, JSON.stringify({ ts: Date.now(), files })); } catch (e) {}
+        return files;
+    })().then(files => {
+        files = files.filter(f => SS_EXT.test(f)).sort().reverse();   // names start with a date: newest first
+        ssItems = files.map(file => ({ file, src: `${SS_DIR}/${file}` }));
+        if (!ssItems.length) {
+            say('No screenshots have been posted yet.');
+        } else {
+            say('');
+            document.getElementById('ss-grid').innerHTML = ssItems.map((it, i) =>
+                `<button class="ss-thumb" type="button" data-shot="${i}" aria-label="Screenshot ${i + 1}">
+                    <img src="${it.src}" alt="" loading="lazy" decoding="async"
+                         onload="this.classList.add('is-loaded')">
+                </button>`).join('');
+        }
+    }).catch(() => {
+        say('The gallery could not be listed right now. Please try again in a little while.', true);
+    }).finally(() => {
+        ssReady = true; ssLoading = false;
+        ssWaiters.splice(0).forEach(fn => fn());
+    });
+}
+/* ── Viewer ── */
+const ssViewer  = document.getElementById('ss-viewer');
+const ssImg     = document.getElementById('ss-img');
+const ssStage   = document.getElementById('ss-stage');
+const ssSpinner = document.getElementById('ss-spinner');
+let ssLastFocus = null, ssLoadToken = 0;
+
+function ssOpenViewer(i, pushHistory = true) {
+    if (!ssItems.length) return;
+    const wasOpen = !ssViewer.hidden;
+    ssIndex = ((i % ssItems.length) + ssItems.length) % ssItems.length;
+    const it = ssItems[ssIndex];
+
+    if (!wasOpen) {
+        ssLastFocus = document.activeElement;
+        ssViewer.hidden = false;
+        document.body.style.overflow = 'hidden';
+        document.getElementById('ss-close').focus({ preventScroll: true });
+    }
+    document.getElementById('ss-count').textContent   = `${ssIndex + 1} of ${ssItems.length}`;
+    ssImg.alt = `Screenshot ${ssIndex + 1}`;
+
+    /* Swap the image once it's loaded; show a spinner only if it's slow. */
+    const token = ++ssLoadToken;
+    const pre = new Image();
+    const slow = setTimeout(() => { if (token === ssLoadToken) { ssImg.classList.add('is-loading'); ssSpinner.hidden = false; } }, 120);
+    const done = () => {
+        if (token !== ssLoadToken) return;
+        clearTimeout(slow);
+        ssImg.src = it.src;
+        ssImg.style.transform = '';
+        ssImg.classList.remove('is-loading'); ssSpinner.hidden = true;
+    };
+    pre.onload = done; pre.onerror = done;
+    pre.src = it.src;
+
+    /* Warm the neighbours so arrows/swipes feel instant */
+    [ssIndex + 1, ssIndex - 1].forEach(n => { const nb = ssItems[((n % ssItems.length) + ssItems.length) % ssItems.length]; if (nb) new Image().src = nb.src; });
+
+    if (pushHistory) try {
+        const st = { page: 'screenshots', shot: it.file };
+        const url = '/#screenshot-' + encodeURIComponent(it.file);
+        wasOpen ? history.replaceState(st, '', url) : history.pushState(st, '', url);
+    } catch (e) {}
+}
+function ssOpenViewerByFile(file, pushHistory) {
+    const i = ssItems.findIndex(it => it.file === file);
+    if (i >= 0) ssOpenViewer(i, pushHistory);
+}
+function ssCloseViewer(viaHistory = true) {
+    if (ssViewer.hidden) return;
+    ssViewer.hidden = true;
+    ssLoadToken++;
+    document.body.style.overflow = '';
+    ssImg.classList.remove('is-loading'); ssSpinner.hidden = true;
+    if (viaHistory && history.state?.shot) history.back();   // popstate lands on the plain screenshots page
+    else try { history.replaceState({ page: 'screenshots' }, '', '/#screenshots'); } catch (e) {}
+    ssLastFocus?.focus?.({ preventScroll: true });
+}
+function ssStep(d) { if (!ssViewer.hidden) ssOpenViewer(ssIndex + d); }
+
+document.getElementById('ss-grid').addEventListener('click', e => {
+    const btn = e.target.closest('[data-shot]');
+    if (btn) ssOpenViewer(+btn.dataset.shot);
+});
+document.getElementById('ss-prev').addEventListener('click', () => ssStep(-1));
+document.getElementById('ss-next').addEventListener('click', () => ssStep(1));
+document.getElementById('ss-close').addEventListener('click', () => ssCloseViewer());
+/* Click on the dark backdrop (not the image) closes */
+let ssJustDragged = false;
+ssViewer.addEventListener('click', e => { if (!ssJustDragged && (e.target === ssViewer || e.target === ssStage)) ssCloseViewer(); });
+
+document.addEventListener('keydown', e => {
+    if (ssViewer.hidden) return;
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); ssStep(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); ssStep(1); }
+    if (e.key === 'Escape')     { e.preventDefault(); ssCloseViewer(); }
+});
+
+/* Swipe: drag the image with the finger, snap to prev/next past a threshold */
+(() => {
+    let x0 = null, y0 = null, dragging = false;
+    ssStage.addEventListener('pointerdown', e => {
+        if (ssViewer.hidden || e.pointerType === 'mouse' && e.button !== 0) return;
+        x0 = e.clientX; y0 = e.clientY; dragging = false;
+        ssStage.setPointerCapture?.(e.pointerId);
+    });
+    ssStage.addEventListener('pointermove', e => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0, dy = e.clientY - y0;
+        if (!dragging && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) dragging = true;
+        if (dragging) { ssImg.style.transition = 'none'; ssImg.style.transform = `translateX(${dx}px)`; }
+    });
+    const end = e => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0;
+        x0 = y0 = null;
+        ssImg.style.transition = '';
+        if (dragging && Math.abs(dx) > Math.max(50, ssStage.clientWidth * 0.15)) ssStep(dx < 0 ? 1 : -1);
+        else ssImg.style.transform = '';
+        if (dragging) { ssJustDragged = true; setTimeout(() => ssJustDragged = false, 50); }
+        dragging = false;
+    };
+    ssStage.addEventListener('pointerup', end);
+    ssStage.addEventListener('pointercancel', end);
+})();
+
 /* Initial load from hash */
 const hash = location.hash.slice(1);
 if (PAGES.includes(hash)) { history.replaceState({ page: hash }, '', '/#' + hash); showPage(hash, false); }
+else if (hash.startsWith('screenshot-')) {
+    history.replaceState({ page: 'screenshots' }, '', '/#screenshots');
+    showPage('screenshots', false);
+    loadScreenshots(() => ssOpenViewerByFile(decodeURIComponent(hash.slice(11)), true));
+}
 else if (hash)             { tryOpenCharacterBySlug(hash); }
 else                       { history.replaceState({ page: 'home' }, '', '/#home'); showPage('home', false); }
 window.scrollTo(0, 0);
