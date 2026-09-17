@@ -1096,10 +1096,6 @@ strong { color: var(--color-gold-light); font-weight: 500; }
    Highscores page
    ------------------------------------------------------------
    ============================================================ */
-/* The stats grid needs more room than the 640px panel: widen it
-   only while the highscores page is showing (class set in showPage). */
-body.wide-page .content-box { width: 960px; }
-
 .hs-intro { color: var(--color-text-muted); font-style: italic; margin-bottom: 18px; }
 .hs-intro strong { font-style: normal; }
 
