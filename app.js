@@ -637,15 +637,13 @@ document.addEventListener('keydown', e => {
    delete them) and the gallery follows; there is nothing else to
    maintain. The grid uses img/screenshot/thumbs/<same name> when
    the upload bot has made one, else the full image. The listing
-   is cached per browser session.
+   is fetched once per page load.
    ============================================================ */
 const SS_REPO   = 'equoez/AGWeb';
 const SS_BRANCH = 'main';
 const SS_DIR    = 'img/screenshot';
 const SS_THUMBS = SS_DIR + '/thumbs';
 const SS_EXT    = /\.(webp|png|jpe?g|gif|avif)$/i;
-const SS_CACHE  = 'ag-screenshots-v1';
-const SS_TTL    = 60 * 60 * 1000;
 
 let ssItems = [];            // [{ file, src, thumb }]
 let ssIndex = -1;
@@ -666,17 +664,11 @@ function loadScreenshots(then) {
     say('Fetching the gallery…');
 
     (async () => {
-        try {
-            const c = JSON.parse(sessionStorage.getItem(SS_CACHE));
-            if (c && Date.now() - c.ts < SS_TTL && Array.isArray(c.files)) return c.files;
-        } catch (e) {}
         const res = await fetch(`https://api.github.com/repos/${SS_REPO}/contents/${SS_DIR}?ref=${SS_BRANCH}`,
             { headers: { Accept: 'application/vnd.github+json' } });
         if (res.status === 404) return [];   // folder doesn't exist (git drops empty folders) → no screenshots
         if (!res.ok) throw new Error('GitHub API ' + res.status);
-        const files = (await res.json()).filter(f => f.type === 'file').map(f => f.name);
-        try { sessionStorage.setItem(SS_CACHE, JSON.stringify({ ts: Date.now(), files })); } catch (e) {}
-        return files;
+        return (await res.json()).filter(f => f.type === 'file').map(f => f.name);
     })().then(files => {
         /* Newest first. Filenames start with a timestamp (20260917_100204_…);
            files without one go to the end, alphabetically. */
@@ -692,7 +684,7 @@ function loadScreenshots(then) {
                 `<button class="ss-thumb" type="button" data-shot="${i}" aria-label="Screenshot ${i + 1}">
                     <img src="${it.thumb}" alt="" loading="lazy" decoding="async"
                          onload="this.classList.add('is-loaded')"
-                         onerror="if (this.src !== this.dataset.full) this.src = this.dataset.full"
+                         onerror="if (!this.dataset.tried) { this.dataset.tried = 1; this.src = this.dataset.full; } else ssMissing(${i})"
                          data-full="${it.src}">
                 </button>`).join('');
         }
@@ -703,6 +695,19 @@ function loadScreenshots(then) {
         ssWaiters.splice(0).forEach(fn => fn());
     });
 }
+/* Neither thumb nor full image could be loaded (file deleted since the
+   listing, or not deployed yet): drop the tile and skip it in the viewer. */
+function ssMissing(i) {
+    if (!ssItems[i] || ssItems[i].missing) return;
+    ssItems[i].missing = true;
+    document.querySelector(`.ss-thumb[data-shot="${i}"]`)?.remove();
+    if (!ssItems.some(it => !it.missing)) {
+        const status = document.getElementById('ss-status');
+        status.textContent = 'No screenshots have been posted yet.'; status.style.display = '';
+    }
+}
+const ssVisible = () => ssItems.filter(it => !it.missing);
+
 /* ── Viewer ── */
 const ssViewer  = document.getElementById('ss-viewer');
 const ssImg     = document.getElementById('ss-img');
@@ -710,11 +715,12 @@ const ssStage   = document.getElementById('ss-stage');
 const ssSpinner = document.getElementById('ss-spinner');
 let ssLastFocus = null, ssLoadToken = 0;
 
-function ssOpenViewer(i, pushHistory = true) {
-    if (!ssItems.length) return;
+function ssOpenViewer(i, pushHistory = true, dir = 1) {
+    if (!ssVisible().length) return;
     const wasOpen = !ssViewer.hidden;
     ssIndex = ((i % ssItems.length) + ssItems.length) % ssItems.length;
     const it = ssItems[ssIndex];
+    if (it.missing) return ssOpenViewer(ssIndex + dir, pushHistory, dir);   // skip deleted files
 
     if (!wasOpen) {
         ssLastFocus = document.activeElement;
@@ -722,7 +728,8 @@ function ssOpenViewer(i, pushHistory = true) {
         document.body.style.overflow = 'hidden';
         document.getElementById('ss-close').focus({ preventScroll: true });
     }
-    document.getElementById('ss-count').textContent   = `${ssIndex + 1} of ${ssItems.length}`;
+    const vis = ssVisible();
+    document.getElementById('ss-count').textContent   = `${vis.indexOf(it) + 1} of ${vis.length}`;
     ssImg.alt = `Screenshot ${ssIndex + 1}`;
 
     /* Swap the image once it's loaded; show a spinner only if it's slow. */
@@ -740,7 +747,7 @@ function ssOpenViewer(i, pushHistory = true) {
     pre.src = it.src;
 
     /* Warm the neighbours so arrows/swipes feel instant */
-    [ssIndex + 1, ssIndex - 1].forEach(n => { const nb = ssItems[((n % ssItems.length) + ssItems.length) % ssItems.length]; if (nb) new Image().src = nb.src; });
+    [ssIndex + 1, ssIndex - 1].forEach(n => { const nb = ssItems[((n % ssItems.length) + ssItems.length) % ssItems.length]; if (nb && !nb.missing) new Image().src = nb.src; });
 
     if (pushHistory) try {
         const st = { page: 'screenshots', shot: it.file };
@@ -762,7 +769,7 @@ function ssCloseViewer(viaHistory = true) {
     else try { history.replaceState({ page: 'screenshots' }, '', '/#screenshots'); } catch (e) {}
     ssLastFocus?.focus?.({ preventScroll: true });
 }
-function ssStep(d) { if (!ssViewer.hidden) ssOpenViewer(ssIndex + d); }
+function ssStep(d) { if (!ssViewer.hidden) ssOpenViewer(ssIndex + d, true, d); }
 
 document.getElementById('ss-grid').addEventListener('click', e => {
     const btn = e.target.closest('[data-shot]');
@@ -946,6 +953,11 @@ function loadHighscores() {
     const CACHE_KEY      = 'ag-highscores-v1';
     const EXCLUDED_RANKS = [];              // guild ranks to leave out, e.g. ['Squire']
     const API            = 'https://api.tibiadata.com/v4';
+    /* Vocation-filtered highscores are only served by TibiaData's dev host,
+       which is limited to 1 request/second and 100 requests/hour per visitor.
+       Requests to it are made one at a time and capped; see FILTERED below. */
+    const DEV_API        = 'https://dev.tibiadata.com/v4';
+    const DEV_DELAY_MS   = 1100;
 
     /* Category key -> label. Order here is display order. */
     const CATEGORIES = {
@@ -967,17 +979,19 @@ function loadHighscores() {
         bountypoints:     'Bounty Points',
         weeklytasks:      'Weekly Tasks',
     };
-    /* Derived tables: built from another category's entries with a filter,
-       so they cost no extra requests. */
-    const DERIVED = {
+    /* Vocation-filtered tables, fetched from the dev host (see above).
+       Rank shown is the rank within that vocation. */
+    const FILTERED = {
         fistfighting_knights: {
-            label: 'Fist Fighting (Knights)',
-            from:  'fistfighting',
-            keep:  e => /knight/i.test(e.vocation || ''),
+            label:    'Fist Fighting (Knights)',
+            category: 'fistfighting',
+            vocation: 'knights',
+            pages:    5,                // 50 per page → top 250 knights, ~5 s of sequential requests
         },
     };
-    const ORDER = [...Object.keys(CATEGORIES), ...Object.keys(DERIVED)];
-    const labelOf = key => CATEGORIES[key] || DERIVED[key].label;
+    const ORDER = [...Object.keys(CATEGORIES), ...Object.keys(FILTERED)];
+    const labelOf = key => CATEGORIES[key] || FILTERED[key].label;
+    const depthOf = key => (FILTERED[key] ? FILTERED[key].pages : MAX_PAGES) * 50;
 
     /* ============================================================
        DOM
@@ -1042,16 +1056,18 @@ function loadHighscores() {
 
         if (error) {
             small.textContent = '';
-            tbody.innerHTML = `<tr><td colspan="4" class="hs-note is-error">Could not load this category.
+            const why = FILTERED[key] ? 'This vocation-only ranking is unavailable right now.' : 'Could not load this category.';
+            tbody.innerHTML = `<tr><td colspan="4" class="hs-note is-error">${why}
                 <button type="button" data-retry="${esc(key)}">Try again</button></td></tr>`;
             return;
         }
         if (!entries.length) {
             small.textContent = '';
-            tbody.innerHTML = `<tr><td colspan="4" class="hs-note">No member of the Order is among the top ${(MAX_PAGES * 50).toLocaleString()}.</td></tr>`;
+            const who = FILTERED[key] ? ` ${FILTERED[key].vocation}` : '';
+            tbody.innerHTML = `<tr><td colspan="4" class="hs-note">No member of the Order is among the top ${depthOf(key).toLocaleString()}${who}.</td></tr>`;
             return;
         }
-        small.textContent = entries.length === 1 ? '1 member' : entries.length + ' members';
+        small.textContent = (entries.length === 1 ? '1 member' : entries.length + ' members') + (FILTERED[key] ? ' · rank among ' + FILTERED[key].vocation : '');
         const rows = entries.map((e, i) => {
             const score = isExp ? e.level.toLocaleString() : Number(e.value).toLocaleString();
             const title = isExp ? `${Number(e.value).toLocaleString()} experience` : `Level ${e.level}`;
@@ -1067,7 +1083,7 @@ function loadHighscores() {
     }
 
     function renderAll(results) {
-        ORDER.forEach(key => renderCategory(key, results[key] || []));
+        ORDER.forEach(key => renderCategory(key, results[key] || [], results[key] === null ? new Error('failed') : null));
     }
 
     function setProgress(done, total, text) {
@@ -1125,20 +1141,37 @@ function loadHighscores() {
     /* Fetch every page of one category (through the pool) and return
        only the Order's members, ranked, capped at TOP_N. Also returns the
        raw member entries so derived tables can filter them. */
+    /* Fetch every page of one table (through the pool) and return only the
+       Order's members, ranked. Vocation-filtered tables go to the dev host,
+       one page at a time with a pause between requests. */
     async function loadCategory(key, run, onPage) {
-        const url = p => `${API}/highscores/${encodeURIComponent(world)}/${key}/all/${p}`;
-        const first = await run(() => getJSON(url(1)));
+        const f = FILTERED[key];
+        const base = f ? DEV_API : API;
+        const cat = f ? f.category : key, voc = f ? f.vocation : 'all', maxPages = f ? f.pages : MAX_PAGES;
+        const url = p => `${base}/highscores/${encodeURIComponent(world)}/${cat}/${voc}/${p}`;
+        const fetchPage = f ? (p => getJSON(url(p), { retries: 0 })) : (p => run(() => getJSON(url(p))));
+
+        const first = await fetchPage(1);
         const hs = first && first.highscores;
         if (!hs) throw new Error('bad response');
         onPage();
-        const totalPages = Math.min(hs.highscore_page?.total_pages ?? 1, MAX_PAGES);
-        const pages = [];
-        for (let p = 2; p <= totalPages; p++) {
-            pages.push(run(() => getJSON(url(p))).then(d => { onPage(); return d; }, () => { onPage(); return null; }));
-        }
-        const rest = await Promise.all(pages);
+        const totalPages = Math.min(hs.highscore_page?.total_pages ?? 1, maxPages);
         const all = [...(hs.highscore_list || [])];
-        rest.forEach(d => { if (d?.highscores?.highscore_list) all.push(...d.highscores.highscore_list); });
+
+        if (f) {
+            for (let p = 2; p <= totalPages; p++) {           // sequential, rate-limited
+                await new Promise(r => setTimeout(r, DEV_DELAY_MS));
+                try { const d = await fetchPage(p); if (d?.highscores?.highscore_list) all.push(...d.highscores.highscore_list); }
+                catch (e) { break; }                          // keep what we have
+                onPage();
+            }
+        } else {
+            const pages = [];
+            for (let p = 2; p <= totalPages; p++) {
+                pages.push(fetchPage(p).then(d => { onPage(); return d; }, () => { onPage(); return null; }));
+            }
+            (await Promise.all(pages)).forEach(d => { if (d?.highscores?.highscore_list) all.push(...d.highscores.highscore_list); });
+        }
         return all
             .filter(e => memberSet.has(String(e.name).toLowerCase()))
             .sort((a, b) => a.rank - b.rank);
@@ -1159,18 +1192,16 @@ function loadHighscores() {
             return;
         }
 
-        const keys = Object.keys(CATEGORIES);
+        const keys = ORDER;
         const run = makePool(CONCURRENCY);
-        /* Progress counts pages: we assume MAX_PAGES per category until page 1 tells us otherwise. */
+        /* Progress counts pages: we assume the maximum per category until page 1 tells us otherwise. */
         let pagesDone = 0, catsDone = 0;
-        const totalPages = keys.length * MAX_PAGES;
-        const raw = {};
+        const totalPages = keys.reduce((n, k) => n + depthOf(k) / 50, 0);
         const tick = () => { pagesDone++; setProgress(pagesDone, totalPages, `Searching the highscores of ${world}… ${catsDone}/${keys.length} categories done`); };
 
         await Promise.all(keys.map(async key => {
             try {
                 const members = await loadCategory(key, run, tick);
-                raw[key] = members;
                 results[key] = members.slice(0, TOP_N);
                 renderCategory(key, results[key]);
             } catch (err) {
@@ -1182,23 +1213,13 @@ function loadHighscores() {
             }
         }));
 
-        Object.entries(DERIVED).forEach(([key, def]) => {
-            if (raw[def.from]) {
-                results[key] = raw[def.from].filter(def.keep).slice(0, TOP_N);
-                renderCategory(key, results[key]);
-            } else {
-                results[key] = null;
-                renderCategory(key, [], new Error('source failed'));
-            }
-        });
-
         const failed = keys.filter(k => results[k] === null).length;
         if (failed) {
             setDone(`Done, but ${failed} ${failed === 1 ? 'category' : 'categories'} failed to load. Use "Try again" on those, or refresh everything.`, true);
         } else {
             setDone(`Up to date as of ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`);
-            writeCache(meta, results);
         }
+        writeCache(meta, results);   // failed tables are stored as null and offered "Try again" from cache
     }
 
     /* Retry one failed category without reloading everything. */
@@ -1208,14 +1229,11 @@ function loadHighscores() {
         sec.querySelector('h3 small').textContent = 'fetching…';
         const run = makePool(CONCURRENCY);
         try {
+            if (!memberSet) await loadGuild();          // results came from cache; roster not fetched yet
             const members = await loadCategory(key, run, () => {});
             results[key] = members.slice(0, TOP_N);
             renderCategory(key, results[key]);
-            Object.entries(DERIVED).filter(([, d]) => d.from === key).forEach(([dk, d]) => {
-                results[dk] = members.filter(d.keep).slice(0, TOP_N);
-                renderCategory(dk, results[dk]);
-            });
-            if (!ORDER.some(k => results[k] === null)) writeCache(meta, results);
+            writeCache(meta, results);
         } catch (err) {
             renderCategory(key, [], err);
         }
@@ -1224,8 +1242,7 @@ function loadHighscores() {
     grid.addEventListener('click', e => {
         const btn = e.target.closest('[data-retry]');
         if (!btn) return;
-        const key = btn.dataset.retry;
-        retryCategory(DERIVED[key] ? DERIVED[key].from : key);
+        retryCategory(btn.dataset.retry);
     });
     refreshBtn.addEventListener('click', loadEverything);
 
@@ -1238,7 +1255,9 @@ function loadHighscores() {
         describe(meta);
         buildPlaceholders();
         renderAll(results);
-        setDone(`Showing results saved in this browser ${agoText(cached.ts)}. Refresh for the latest.`);
+        const failed = ORDER.filter(k => results[k] === null).length;
+        setDone(`Showing results saved in this browser ${agoText(cached.ts)}. Refresh for the latest.`
+            + (failed ? ` ${failed} ${failed === 1 ? 'table' : 'tables'} could not be loaded then; use "Try again" on ${failed === 1 ? 'it' : 'them'}.` : ''), !!failed);
     } else {
         loadEverything();
     }
