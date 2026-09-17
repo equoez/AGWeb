@@ -129,6 +129,22 @@
 
         <section data-page="ranks"     class="page"><div id="ranks-content"></div></section>
 
+        <section data-page="highscores" class="page">
+            <h2>Highscores</h2>
+            <p class="hs-intro" id="hs-intro">Looking up the Order's roster…</p>
+            <div class="hs-status" id="hs-status" role="status" aria-live="polite">
+                <span class="hs-status-text" id="hs-status-text">Starting…</span>
+                <button class="hs-refresh" id="hs-refresh" type="button" disabled>Refresh</button>
+                <div class="hs-bar" aria-hidden="true"><div class="hs-bar-fill" id="hs-bar-fill"></div></div>
+            </div>
+            <div class="hs-grid" id="hs-grid"></div>
+            <p class="hs-footer">
+                Data from <a href="https://tibiadata.com" target="_blank" rel="noopener noreferrer">TibiaData</a>,
+                which mirrors tibia.com and refreshes highscores roughly every 15 minutes.
+                Only the top <span id="hs-depth">1000</span> of each category are searched.
+            </p>
+        </section>
+
         <section data-page="members" class="page">
             <h2>Members</h2>
             <p id="members-error" class="load-error" style="display:none;">Could not load member data. Make sure <em>sources/characters.json</em> is in place.</p>
