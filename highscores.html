@@ -72,14 +72,18 @@
     }
     .hs-cat.is-pending h3 { opacity: 0.55; }
 
-    .hs-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; line-height: 1.45; }
+    .hs-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; line-height: 1.45; table-layout: fixed; }
+    .hs-table col.c-pos   { width: 2em; }
+    .hs-table col.c-score { width: 6.5em; }
+    .hs-table col.c-world { width: 5em; }
     .hs-table th {
         font-family: var(--font-display); font-weight: 400; font-size: 0.66rem; letter-spacing: 0.06em;
         color: var(--color-gold-dim); text-align: left; padding: 2px 6px 6px;
     }
     .hs-table td { padding: 5px 6px; border-top: 1px solid rgba(255, 210, 122, 0.08); vertical-align: baseline; }
     .hs-table tr:first-child td { border-top: none; }
-    .hs-table .pos   { width: 1.6em; color: var(--color-text-muted); }
+    .hs-table .pos   { color: var(--color-text-muted); }
+    .hs-table .name  { overflow: hidden; text-overflow: ellipsis; }
     .hs-table .name a { color: var(--color-text); text-decoration: none; }
     .hs-table .name a:hover { color: var(--color-gold); text-decoration: underline; }
     .hs-table .voc   { display: block; font-size: 0.8rem; color: var(--color-text-muted); font-style: italic; }
@@ -234,7 +238,7 @@ function buildPlaceholders() {
     grid.innerHTML = ORDER.map(key => `
         <section class="hs-cat is-pending" id="cat-${key}">
             <h3>${esc(labelOf(key))}<small>fetching…</small></h3>
-            <table class="hs-table"><tbody></tbody></table>
+            <table class="hs-table"><colgroup><col class="c-pos"><col><col class="c-score"><col class="c-world"></colgroup><tbody></tbody></table>
         </section>`).join('');
 }
 
