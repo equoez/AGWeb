@@ -53,7 +53,7 @@ const NAV = [
     { type: 'link',  page: 'home',   label: 'Home'   },
     { type: 'link',  page: 'enlist', label: 'Enlist' },
     { type: 'link',  page: 'members', label: 'Members' },
-    { type: 'group', label: 'Library', pages: ['library','diplomacy','missions','ranks','codex'] },
+    { type: 'group', label: 'Library', pages: ['library','diplomacy','missions','ranks','codex','highscores'] },
 ];
 /* Lookup: page id -> the group label it lives under (for active highlighting) */
 const PAGE_GROUP = {};
@@ -538,6 +538,8 @@ function showPage(pageId, pushHistory = true) {
     }
     if (pageId === 'codex')     loadCodex();
     if (pageId === 'ranks')     loadRanks();
+    if (pageId === 'highscores') loadHighscores();
+    document.body.classList.toggle('wide-page', pageId === 'highscores');
     if (pageId === 'members')   loadMembers();
     if (pageId === 'library') {
         initLibrary();
@@ -724,3 +726,323 @@ document.addEventListener('mouseout', e => {
     document.body.classList.remove('dark-magic-active');
     dmTimer = setTimeout(() => bgEl.classList.remove('dark-magic'), 30000);
 });
+
+/* ============================================================
+   Highscores (TibiaData)
+   ------------------------------------------------------------
+   Runs once, on first visit to the page. Everything is fetched
+   in the browser; the only cache is localStorage (see CACHE_TTL_MS).
+   ============================================================ */
+function loadHighscores() {
+    if (loadHighscores.started) return;
+    loadHighscores.started = true;
+
+    /* ============================================================
+       Configuration
+       ============================================================ */
+    const GUILD_NAME     = 'Argent Gryphon';
+    const FALLBACK_WORLD = 'Antica';        // used only if the guild response has no world
+    const TOP_N          = 5;               // members shown per category
+    const MAX_PAGES      = 20;              // highscore pages per category (50 entries each)
+    const CONCURRENCY    = 8;               // requests in flight at once
+    const CACHE_TTL_MS   = 60 * 60 * 1000;  // per-browser cache; 0 disables it
+    const CACHE_KEY      = 'ag-highscores-v1';
+    const EXCLUDED_RANKS = [];              // guild ranks to leave out, e.g. ['Squire']
+    const API            = 'https://api.tibiadata.com/v4';
+
+    /* Category key -> label. Order here is display order. */
+    const CATEGORIES = {
+        experience:       'Experience',
+        magiclevel:       'Magic Level',
+        shielding:        'Shielding',
+        axefighting:      'Axe Fighting',
+        clubfighting:     'Club Fighting',
+        swordfighting:    'Sword Fighting',
+        distancefighting: 'Distance Fighting',
+        fistfighting:     'Fist Fighting',
+        fishing:          'Fishing',
+        achievements:     'Achievements',
+        loyaltypoints:    'Loyalty Points',
+        charmpoints:      'Charm Points',
+        goshnarstaint:    "Goshnar's Taint",
+        dromescore:       'Drome Score',
+        bosspoints:       'Boss Points',
+        bountypoints:     'Bounty Points',
+        weeklytasks:      'Weekly Tasks',
+    };
+    /* Derived tables: built from another category's entries with a filter,
+       so they cost no extra requests. */
+    const DERIVED = {
+        fistfighting_knights: {
+            label: 'Fist Fighting (Knights)',
+            from:  'fistfighting',
+            keep:  e => /knight/i.test(e.vocation || ''),
+        },
+    };
+    const ORDER = [...Object.keys(CATEGORIES), ...Object.keys(DERIVED)];
+    const labelOf = key => CATEGORIES[key] || DERIVED[key].label;
+
+    /* ============================================================
+       DOM
+       ============================================================ */
+    const $ = id => document.getElementById(id);
+    const grid = $('hs-grid'), statusBox = $('hs-status'), statusText = $('hs-status-text'),
+          barFill = $('hs-bar-fill'), refreshBtn = $('hs-refresh'), intro = $('hs-intro');
+    $('hs-depth').textContent = (MAX_PAGES * 50).toLocaleString();
+
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    const charUrl = name => 'https://www.tibia.com/community/?name=' + encodeURIComponent(name);
+
+    /* ============================================================
+       Fetch helpers
+       ============================================================ */
+    async function getJSON(url, { retries = 1, timeout = 15000 } = {}) {
+        for (let attempt = 0; ; attempt++) {
+            const ctl = new AbortController();
+            const timer = setTimeout(() => ctl.abort(), timeout);
+            try {
+                const res = await fetch(url, { headers: { Accept: 'application/json' }, signal: ctl.signal });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } catch (err) {
+                if (attempt >= retries) throw err;
+                await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+    }
+
+    /* Tiny promise pool so we don't fire ~340 requests at once. */
+    function makePool(limit) {
+        let active = 0; const queue = [];
+        const next = () => { if (active < limit && queue.length) { active++; queue.shift()(); } };
+        return fn => new Promise((resolve, reject) => {
+            queue.push(() => fn().then(resolve, reject).finally(() => { active--; next(); }));
+            next();
+        });
+    }
+
+    /* ============================================================
+       Rendering
+       ============================================================ */
+    function buildPlaceholders() {
+        grid.innerHTML = ORDER.map(key => `
+            <section class="hs-cat is-pending" id="cat-${key}">
+                <h3>${esc(labelOf(key))}<small>fetching…</small></h3>
+                <table class="hs-table"><colgroup><col class="c-pos"><col><col class="c-score"><col class="c-world"></colgroup><tbody></tbody></table>
+            </section>`).join('');
+    }
+
+    function renderCategory(key, entries, error) {
+        const sec = $('cat-' + key);
+        if (!sec) return;
+        sec.classList.remove('is-pending');
+        const isExp = key === 'experience';
+        const scoreHead = isExp ? 'Level' : 'Score';
+        const small = sec.querySelector('h3 small');
+        const tbody = sec.querySelector('tbody');
+
+        if (error) {
+            small.textContent = '';
+            tbody.innerHTML = `<tr><td colspan="4" class="hs-note is-error">Could not load this category.
+                <button type="button" data-retry="${esc(key)}">Try again</button></td></tr>`;
+            return;
+        }
+        if (!entries.length) {
+            small.textContent = '';
+            tbody.innerHTML = `<tr><td colspan="4" class="hs-note">No member of the Order is among the top ${(MAX_PAGES * 50).toLocaleString()}.</td></tr>`;
+            return;
+        }
+        small.textContent = entries.length === 1 ? '1 member' : entries.length + ' members';
+        const rows = entries.map((e, i) => {
+            const score = isExp ? e.level.toLocaleString() : Number(e.value).toLocaleString();
+            const title = isExp ? `${Number(e.value).toLocaleString()} experience` : `Level ${e.level}`;
+            return `<tr class="${i === 0 ? 'lead' : ''}">
+                <td class="pos">${i + 1}</td>
+                <td class="name"><a href="${charUrl(e.name)}" target="_blank" rel="noopener noreferrer">${esc(e.name)}</a>
+                    <span class="voc">${esc(e.vocation)}</span></td>
+                <td class="score" title="${esc(title)}">${score}</td>
+                <td class="world">#${e.rank.toLocaleString()}</td>
+            </tr>`;
+        }).join('');
+        tbody.innerHTML = `<tr><th></th><th>Name</th><th class="score">${scoreHead}</th><th class="world">World</th></tr>${rows}`;
+    }
+
+    function renderAll(results) {
+        ORDER.forEach(key => renderCategory(key, results[key] || []));
+    }
+
+    function setProgress(done, total, text) {
+        barFill.style.width = total ? Math.round(done / total * 100) + '%' : '0%';
+        statusText.textContent = text;
+        statusText.classList.remove('is-error');
+    }
+    function setDone(text, isError) {
+        statusBox.classList.add('is-done');
+        statusText.textContent = text;
+        statusText.classList.toggle('is-error', !!isError);
+        refreshBtn.disabled = false;
+    }
+    function describe(meta) {
+        intro.innerHTML = `<strong>${esc(meta.guild)}</strong> on <strong>${esc(meta.world)}</strong>:
+            ${meta.members} members checked against every category, showing the top ${TOP_N} of each.`;
+    }
+    function agoText(ts) {
+        const m = Math.round((Date.now() - ts) / 60000);
+        return m < 1 ? 'just now' : m === 1 ? '1 minute ago' : m + ' minutes ago';
+    }
+
+    /* ============================================================
+       Cache (per browser, optional)
+       ============================================================ */
+    function readCache() {
+        if (!CACHE_TTL_MS) return null;
+        try {
+            const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+            if (c && c.ts && Date.now() - c.ts < CACHE_TTL_MS && c.results && c.meta) return c;
+        } catch (e) {}
+        return null;
+    }
+    function writeCache(meta, results) {
+        if (!CACHE_TTL_MS) return;
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), meta, results })); } catch (e) {}
+    }
+
+    /* ============================================================
+       Data
+       ============================================================ */
+    let memberSet = null, world = FALLBACK_WORLD, meta = null, results = {};
+
+    async function loadGuild() {
+        const data = await getJSON(`${API}/guild/${encodeURIComponent(GUILD_NAME)}`);
+        const guild = data && data.guild;
+        if (!guild || !Array.isArray(guild.members)) throw new Error('guild not found');
+        const members = guild.members.filter(m => !EXCLUDED_RANKS.includes(m.rank));
+        memberSet = new Set(members.map(m => m.name.toLowerCase()));
+        world = guild.world || FALLBACK_WORLD;
+        meta = { guild: guild.name || GUILD_NAME, world, members: members.length };
+        describe(meta);
+    }
+
+    /* Fetch every page of one category (through the pool) and return
+       only the Order's members, ranked, capped at TOP_N. Also returns the
+       raw member entries so derived tables can filter them. */
+    async function loadCategory(key, run, onPage) {
+        const url = p => `${API}/highscores/${encodeURIComponent(world)}/${key}/all/${p}`;
+        const first = await run(() => getJSON(url(1)));
+        const hs = first && first.highscores;
+        if (!hs) throw new Error('bad response');
+        onPage();
+        const totalPages = Math.min(hs.highscore_page?.total_pages ?? 1, MAX_PAGES);
+        const pages = [];
+        for (let p = 2; p <= totalPages; p++) {
+            pages.push(run(() => getJSON(url(p))).then(d => { onPage(); return d; }, () => { onPage(); return null; }));
+        }
+        const rest = await Promise.all(pages);
+        const all = [...(hs.highscore_list || [])];
+        rest.forEach(d => { if (d?.highscores?.highscore_list) all.push(...d.highscores.highscore_list); });
+        return all
+            .filter(e => memberSet.has(String(e.name).toLowerCase()))
+            .sort((a, b) => a.rank - b.rank);
+    }
+
+    async function loadEverything() {
+        refreshBtn.disabled = true;
+        statusBox.classList.remove('is-done');
+        results = {};
+        buildPlaceholders();
+
+        setProgress(0, 1, 'Looking up the Order\'s roster…');
+        try {
+            await loadGuild();
+        } catch (err) {
+            setDone(`Could not reach TibiaData for the guild roster (${err.message}). Refresh to try again.`, true);
+            intro.textContent = 'The roster could not be loaded.';
+            return;
+        }
+
+        const keys = Object.keys(CATEGORIES);
+        const run = makePool(CONCURRENCY);
+        /* Progress counts pages: we assume MAX_PAGES per category until page 1 tells us otherwise. */
+        let pagesDone = 0, catsDone = 0;
+        const totalPages = keys.length * MAX_PAGES;
+        const raw = {};
+        const tick = () => { pagesDone++; setProgress(pagesDone, totalPages, `Searching the highscores of ${world}… ${catsDone}/${keys.length} categories done`); };
+
+        await Promise.all(keys.map(async key => {
+            try {
+                const members = await loadCategory(key, run, tick);
+                raw[key] = members;
+                results[key] = members.slice(0, TOP_N);
+                renderCategory(key, results[key]);
+            } catch (err) {
+                results[key] = null;
+                renderCategory(key, [], err);
+            } finally {
+                catsDone++;
+                setProgress(pagesDone, totalPages, `Searching the highscores of ${world}… ${catsDone}/${keys.length} categories done`);
+            }
+        }));
+
+        Object.entries(DERIVED).forEach(([key, def]) => {
+            if (raw[def.from]) {
+                results[key] = raw[def.from].filter(def.keep).slice(0, TOP_N);
+                renderCategory(key, results[key]);
+            } else {
+                results[key] = null;
+                renderCategory(key, [], new Error('source failed'));
+            }
+        });
+
+        const failed = keys.filter(k => results[k] === null).length;
+        if (failed) {
+            setDone(`Done, but ${failed} ${failed === 1 ? 'category' : 'categories'} failed to load. Use "Try again" on those, or refresh everything.`, true);
+        } else {
+            setDone(`Up to date as of ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`);
+            writeCache(meta, results);
+        }
+    }
+
+    /* Retry one failed category without reloading everything. */
+    async function retryCategory(key) {
+        const sec = $('cat-' + key);
+        sec.classList.add('is-pending');
+        sec.querySelector('h3 small').textContent = 'fetching…';
+        const run = makePool(CONCURRENCY);
+        try {
+            const members = await loadCategory(key, run, () => {});
+            results[key] = members.slice(0, TOP_N);
+            renderCategory(key, results[key]);
+            Object.entries(DERIVED).filter(([, d]) => d.from === key).forEach(([dk, d]) => {
+                results[dk] = members.filter(d.keep).slice(0, TOP_N);
+                renderCategory(dk, results[dk]);
+            });
+            if (!ORDER.some(k => results[k] === null)) writeCache(meta, results);
+        } catch (err) {
+            renderCategory(key, [], err);
+        }
+    }
+
+    grid.addEventListener('click', e => {
+        const btn = e.target.closest('[data-retry]');
+        if (!btn) return;
+        const key = btn.dataset.retry;
+        retryCategory(DERIVED[key] ? DERIVED[key].from : key);
+    });
+    refreshBtn.addEventListener('click', loadEverything);
+
+    /* ============================================================
+       Boot
+       ============================================================ */
+    const cached = readCache();
+    if (cached) {
+        meta = cached.meta; world = meta.world; results = cached.results;
+        describe(meta);
+        buildPlaceholders();
+        renderAll(results);
+        setDone(`Showing results saved in this browser ${agoText(cached.ts)}. Refresh for the latest.`);
+    } else {
+        loadEverything();
+    }
+}
