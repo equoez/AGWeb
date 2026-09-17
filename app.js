@@ -540,7 +540,6 @@ function showPage(pageId, pushHistory = true) {
     if (pageId === 'ranks')     loadRanks();
     if (pageId === 'highscores') loadHighscores();
     if (pageId === 'screenshots') { loadScreenshots(); ssCloseViewer(false); }
-    document.body.classList.toggle('wide-page', pageId === 'highscores');
     if (pageId === 'members')   loadMembers();
     if (pageId === 'library') {
         initLibrary();
