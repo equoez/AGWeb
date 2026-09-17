@@ -672,6 +672,7 @@ function loadScreenshots(then) {
         } catch (e) {}
         const res = await fetch(`https://api.github.com/repos/${SS_REPO}/contents/${SS_DIR}?ref=${SS_BRANCH}`,
             { headers: { Accept: 'application/vnd.github+json' } });
+        if (res.status === 404) return [];   // folder doesn't exist (git drops empty folders) → no screenshots
         if (!res.ok) throw new Error('GitHub API ' + res.status);
         const files = (await res.json()).filter(f => f.type === 'file').map(f => f.name);
         try { sessionStorage.setItem(SS_CACHE, JSON.stringify({ ts: Date.now(), files })); } catch (e) {}
