@@ -1048,6 +1048,7 @@ function loadHighscores() {
         const sec = $('cat-' + key);
         if (!sec) return;
         sec.classList.remove('is-pending');
+        sec.hidden = false;
         const isExp = key === 'experience';
         const scoreHead = isExp ? 'Level' : 'Score';
         const small = sec.querySelector('h3 small');
@@ -1060,10 +1061,8 @@ function loadHighscores() {
                 <button type="button" data-retry="${esc(key)}">Try again</button></td></tr>`;
             return;
         }
-        if (!entries.length) {
-            small.textContent = '';
-            const who = FILTERED[key] ? ` ${FILTERED[key].vocation}` : '';
-            tbody.innerHTML = `<tr><td colspan="4" class="hs-note">No member of the Order is among the top ${depthOf(key).toLocaleString()}${who}.</td></tr>`;
+        if (!entries.length) {           // nobody from the Order in this category: hide it
+            sec.hidden = true;
             return;
         }
         small.textContent = (entries.length === 1 ? '1 member' : entries.length + ' members') + (FILTERED[key] ? ' · rank among ' + FILTERED[key].vocation : '');
@@ -1081,6 +1080,15 @@ function loadHighscores() {
         tbody.innerHTML = `<tr><th></th><th>Name</th><th class="score">${scoreHead}</th><th class="world">World</th></tr>${rows}`;
     }
 
+    function noteIfAllEmpty() {
+        const anyShown = ORDER.some(k => !$('cat-' + k).hidden);
+        let note = $('hs-empty');
+        if (!anyShown && !note) {
+            note = document.createElement('p'); note.id = 'hs-empty'; note.className = 'hs-note';
+            note.textContent = 'No member of the Order is on any highscore list right now.';
+            grid.after(note);
+        } else if (anyShown && note) note.remove();
+    }
     function renderAll(results) {
         ORDER.forEach(key => renderCategory(key, results[key] || [], results[key] === null ? new Error('failed') : null));
     }
@@ -1212,6 +1220,7 @@ function loadHighscores() {
             }
         }));
 
+        noteIfAllEmpty();
         const failed = keys.filter(k => results[k] === null).length;
         if (failed) {
             setDone(`Done, but ${failed} ${failed === 1 ? 'category' : 'categories'} failed to load. Use "Try again" on those, or refresh everything.`, true);
@@ -1232,6 +1241,7 @@ function loadHighscores() {
             const members = await loadCategory(key, run, () => {});
             results[key] = members.slice(0, TOP_N);
             renderCategory(key, results[key]);
+            noteIfAllEmpty();
             writeCache(meta, results);
         } catch (err) {
             renderCategory(key, [], err);
@@ -1254,6 +1264,7 @@ function loadHighscores() {
         describe(meta);
         buildPlaceholders();
         renderAll(results);
+        noteIfAllEmpty();
         const failed = ORDER.filter(k => results[k] === null).length;
         setDone(`Showing results saved in this browser ${agoText(cached.ts)}. Refresh for the latest.`
             + (failed ? ` ${failed} ${failed === 1 ? 'table' : 'tables'} could not be loaded then; use "Try again" on ${failed === 1 ? 'it' : 'them'}.` : ''), !!failed);
