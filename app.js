@@ -635,16 +635,19 @@ document.addEventListener('keydown', e => {
    GitHub Pages can't list a folder, so the page asks the GitHub
    API which files are in img/screenshot. Drop images there (or
    delete them) and the gallery follows; there is nothing else to
-   maintain. The listing is cached per browser session.
+   maintain. The grid uses img/screenshot/thumbs/<same name> when
+   the upload bot has made one, else the full image. The listing
+   is cached per browser session.
    ============================================================ */
 const SS_REPO   = 'equoez/AGWeb';
 const SS_BRANCH = 'main';
 const SS_DIR    = 'img/screenshot';
+const SS_THUMBS = SS_DIR + '/thumbs';
 const SS_EXT    = /\.(webp|png|jpe?g|gif|avif)$/i;
 const SS_CACHE  = 'ag-screenshots-v1';
 const SS_TTL    = 60 * 60 * 1000;
 
-let ssItems = [];            // [{ file, src }]
+let ssItems = [];            // [{ file, src, thumb }]
 let ssIndex = -1;
 let ssReady = false, ssLoading = false;
 const ssWaiters = [];
@@ -674,16 +677,22 @@ function loadScreenshots(then) {
         try { sessionStorage.setItem(SS_CACHE, JSON.stringify({ ts: Date.now(), files })); } catch (e) {}
         return files;
     })().then(files => {
-        files = files.filter(f => SS_EXT.test(f)).sort().reverse();   // names start with a date: newest first
-        ssItems = files.map(file => ({ file, src: `${SS_DIR}/${file}` }));
+        /* Newest first. Filenames start with a timestamp (20260917_100204_…);
+           files without one go to the end, alphabetically. */
+        const stamp = f => (f.match(/^\d{4}-?\d{2}-?\d{2}(?:[ _-]?\d{2}(?:[-:]?\d{2}){0,2})?/) || [''])[0].replace(/\D/g, '').padEnd(14, '0');
+        files = files.filter(f => SS_EXT.test(f))
+            .sort((a, b) => stamp(b).localeCompare(stamp(a)) || a.localeCompare(b));
+        ssItems = files.map(file => ({ file, src: `${SS_DIR}/${file}`, thumb: `${SS_THUMBS}/${file}` }));
         if (!ssItems.length) {
             say('No screenshots have been posted yet.');
         } else {
             say('');
             document.getElementById('ss-grid').innerHTML = ssItems.map((it, i) =>
                 `<button class="ss-thumb" type="button" data-shot="${i}" aria-label="Screenshot ${i + 1}">
-                    <img src="${it.src}" alt="" loading="lazy" decoding="async"
-                         onload="this.classList.add('is-loaded')">
+                    <img src="${it.thumb}" alt="" loading="lazy" decoding="async"
+                         onload="this.classList.add('is-loaded')"
+                         onerror="if (this.src !== this.dataset.full) this.src = this.dataset.full"
+                         data-full="${it.src}">
                 </button>`).join('');
         }
     }).catch(() => {
