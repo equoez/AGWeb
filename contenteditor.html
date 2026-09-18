@@ -47,6 +47,13 @@
 
         /* ── Load bar ── */
         .load-bar { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+        .publish-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,210,122,0.12); }
+        .publish-bar .msg { flex:1 1 220px; font-size:14px; color:var(--color-text-muted); }
+        .publish-bar .msg a { color:var(--color-gold); }
+        .token-box { display:none; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+        .token-box.open { display:flex; }
+        .token-box input { flex:1 1 260px; }
+        .token-box small { flex-basis:100%; color:var(--color-text-muted); font-size:12px; line-height:1.5; }
         .load-bar p { margin:0; font-size:0.88rem; color:var(--color-text-muted); }
 
         /* ── Field helpers ── */
@@ -172,7 +179,7 @@
             </div>
 
             <div class="instructions">
-                <strong>How to use:</strong> Pick a tab, edit the content, click <strong>Generate JSON</strong>, copy and paste into the matching file in <code>sources/</code>.
+                <strong>How to use:</strong> Pick a tab, edit the content, then <strong>Publish to GitHub</strong> (needs your GitHub token, set once below the output). Or click <strong>Generate JSON</strong>, copy and paste into the matching file in <code>sources/</code> by hand.
             </div>
 
             <div class="page-picker" id="page-picker"></div>
@@ -270,6 +277,20 @@
                     </div>
                 </div>
                 <div id="output-box">Click "Generate JSON" to preview the output.</div>
+
+                <div class="publish-bar">
+                    <button class="btn btn-primary btn-sm" id="publish-btn" onclick="publishToGitHub()">&#8593; Publish to GitHub</button>
+                    <button class="btn btn-sm" onclick="toggleTokenBox()">&#9881; GitHub token</button>
+                    <span class="msg" id="publish-msg"></span>
+                </div>
+                <div class="token-box" id="token-box">
+                    <input class="field-input" type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+                    <button class="btn btn-sm" onclick="saveToken()">Save in this browser</button>
+                    <button class="btn btn-danger btn-sm" onclick="forgetToken()">Forget</button>
+                    <small>Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>
+                        for <strong>this repository only</strong> with <strong>Contents: Read and write</strong>. It is stored only in this browser and
+                        sent only to api.github.com. Anyone with the token can change the site, so don't share it; revoke it on GitHub if a device is lost.</small>
+                </div>
             </div>
 
         </div>
@@ -1066,6 +1087,103 @@ function fetchLive() {
         .then(r=>{if(!r.ok) throw new Error(`${r.status} ${r.statusText}`); return r.json();})
         .then(data=>{loadData(data);status.textContent='Loaded ✓';status.style.color='var(--color-success)';})
         .catch(err=>{console.error('Reload failed:',err);status.textContent='Could not load — use "Load from file".';status.style.color='var(--color-danger)';});
+}
+
+/* ═══════════════════════════════════════════
+   PUBLISH TO GITHUB
+   Commits the generated JSON to sources/<file> on GH_BRANCH with the
+   Contents API. The token is the editor's own fine-grained PAT, kept in
+   localStorage of this browser; nothing is embedded in the page.
+═══════════════════════════════════════════ */
+const GH_REPO   = 'equoez/AGWeb';
+const GH_BRANCH = 'main';
+const GH_TOKEN_KEY = 'ag-editor-gh-token';
+
+function getToken()  { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch { return ''; } }
+function toggleTokenBox() {
+    const box = document.getElementById('token-box');
+    box.classList.toggle('open');
+    if (box.classList.contains('open')) document.getElementById('gh-token').value = getToken();
+}
+function saveToken() {
+    const t = document.getElementById('gh-token').value.trim();
+    if (!t) { alert('Paste a token first.'); return; }
+    try { localStorage.setItem(GH_TOKEN_KEY, t); } catch { alert('Could not store the token in this browser.'); return; }
+    setPublishMsg('Token saved in this browser.');
+    document.getElementById('token-box').classList.remove('open');
+}
+function forgetToken() {
+    try { localStorage.removeItem(GH_TOKEN_KEY); } catch {}
+    document.getElementById('gh-token').value = '';
+    setPublishMsg('Token forgotten.');
+}
+function setPublishMsg(html, color) {
+    const m = document.getElementById('publish-msg');
+    m.innerHTML = html; m.style.color = color || '';
+}
+function b64utf8(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin);
+}
+
+async function gh(method, path, body) {
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${path}`, {
+        method,
+        headers: {
+            'Authorization': 'Bearer ' + getToken(),
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            ...(body ? { 'Content-Type': 'application/json' } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw Object.assign(new Error(data.message || `GitHub API ${res.status}`), { status: res.status });
+    return data;
+}
+
+async function publishToGitHub() {
+    if (!getToken()) {
+        document.getElementById('token-box').classList.add('open');
+        setPublishMsg('Add your GitHub token first.', 'var(--color-danger)');
+        return;
+    }
+    generateOutput();
+    const json = document.getElementById('output-box').textContent;
+    try { JSON.parse(json); } catch { setPublishMsg('Nothing to publish yet.', 'var(--color-danger)'); return; }
+
+    const path = 'sources/' + currentPage.file;
+    if (!confirm(`Publish ${currentPage.label} to ${path} on GitHub? The live site updates a minute or two later.`)) return;
+
+    const btn = document.getElementById('publish-btn');
+    btn.disabled = true; setPublishMsg('Publishing…');
+    try {
+        /* Current sha is required to overwrite; 404 means the file doesn't exist yet */
+        let sha;
+        try { sha = (await gh('GET', `${path}?ref=${GH_BRANCH}`)).sha; }
+        catch (e) { if (e.status !== 404) throw e; }
+
+        const res = await gh('PUT', path, {
+            message: `Update ${currentPage.file} via content editor`,
+            content: b64utf8(json + '\n'),
+            branch: GH_BRANCH,
+            ...(sha ? { sha } : {}),
+        });
+        dirty = false;
+        const url = res.commit?.html_url;
+        setPublishMsg(`Published ✓ ${url ? `<a href="${url}" target="_blank" rel="noopener">view commit</a> ·` : ''} the site refreshes in a minute or two.`,
+                      'var(--color-success)');
+    } catch (e) {
+        const why = e.status === 401 ? 'token rejected (expired or wrong)'
+                  : e.status === 403 ? 'token has no write access to this repository'
+                  : e.status === 409 ? 'the file changed on GitHub meanwhile; reload from site and try again'
+                  : e.message;
+        setPublishMsg('Publish failed: ' + why, 'var(--color-danger)');
+    } finally {
+        btn.disabled = false;
+    }
 }
 
 /* ── Init ── */
