@@ -88,6 +88,15 @@
     "points": 12
   },
   {
+    "name": "Pontus Blackheart",
+    "rank": "Companion",
+    "points": 13,
+    "sheet": {
+      "portrait": "characters/Pontus_Final.webp",
+      "bio": "<h3>Overview</h3><div><b>Name:</b> Pontus Blackheart</div><div><b>Race:</b> Human</div><div><b>Gender:</b> Male</div><div><b>Spouse:</b> None</div><div><b>Age:</b> 26</div><div><b>Origin:</b> Edron</div><div><b>Height:</b> 1.79m</div><div><b>Personality:</b> Methodical, generous, uncompromising<br><br><h3>Background</h3><div>Pontus Blackheart was born in Edron, in the shadow of the Magic Academy, and made his name early. By twenty he was appraising enchanted relics for the city's private collectors. By twenty-two he was the man they sent for when a piece was too old, too strange, or too dangerous to trust to anyone else. He looks younger than his reputation suggests, and carries himself with the composure of a man who has rarely had cause to doubt his own conclusions.</div><div><br></div><div>That composure cost a life. A grimoire he judged manageable, a buyer who trusted the judgement, and an accident that did precisely what his own report had warned it would. When the widow came to him, Pontus offered compensation. She refused, and asked instead that he teach the apprentice who had survived.</div><div><br></div><div>He closed the practice within the month. He joined the Argent Gryphon within the year. Now he examines what the Order recovers with a care that borders on obsession, and the newer Companions have learned that nothing leaves on an expedition until he has been through it twice. Some of them find it tiresome. He would rather be tiresome.</div><div><br></div><div>The original grimoire remains in his possession. Not as a trophy. As a correction.</div></div><div><br></div><div><h3>Physical Traits</h3><div><span style=\"font-size: 0.95rem;\"><b>Fair and lean</b></span></div><div>Pale hair kept short, a slight build, none of the grey beard or stooped shoulders people expect from a man of his craft.</div><div><br></div><div><b>Dressed without thought</b></div><div>Dark colours and hard wear, whatever is nearest and least in the way. The ivory mantle comes out for Order business, and nothing else.</div><div><br></div><div><b>Round spectacles</b></div><div>Small, wire-framed, worn low. He looks over them more often than through them. The eyes behind are grey, and quicker than his voice.</div><div><br></div><div><b>The loupe</b></div><div>A jeweller's lens on a cord, left over from the appraising years. He still reaches for it before he reaches for magic.</div><div><br></div><h3>Character Traits</h3><div><span style=\"font-size: 0.95rem;\"><b>Methodical</b></span></div><div>Relics catalogued, theories tested, warnings written down. Nothing is called safe until he understands it.</div><div><br></div><div><b>Generous</b></div><div>With his time, his notes, and his patience, particularly toward anyone willing to learn.</div><div><br></div><div><b>Unable to be wrong</b></div><div>Not unwilling. Unable. A correction made in company sits on him for days.</div></div><div><br></div><div><h3>Drefia</h3><div><span style=\"font-size: 0.95rem;\">Pontus met Iskold beneath Drefia.</span></div><div><br></div><div>He had gone down alone to verify a counterspell for his research, certain the work would take no more than an hour. The counterspell worked. His escape plan did not.</div><div><br></div><div>Iskold was there on Red Rose business when he found him at the edge of a failing ward, barely holding it. An Argent Gryphon in trouble was reason enough for a knight of the Red Rose. Iskold cut a path back to the surface and took him out through it.</div><div><br></div><div>Pontus braced himself afterwards for questions, for a reprimand, for someone to say plainly how foolish it had been.</div><div><br></div><div>None came.</div><div><br></div><h3>Admiral's Avenue 3</h3><div><span style=\"font-size: 0.95rem;\">Their paths crossed again in Liberty Bay, where Iskold kept a villa far larger than one man needed. Pontus needed somewhere to work. One evening a key appeared on the table between them, and neither made anything of it.</span></div><div><br></div><div>He has lived there since, paying no rent that either has mentioned. In exchange he maintains the wards on its doors, shutters, and lower rooms, though both men know that hardly settles what is owed. What was once a dining hall is now his workroom, crowded with books, reagents, and whatever the Order has most recently brought back. Upstairs the house is quieter: two rooms, two beds, a balcony above the harbour where the evenings pass mostly in silence. It suits them both.</div><div><br></div><h3>Character Hooks</h3><div><span style=\"font-size: 0.95rem;\"><b>The Unpaid Debt</b></span></div><div>Iskold has never mentioned Drefia since the day it happened, and Pontus has never managed to thank him properly. He has no idea what he would do if Iskold ever asked him for something. He thinks about it more often than he admits.</div><div><br></div><div><b>The Empty Chair</b></div><div>A second chair stands ready in the small room off his workroom, kept there since a widow in Edron asked him to teach. No apprentice has ever filled it. He has never said whether that is because none was sent, or because none was accepted.</div><div><br></div><div><b>The Counterspell Book</b></div><div>He is compiling a countermeasure for every danger he has ever put his name to, and the work is further along than the Order realises. Finished, it would be the most complete record of its kind in Tibia. It would also be a map of every weakness he has ever documented — and he has begun to wonder who else knows it exists.</div></div>"
+    }
+  },
+  {
     "name": "Mayleea Blackheart",
     "rank": "Companion",
     "points": 9,
@@ -95,11 +104,6 @@
       "portrait": "characters/may_ag.png",
       "bio": "<div><b>Name:</b> Mayleea Blackheart&nbsp;</div><div><b>Race:</b> Elf&nbsp;</div><div><b>Gender:</b> Female</div><div><b>Spouse:</b> Tiases Blackheart</div><div><b>Age:</b> 19</div><div><b>Culture:</b> Cenath&nbsp;</div><div><b>Birth:</b> Unknown</div><div><b>Height:</b> 1,71m&nbsp;</div><p><b>Personality:</b> caring, good, fair</p><div><br></div><h3>History:</h3><div><div>She was born far from the old great elven wars in one of the leading castes of Ab'Dendriel. As the daughter of Shiriel, she delved into the secrets of white magic and druidry from a young age. Her father was strict with her, but he knew that she would eventually grow into a strong woman who could command the elements of nature.</div><div><br></div><div>In her free time, she delighted in helping others, tending the gardens within the fortress and learning new potion ingredients in the city library. Her father kept a close-eye on her and carefully selected her companions so that she would prioritize her own development over fun.</div><div><br></div><div>However, a young man – Tiases Blackheart - she had known him since childhood was wandering around the city. He might have been crosseyed, but he was helpful and cheerful for everyone around. As she strolled, she glanced at him with joy in her heart, yet she knew that if she mentioned this at home - her father would never forgive her.</div><div><br></div><div>An unfortunate event, however, helped her – beloved young boy became an honorary member of the elven royal guards and the biggest „hottie” in the whole fortress – after drinking a magical elixir. She knew this was her chance - she took the advantage of during the evening feast - where he made her laugh until she cried, and she fell in love with him.</div><div><br></div><div>Thus, she became a member of the noble Blackheart family. The royal couple themselves attended their wedding, offering them their own undertown-cottage in return for her husband's honorable service.</div><div><br></div><div>They lived in harmony and had two lovely children. She supported her husband in his quests, expeditions, cared for the household and children, while also cultivating the magic of her caste.</div><div><br></div><div>One day, however, she was speechless when her husband told her he had found his biological mother. Seeing the deep-flames in his eyes, she said without hesitation, \"I see you want it! We can even move tonight!\"</div><div><br></div><div>They did - as they had agreed- packing everything they owned and setting off on a sea voyage to the shores of Liberty Bay. This is how their new story began, built within the walls of the Order of the Argent Gryphon – Mayleea fulfilled herself there as a mother and supported the Order with the magic force of of nature.</div></div>"
     }
-  },
-  {
-    "name": "Pontus Blackheart",
-    "rank": "Companion",
-    "points": 10
   },
   {
     "name": "Emperor Palpertines",
@@ -184,7 +188,7 @@
   {
     "name": "Yt",
     "rank": "Companion",
-    "points": 5
+    "points": 6
   },
   {
     "name": "Renai Thunderstrike",
@@ -272,6 +276,11 @@
   },
   {
     "name": "Chala",
+    "rank": "Companion",
+    "points": 0
+  },
+  {
+    "name": "Jivundus",
     "rank": "Companion",
     "points": 0
   },
