@@ -47,6 +47,9 @@
 
         /* ── Load bar ── */
         .load-bar { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+        .lock-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:6px 0 12px; padding:10px 12px; border:1px solid rgba(255,210,122,0.18); border-radius:var(--radius-btn); background:rgba(0,0,0,0.25); font-size:13px; color:var(--color-text-muted); }
+        .lock-row .lock-state { flex:1 1 200px; }
+        .lock-row .lock-state strong { color:var(--color-gold); }
         .publish-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,210,122,0.12); }
         .publish-bar .msg { flex:1 1 220px; font-size:14px; color:var(--color-text-muted); }
         .publish-bar .msg a { color:var(--color-gold); }
@@ -297,6 +300,7 @@
     </div>
 </div>
 
+<script src="vault.js"></script>
 <script>
 /* ═══════════════════════════════════════════
    CONFIG
@@ -486,7 +490,9 @@ function loadData(data) {
     } else if (m==='journal') {
         /* New format: array of { name, entries[] } */
         libSeries = Array.isArray(data)
-            ? data.map(s => ({ name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) }))
+            ? data.map(s => s.locked
+                ? { cover: s.name||'', hint: s.hint||'', locked: s.locked }          /* sealed: real title + entries unknown until unlocked */
+                : { name: s.name||'', entries: (s.entries||[]).map(e=>({...e})) })
             : [];
         renderSeries();
     } else if (m==='diplomacy') {
@@ -506,7 +512,9 @@ function loadData(data) {
 /* ═══════════════════════════════════════════
    GENERATE JSON (dispatch by mode)
 ═══════════════════════════════════════════ */
-function generateOutput() {
+let _genSeq = 0;
+async function generateOutput() {
+    const seq = ++_genSeq;
     let out;
     const m = currentPage.mode;
     if (m==='simple') {
@@ -530,10 +538,20 @@ function generateOutput() {
                 if (el) e.body = el.innerHTML;
             });
         });
-        out = libSeries.map(s => ({
-            name: s.name || '',
-            entries: (s.entries||[]).map(e => ({ title: e.title||'', body: e.body||'' }))
-        }));
+        out = [];
+        for (const s of libSeries) {
+            const entries = (s.entries||[]).map(e => ({ title: e.title||'', body: e.body||'' }));
+            if (s.locked && !s._vault) {              /* still sealed, never unlocked here: pass through untouched */
+                out.push({ name: s.cover||'', ...(s.hint ? { hint: s.hint } : {}), locked: s.locked });
+            } else if (s._vault) {                     /* sealed and open in this session: re-encrypt title + text */
+                const locked = await Vault.encryptWith(s._vault, { name: s.name||'', entries });
+                s.locked = locked;
+                out.push({ name: s.cover||'', ...(s.hint ? { hint: s.hint } : {}), locked });
+            } else {
+                out.push({ name: s.name||'', entries });
+            }
+        }
+        if (seq !== _genSeq) return;                   /* a newer generate started while encrypting */
     } else if (m==='diplomacy') {
         dipDocs.forEach((d, i) => {
             const el = document.getElementById(`rte-dip-${i}`);
@@ -758,25 +776,36 @@ function buildSeriesCard(s, si) {
     });
 
     const count = (s.entries||[]).length;
+    const sealedClosed = !!s.locked && !s._vault;
+    const headTitle = sealedClosed ? s.cover : s.name;
+    const countLabel = sealedClosed ? '&#128274; sealed' : `${count} ${count===1?'entry':'entries'}`;
     card.innerHTML = `
         <div class="series-head" onclick="toggleSeriesCard(this)">
             <span class="drag-handle" onmouseenter="this.closest('.series-card').draggable=true">&#8942;&#8942;</span>
-            <div class="series-head-title">${esc(s.name) || '<em style="opacity:0.4">Unnamed Series</em>'}</div>
-            <span class="series-head-count">${count} ${count===1?'entry':'entries'}</span>
+            <div class="series-head-title">${esc(headTitle) || '<em style="opacity:0.4">Unnamed Series</em>'}</div>
+            <span class="series-head-count">${countLabel}</span>
             <span class="card-chevron">&#8964;</span>
         </div>
         <div class="series-body">
-            <div class="series-name-row">
-                <label>Series name</label>
-                <input class="series-name-input" type="text" value="${esc(s.name)}"
-                    oninput="libSeries[${si}].name=this.value;refreshSeriesHead(${si})"
+            <div class="series-name-row" id="series-name-row-${si}" ${sealedClosed ? 'style="display:none"' : ''}>
+                <label>Series name${s.locked ? ' (real title, encrypted)' : ''}</label>
+                <input class="series-name-input" type="text" value="${esc(s.name||'')}"
+                    oninput="libSeries[${si}].name=this.value;dirty=true;refreshSeriesHead(${si})"
                     onmouseenter="this.closest('.series-card').draggable=false"
                     onmouseleave="this.closest('.series-card').draggable=true">
             </div>
+            <div class="series-name-row" id="series-cover-row-${si}" ${s.locked ? '' : 'style="display:none"'}>
+                <label>Cover title (shown to everyone before unsealing)</label>
+                <input class="series-name-input" type="text" value="${esc(s.cover||'')}" placeholder="e.g. A Sealed Tome"
+                    oninput="libSeries[${si}].cover=this.value;dirty=true;refreshSeriesHead(${si})"
+                    onmouseenter="this.closest('.series-card').draggable=false"
+                    onmouseleave="this.closest('.series-card').draggable=true">
+            </div>
+            <div class="lock-row" id="lock-row-${si}"></div>
             <span class="entries-label">Entries</span>
             <div class="entries-sublist" id="entries-sublist-${si}"></div>
             <div class="add-row" style="justify-content:flex-start;gap:10px;margin-top:12px;">
-                <button class="btn btn-sm" onclick="addEntry(${si})">+ Add entry</button>
+                <button class="btn btn-sm" id="add-entry-${si}" onclick="addEntry(${si})">+ Add entry</button>
                 <button class="btn btn-danger btn-sm" onclick="if(confirm('Remove this entire series?')){libSeries.splice(${si},1);renderSeries();}">Remove series</button>
             </div>
         </div>
@@ -784,12 +813,99 @@ function buildSeriesCard(s, si) {
 
     /* Render entries into the sublist */
     renderEntries(si, card.querySelector(`#entries-sublist-${si}`));
+    renderLockRow(si, card.querySelector(`#lock-row-${si}`), card.querySelector(`#add-entry-${si}`));
     return card;
+}
+
+/* ═══════════════════════════════════════════
+   SEALED (PASSWORD-PROTECTED) SERIES
+   A sealed series keeps its chapters encrypted in journal.json. Unlocking
+   here decrypts for this session; every Generate/Publish re-encrypts with
+   the same password. Nothing about the password is ever written out.
+═══════════════════════════════════════════ */
+function renderLockRow(si, row, addBtn) {
+    const s = libSeries[si];
+    const sealedClosed = !!s.locked && !s._vault;
+    const sealedOpen   = !!s._vault;
+    const count = (s.entries||[]).length;
+    row.innerHTML = sealedClosed
+        ? `<span class="lock-state">&#128274; <strong>Sealed.</strong> Unlock to view or edit the chapters.</span>
+           <button class="btn btn-sm" onclick="unlockSeries(${si})">Unlock to edit</button>`
+        : sealedOpen
+        ? `<span class="lock-state">&#128275; <strong>Sealed, open for editing.</strong> Title and chapters are saved encrypted; hint: <em>${esc(s.hint||'none')}</em></span>
+           <button class="btn btn-xs" onclick="setSeriesHint(${si})">Hint</button>
+           <button class="btn btn-xs" onclick="lockSeries(${si}, true)">Change password</button>
+           <button class="btn btn-danger btn-xs" onclick="unsealSeries(${si})">Remove lock</button>`
+        : `<span class="lock-state">Readable by everyone.</span>
+           <button class="btn btn-xs" onclick="lockSeries(${si})">&#128274; Lock with password</button>`;
+    if (addBtn) addBtn.style.display = sealedClosed ? 'none' : '';
+    const card = row.closest('.series-card');
+    const list = card ? card.querySelector(`#entries-sublist-${si}`) : null;
+    if (sealedClosed && list) list.innerHTML = '<div class="empty-state" style="padding:20px 0 10px;">Chapters are encrypted. Unlock to see them.</div>';
+}
+function openSeriesCard(si) {
+    const card = document.querySelector(`.series-card[data-si="${si}"]`);
+    card?.querySelector('.series-body')?.classList.add('open');
+}
+function refreshLockRow(si) {
+    const card = document.querySelector(`.series-card[data-si="${si}"]`); if (!card) return;
+    renderLockRow(si, card.querySelector(`#lock-row-${si}`), card.querySelector(`#add-entry-${si}`));
+    renderEntries(si, card.querySelector(`#entries-sublist-${si}`));
+    if (libSeries[si].locked && !libSeries[si]._vault) renderLockRow(si, card.querySelector(`#lock-row-${si}`), card.querySelector(`#add-entry-${si}`));
+}
+function requireVault() {
+    if (Vault.available()) return true;
+    alert('Encryption needs a secure page (https:// or localhost). Open the editor from the live site.');
+    return false;
+}
+async function lockSeries(si, change = false) {
+    if (!requireVault()) return;
+    const s = libSeries[si];
+    const p1 = prompt(change ? 'New password for this series:' : 'Password for this series (readers will need it):');
+    if (!p1) return;
+    if (p1.length < 8 && !confirm('That password is short and could be guessed by brute force. Use it anyway?')) return;
+    const p2 = prompt('Type the password again:');
+    if (p1 !== p2) { alert('The passwords do not match.'); return; }
+    if (!change) {
+        const cover = prompt('Cover title shown to everyone before unsealing:', s.cover || 'A Sealed Tome');
+        if (cover == null) return;
+        s.cover = cover.trim() || 'A Sealed Tome';
+        const hint = prompt('Optional hint shown under the secret field (leave empty for none):', s.hint||'');
+        s.hint = (hint||'').trim();
+    }
+    s._vault = await Vault.open(p1);
+    s.locked = await Vault.encryptWith(s._vault, { name: s.name||'', entries: s.entries||[] });
+    dirty = true; renderSeries(); openSeriesCard(si); generateOutput();
+}
+async function unlockSeries(si) {
+    if (!requireVault()) return;
+    const s = libSeries[si];
+    const pw = prompt('Password for "' + (s.cover||'this series') + '":');
+    if (pw == null) return;
+    try {
+        const { handle, value } = await Vault.decrypt(pw, s.locked);
+        const payload = Array.isArray(value) ? { name: s.cover, entries: value } : value;
+        s._vault = handle; s.name = payload.name || s.cover; s.entries = (payload.entries||[]).map(e=>({...e}));
+        renderSeries(); openSeriesCard(si);
+    } catch { alert('That is not the password.'); }
+}
+function setSeriesHint(si) {
+    const s = libSeries[si];
+    const hint = prompt('Hint shown to readers (leave empty for none):', s.hint||'');
+    if (hint == null) return;
+    s.hint = hint.trim(); dirty = true; refreshLockRow(si); generateOutput();
+}
+function unsealSeries(si) {
+    if (!confirm('Remove the password? The chapters will be published readable by everyone.')) return;
+    const s = libSeries[si];
+    delete s.locked; delete s._vault; delete s.hint; delete s.cover;
+    dirty = true; renderSeries(); openSeriesCard(si); generateOutput();
 }
 
 function refreshSeriesHead(si) {
     const card = document.querySelector(`.series-card[data-si="${si}"]`); if (!card) return;
-    const t = libSeries[si].name;
+    const s = libSeries[si];
+    const t = (s.locked && !s._vault) ? s.cover : s.name;
     card.querySelector('.series-head-title').innerHTML = t ? esc(t) : '<em style="opacity:0.4">Unnamed Series</em>';
 }
 
@@ -1150,7 +1266,7 @@ async function publishToGitHub() {
         setPublishMsg('Add your GitHub token first.', 'var(--color-danger)');
         return;
     }
-    generateOutput();
+    await generateOutput();
     const json = document.getElementById('output-box').textContent;
     try { JSON.parse(json); } catch { setPublishMsg('Nothing to publish yet.', 'var(--color-danger)'); return; }
 
