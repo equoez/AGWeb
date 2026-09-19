@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
     <link rel="stylesheet" href="styles.css">
+    <script src="vault.js" defer></script>
     <script src="app.js" defer></script>
 </head>
 <body>
@@ -56,6 +57,15 @@
                             <span class="char-order">The Stories</span>
                         </div>
                     </div>
+                    <form class="lib-seal" id="lib-seal" hidden autocomplete="off">
+                        <p class="lib-seal-text">This volume is sealed. Only those who know the secret may read it.</p>
+                        <p class="lib-seal-hint" id="lib-seal-hint"></p>
+                        <div class="lib-seal-row">
+                            <input class="lib-seal-input" id="lib-seal-input" type="password" placeholder="Speak the secret…" autocomplete="off" spellcheck="false" aria-label="The secret">
+                            <button type="submit" class="lib-seal-btn" id="lib-seal-btn">Unseal</button>
+                        </div>
+                        <p class="lib-seal-msg" id="lib-seal-msg" aria-live="polite"></p>
+                    </form>
                     <div class="lib-nav">
                         <div class="lib-shelf" id="lib-book-shelf"></div>
                     </div>
