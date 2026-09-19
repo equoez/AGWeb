@@ -344,29 +344,56 @@ function initLibrary() {
     libReady = true;
     json('sources/journal.json', data => {
         LIB_SERIES = data;
+        initLibraryShelf();
+    }, () => loadError('lib-series-grid', 'journal.json'));
+}
+
+function initLibraryShelf() {
+    {
         const grid = document.getElementById('lib-series-grid');
         grid.innerHTML = '<div class="section">'
             + LIB_SERIES.map((s, si) => {
-                const count = s.entries.length;
-                return `<div class="codex-item library-series-item" role="button" tabindex="0" onclick="libOpenSeries(${si})" onkeydown="activateOnKey(event)">
+                const locked = !!s.locked && !s.entries;
+                const count = (s.entries || []).length;
+                const sub = locked ? '<span class="lock">&#128274;</span>Sealed'
+                                   : (count === 1 ? '1 volume' : count + ' volumes');
+                return `<div class="codex-item library-series-item${locked ? ' is-locked' : ''}" role="button" tabindex="0" onclick="libOpenSeries(${si})" onkeydown="activateOnKey(event)">
                     <img src="img/main/quill.png" class="lib-series-bigbook codex-icon" alt="">
                     <div>
                         <strong>${s.name}</strong>
-                        <div class="library-series-count">${count === 1 ? '1 volume' : count + ' volumes'}</div>
+                        <div class="library-series-count">${sub}</div>
                     </div>
                 </div>`;
             }).join('')
             + '</div>';
-    }, () => loadError('lib-series-grid', 'journal.json'));
+    }
 }
 
 function libOpenSeries(si, pushHistory = true) {
+    const series = LIB_SERIES[si];
     libCurrentSeries = si;
-    const entries = LIB_SERIES[si].entries || [];
+    const sealed  = !!series.locked && !series.entries;
+    const entries = series.entries || [];
 
     document.getElementById('lib-shelf-view').style.display  = 'none';
     document.getElementById('lib-reader-view').style.display = 'block';
-    document.getElementById('lib-series-title').textContent  = LIB_SERIES[si].name;
+    document.getElementById('lib-series-title').textContent  = series.name;   /* cover title until unsealed */
+
+    /* A sealed volume shows the secret field in place of its chapters */
+    const seal = document.getElementById('lib-seal');
+    seal.hidden = !sealed;
+    document.querySelector('.lib-nav').style.display = sealed ? 'none' : '';
+    if (sealed) {
+        document.getElementById('lib-seal-hint').textContent = series.hint || '';
+        document.getElementById('lib-seal-input').value = '';
+        const msg = document.getElementById('lib-seal-msg');
+        msg.textContent = ''; msg.className = 'lib-seal-msg';
+        document.getElementById('lib-chapter-title').textContent = '';
+        setHTML('lib-chapter-body', '');
+        seal.onsubmit = e => { e.preventDefault(); libUnseal(si); };
+        if (pushHistory) try { history.pushState({ page: 'library', series: si, chapter: 0 }, '', '/#library'); } catch(e) {}
+        return;
+    }
 
     /* Build book shelf */
     const shelf = document.getElementById('lib-book-shelf');
@@ -383,6 +410,30 @@ function libOpenSeries(si, pushHistory = true) {
     libCurrentIdx = 0;
     libShowChapter(0);
     if (pushHistory) try { history.pushState({ page: 'library', series: si, chapter: 0 }, '', '/#library'); } catch(e) {}
+}
+
+/* Sealed books: the secret is typed inline in the reader; the decrypted
+   payload { name, entries } is kept in memory for this tab only. */
+async function libUnseal(si) {
+    const s = LIB_SERIES[si];
+    const input = document.getElementById('lib-seal-input'), msg = document.getElementById('lib-seal-msg');
+    const btn = document.getElementById('lib-seal-btn'), seal = document.getElementById('lib-seal');
+    if (!Vault.available()) { msg.textContent = 'This browser cannot unseal volumes.'; return; }
+    if (!input.value) { input.focus(); return; }
+    btn.disabled = true; msg.className = 'lib-seal-msg'; msg.textContent = 'The seal stirs…';
+    try {
+        const { value } = await Vault.decrypt(input.value, s.locked);
+        const payload = Array.isArray(value) ? { name: s.name, entries: value } : value;
+        s.entries = payload.entries || [];
+        s.realName = payload.name || s.name;
+        s.name = s.realName;
+        initLibraryShelf();
+        libOpenSeries(si, false);
+    } catch {
+        msg.className = 'lib-seal-msg is-wrong'; msg.textContent = 'The seal does not yield.';
+        seal.classList.remove('shake'); void seal.offsetWidth; seal.classList.add('shake');
+        input.select();
+    } finally { btn.disabled = false; }
 }
 
 function libShowChapter(i) {
