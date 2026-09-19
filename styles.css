@@ -1300,3 +1300,35 @@ strong { color: var(--color-gold-light); font-weight: 500; }
 @media (prefers-reduced-motion: reduce) {
     .ss-thumb, .ss-thumb img, .ss-stage img { transition: none; }
 }
+
+/* ============================================================
+   Library — sealed books
+   ============================================================ */
+.library-series-item.is-locked .lib-series-bigbook { opacity: 0.55; }
+.library-series-count .lock { margin-right: 4px; }
+
+.lib-seal { margin: 18px 0 26px; padding: 18px 20px; text-align: center;
+    border: 1px solid rgba(255, 210, 122, 0.2); border-radius: var(--radius-btn); background: rgba(0, 0, 0, 0.3); }
+.lib-seal-text { font-style: italic; color: var(--color-text-muted); margin-bottom: 4px; }
+.lib-seal-hint { font-size: 0.9rem; color: var(--color-gold-dim); font-style: italic; margin-bottom: 12px; }
+.lib-seal-hint:empty { display: none; }
+.lib-seal-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.lib-seal-input {
+    flex: 1 1 200px; max-width: 280px; padding: 9px 12px; font: inherit; font-size: 1.05rem; text-align: center;
+    color: var(--color-text); background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 210, 122, 0.3); border-radius: var(--radius-btn);
+}
+.lib-seal-input:focus { outline: none; border-color: var(--color-gold); }
+.lib-seal-btn {
+    font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.06em;
+    color: var(--color-gold-light); background: rgba(255, 210, 122, 0.12);
+    border: 1px solid var(--color-gold-dim); border-radius: var(--radius-btn); padding: 8px 18px; cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.lib-seal-btn:hover:not(:disabled) { background: rgba(255, 210, 122, 0.22); }
+.lib-seal-btn:disabled { opacity: 0.5; cursor: default; }
+.lib-seal-msg { min-height: 1.3em; margin-top: 10px; font-size: 0.92rem; font-style: italic; color: var(--color-text-muted); }
+.lib-seal-msg.is-wrong { color: #d98c8c; }
+.lib-seal.shake { animation: seal-shake 0.35s; }
+@keyframes seal-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@media (prefers-reduced-motion: reduce) { .lib-seal.shake { animation: none; } }
