@@ -201,6 +201,11 @@
     "points": 2
   },
   {
+    "name": "Chlara",
+    "rank": "Companion",
+    "points": 1
+  },
+  {
     "name": "Barnabus Runeholt",
     "rank": "Companion",
     "points": 0,
@@ -271,11 +276,6 @@
   },
   {
     "name": "Zaminno",
-    "rank": "Companion",
-    "points": 0
-  },
-  {
-    "name": "Chala",
     "rank": "Companion",
     "points": 0
   },
